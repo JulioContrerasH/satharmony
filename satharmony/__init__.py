@@ -1,5 +1,13 @@
 """SatHarmony: Sensor harmonization and emulation for Earth Observation."""
 
+from .corrections import (
+    ESUN_MSS,
+    MSSCalibration,
+    dn_to_radiance,
+    dn_to_toa,
+    parse_mtl,
+    radiance_to_toa,
+)
 from .emulators.s2_to_mss import (
     MSSEmulator,
     PipelineConfig,
@@ -10,14 +18,26 @@ from .emulators.s2_to_mss import (
 )
 
 __all__ = [
-    # Classes
+    # Emulation
     "MSSEmulator",
     "PipelineConfig",
-    # Functions
     "emulate_s2",
     "emulate_labels",
     "emulate_s2_with_labels",
     "aggregate_cloudsen12",
+    # Corrections
+    "parse_mtl",
+    "MSSCalibration",
+    "dn_to_toa",
+    "dn_to_radiance",
+    "radiance_to_toa",
+    "ESUN_MSS",
 ]
 
-__version__ = "0.1.0"
+
+try:
+    from importlib.metadata import version
+
+    __version__ = version("satharmony")
+except Exception:
+    __version__ = "0.0.0-dev"

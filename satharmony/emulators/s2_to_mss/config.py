@@ -24,20 +24,43 @@ class RangeInt(BaseModel):
         return np.random.randint(self.min, self.max + 1)
 
 
-# SPECTRAL
+class CenteredRange(BaseModel):
+    """Range centered on mean with controlled variation."""
+
+    mean: float
+    variation: float
+
+    def sample(self) -> float:
+        return self.mean + np.random.uniform(-self.variation, self.variation)
+
+
+class BandScaleRange(BaseModel):
+    """Per-band scaling con rango más amplio."""
+
+    green: CenteredRange = CenteredRange(mean=0.60, variation=0.20)
+    red: CenteredRange = CenteredRange(mean=0.58, variation=0.20)
+    nir1: CenteredRange = CenteredRange(mean=0.60, variation=0.20)
+    nir2: CenteredRange = CenteredRange(mean=0.85, variation=0.20)
+
+    def sample(self) -> list[float]:
+        return [
+            self.green.sample(),
+            self.red.sample(),
+            self.nir1.sample(),
+            self.nir2.sample(),
+        ]
+
+
 class SpectralConfig(BaseModel):
     """S2 bands -> MSS bands mapping."""
 
     enabled: bool = True
     probability: float = 1.0
-    s2_bands: list[int] = [2, 3, 6, 7]  # B3, B4, B7, B8
+    s2_bands: list[int] = [2, 3, 6, 7]
     srf_adjustment: bool = False
     srf_noise_std: Range = Range(min=0.0, max=0.02)
-    band_scale_factors: list[float] | None = [0.43, 0.39, 0.41, 0.66]
-    global_scale_factor: float | None = None
 
 
-# SPATIAL
 class SpatialConfig(BaseModel):
     """PSF + downsampling. S2 10m -> MSS ~60-80m."""
 
@@ -49,7 +72,6 @@ class SpatialConfig(BaseModel):
     method: Literal["average", "gaussian"] = "gaussian"
 
 
-# RADIOMETRIC
 class RadiometricConfig(BaseModel):
     """Quantization 6-bit + sqrt compression + saturation."""
 
@@ -63,7 +85,6 @@ class RadiometricConfig(BaseModel):
     reflectance_boost_prob: float = 0.3
 
 
-# STRIPING
 class StripingConfig(BaseModel):
     """6-detector gain/offset mismatch."""
 
@@ -75,7 +96,6 @@ class StripingConfig(BaseModel):
     per_band_variation: bool = True
 
 
-# MEMORY EFFECT
 class MemoryEffectConfig(BaseModel):
     """Bright target recovery artifact."""
 
@@ -86,7 +106,6 @@ class MemoryEffectConfig(BaseModel):
     amplitude: Range = Range(min=0.02, max=0.08)
 
 
-# COHERENT NOISE
 class CoherentNoiseConfig(BaseModel):
     """Periodic electronic noise."""
 
@@ -97,7 +116,6 @@ class CoherentNoiseConfig(BaseModel):
     random_phase: bool = True
 
 
-# RANDOM NOISE
 class RandomNoiseConfig(BaseModel):
     """Gaussian + shot noise."""
 
@@ -108,7 +126,6 @@ class RandomNoiseConfig(BaseModel):
     poisson_weight: Range = Range(min=0.2, max=0.5)
 
 
-# SCAN ARTIFACTS
 class ScanArtifactsConfig(BaseModel):
     """Line dropouts and transmission errors."""
 
@@ -118,7 +135,13 @@ class ScanArtifactsConfig(BaseModel):
     max_consecutive_lines: RangeInt = RangeInt(min=1, max=3)
 
 
-# PIPELINE
+class FinalScalingConfig(BaseModel):
+    """Linear scaling with variation for training robustness."""
+
+    enabled: bool = True
+    band_scaling: BandScaleRange = BandScaleRange()
+
+
 class PipelineConfig(BaseModel):
     """Main config combining all degradations."""
 
@@ -130,7 +153,7 @@ class PipelineConfig(BaseModel):
     coherent_noise: CoherentNoiseConfig = CoherentNoiseConfig()
     random_noise: RandomNoiseConfig = RandomNoiseConfig()
     scan_artifacts: ScanArtifactsConfig = ScanArtifactsConfig()
+    final_scaling: FinalScalingConfig = FinalScalingConfig()
 
-    # Global
     seed: int | None = None
     output_dtype: Literal["float32", "uint8"] = "float32"

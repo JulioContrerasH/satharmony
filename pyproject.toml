@@ -1,11 +1,11 @@
 [tool.poetry]
 name        = "satharmony"
-version     = "0.1.0"
+version     = "0.1.13"
 description = "Sensor emulation and harmonization for Earth Observation (Sentinel-2 → Landsat MSS)."
 authors     = ["Julio Contreras <contrerasnetk@gmail.com>"]
 license     = "MIT"
-repository  = "https://github.com/IPL-UV/satharmony"
-documentation = "https://github.com/IPL-UV/satharmony"
+repository  = "https://github.com/JulioContrerasH/satharmony"
+documentation = "https://github.com/JulioContrerasH/satharmony"
 readme      = "README.md"
 keywords    = [
     "remote-sensing", "satellite", "emulation", "harmonization",

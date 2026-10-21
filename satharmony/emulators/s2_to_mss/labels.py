@@ -14,6 +14,7 @@ def aggregate_cloudsen12(
     labels: NDArray[np.uint8],
     scale_factor: int = 6,
     classes: tuple[int, int, int, int] = (CLEAR, THIN_CLOUD, CLOUD, SHADOW),
+    merge_cloud_classes: bool = False,
 ) -> NDArray[np.uint8]:
     """Aggregate CloudSEN12 labels from 10m to coarser resolution.
 
@@ -26,9 +27,12 @@ def aggregate_cloudsen12(
         labels: Input array (H, W) uint8 with class values 0-3
         scale_factor: Downsampling factor (6 for 10m→60m, 3 for 10m→30m)
         classes: Tuple of (clear, thin_cloud, cloud, shadow) class values
+        merge_cloud_classes: If True, merge THIN_CLOUD+CLOUD→1, SHADOW→2 (3 classes total)
 
     Returns:
         Aggregated labels (H', W') where H' = H // scale_factor
+        If merge_cloud_classes=True: output classes are {0: clear, 1: cloud, 2: shadow}
+        If merge_cloud_classes=False: output classes are {0: clear, 1: thin, 2: cloud, 3: shadow}
 
     Note:
         If H or W not divisible by scale_factor, image is cropped.
@@ -92,5 +96,12 @@ def aggregate_cloudsen12(
     shadow_clear_dom = shadow_dom & (n_cloudy < n_clear)
     out[shadow_clear_dom & (n_shadow >= n_clear)] = shadow
     out[shadow_clear_dom & (n_shadow < n_clear)] = clear
+
+    # Apply class merging if requested
+    if merge_cloud_classes:
+        # Map: 0→0 (clear), 1→1 (thin), 2→1 (cloud), 3→2 (shadow)
+        out[out == THIN_CLOUD] = 1  # Keep thin as 1
+        out[out == CLOUD] = 1  # Merge cloud to 1
+        out[out == SHADOW] = 2  # Shadow becomes 2
 
     return out

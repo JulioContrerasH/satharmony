@@ -24,14 +24,12 @@ def apply_spectral_degradation(image: np.ndarray, config: SpectralConfig) -> np.
     if not config.enabled:
         return image
 
-    # Select bands
     selected = image[config.s2_bands]
 
-    # Optional SRF adjustment (small perturbation)
     if config.srf_adjustment:
         noise_std = config.srf_noise_std.sample()
         if noise_std > 0:
             noise = np.random.normal(0, noise_std, selected.shape)
-            selected = selected + noise * selected  # Multiplicative noise
+            selected = selected + noise * selected
 
     return selected.astype(np.float32)
