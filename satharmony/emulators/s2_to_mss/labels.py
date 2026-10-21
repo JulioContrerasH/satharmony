@@ -3,105 +3,128 @@
 import numpy as np
 from numpy.typing import NDArray
 
-# CloudSEN12 class encoding
+# CloudSEN12 class encoding (Aybar et al. 2022, Table 3)
 CLEAR = 0
-THIN_CLOUD = 1
-CLOUD = 2
+THICK_CLOUD = 1
+THIN_CLOUD = 2
 SHADOW = 3
 
 
 def aggregate_cloudsen12(
     labels: NDArray[np.uint8],
     scale_factor: int = 6,
-    classes: tuple[int, int, int, int] = (CLEAR, THIN_CLOUD, CLOUD, SHADOW),
+    classes: tuple[int, int, int, int] = (CLEAR, THICK_CLOUD, THIN_CLOUD, SHADOW),
     merge_cloud_classes: bool = False,
+    legacy: bool = False,
 ) -> NDArray[np.uint8]:
     """Aggregate CloudSEN12 labels from 10m to coarser resolution.
 
-    Uses conservative criteria from Roy et al.: given balanced mix of labels,
-    precedence is cloud > shadow > thin_cloud > clear.
+    New rule (default): a class with >= 50 % of the block wins. If no class
+    reaches 50 %, a block with >= 50 % contaminated pixels (thick + thin +
+    shadow) is assigned to the most frequent contaminated class; ties follow
+    the CloudSEN12 priority thick > shadow > thin. Otherwise the block is
+    clear. This avoids labelling a 58 %-contaminated block as clear.
 
-    Reference: Fig. 2 in "Cloud and cloud shadow..." (Roy et al.)
+    ``legacy=True`` reproduces the 0.1.13 rule and class encoding
+    (1=thin, 2=thick), which swapped thick and thin and could return clear
+    for contaminated blocks.
 
     Args:
-        labels: Input array (H, W) uint8 with class values 0-3
-        scale_factor: Downsampling factor (6 for 10m→60m, 3 for 10m→30m)
-        classes: Tuple of (clear, thin_cloud, cloud, shadow) class values
-        merge_cloud_classes: If True, merge THIN_CLOUD+CLOUD→1, SHADOW→2 (3 classes total)
+        labels: Input array (H, W) uint8 with CloudSEN12 classes 0-3.
+        scale_factor: Downsampling factor (6 for 10m→60m, 3 for 10m→30m).
+        classes: Tuple of (clear, thick_cloud, thin_cloud, shadow) values.
+        merge_cloud_classes: If True, thick+thin → 1, shadow → 2.
+        legacy: Reproduce the 0.1.13 behaviour.
 
     Returns:
-        Aggregated labels (H', W') where H' = H // scale_factor
-        If merge_cloud_classes=True: output classes are {0: clear, 1: cloud, 2: shadow}
-        If merge_cloud_classes=False: output classes are {0: clear, 1: thin, 2: cloud, 3: shadow}
+        Aggregated labels (H', W') where H' = H // scale_factor.
+        If merge_cloud_classes=True: {0: clear, 1: cloud, 2: shadow}.
+        If False: {0: clear, 1: thick, 2: thin, 3: shadow}.
 
     Note:
-        If H or W not divisible by scale_factor, image is cropped.
-        E.g., 1024 with scale_factor=6 → crops to 1020 → output 170x170
+        If H or W is not divisible by scale_factor, the image is cropped.
+        E.g. 1024 with scale_factor=6 → 1020 → 170x170.
     """
-    clear, thin_cloud, cloud, shadow = classes
     H, W = labels.shape
     sf = scale_factor
 
-    # Crop to multiple of scale_factor
     new_h = H // sf
     new_w = W // sf
     cropped = labels[: new_h * sf, : new_w * sf]
 
-    # Reshape to (new_h, sf, new_w, sf) then transpose to (new_h, new_w, sf, sf)
     blocks = cropped.reshape(new_h, sf, new_w, sf).transpose(0, 2, 1, 3)
-    # Now (new_h, new_w, sf*sf) for counting
     blocks = blocks.reshape(new_h, new_w, sf * sf)
 
-    n = sf * sf  # Total pixels per block (e.g., 36 for 6x6)
+    n = sf * sf
     half_n = n // 2
+    out = np.full((new_h, new_w), CLEAR, dtype=np.uint8)
 
-    # Count each class per block
+    if legacy:
+        # ── 0.1.13: 1=thin, 2=thick; old conservative rule ──────────────────
+        clear, thin_cloud, cloud, shadow = 0, 1, 2, 3
+        n_clear = np.sum(blocks == clear, axis=2)
+        n_thin = np.sum(blocks == thin_cloud, axis=2)
+        n_cloud = np.sum(blocks == cloud, axis=2)
+        n_shadow = np.sum(blocks == shadow, axis=2)
+        n_cloudy = n_cloud + n_thin
+
+        has_majority = (
+            (n_clear >= half_n) | (n_thin >= half_n) | (n_cloud >= half_n) | (n_shadow >= half_n)
+        )
+        out[n_clear >= half_n] = clear
+        out[n_thin >= half_n] = thin_cloud
+        out[n_cloud >= half_n] = cloud
+        out[n_shadow >= half_n] = shadow
+
+        no_maj = ~has_majority
+        cloudy_dom = no_maj & (n_cloudy >= n_shadow)
+        shadow_dom = no_maj & (n_cloudy < n_shadow)
+
+        cloudy_vs_clear = cloudy_dom & (n_cloudy >= n_clear)
+        out[cloudy_vs_clear & (n_cloud >= n_thin)] = cloud
+        out[cloudy_vs_clear & (n_cloud < n_thin)] = thin_cloud
+        out[cloudy_dom & (n_cloudy < n_clear)] = clear
+
+        shadow_cloudy_clear = shadow_dom & (n_cloudy >= n_clear)
+        out[shadow_cloudy_clear] = shadow
+        shadow_clear_dom = shadow_dom & (n_cloudy < n_clear)
+        out[shadow_clear_dom & (n_shadow >= n_clear)] = shadow
+        out[shadow_clear_dom & (n_shadow < n_clear)] = clear
+
+        if merge_cloud_classes:
+            out[out == thin_cloud] = 1
+            out[out == cloud] = 1
+            out[out == shadow] = 2
+        return out
+
+    # ── New rule: CloudSEN12 Table 3 encoding and priority ──────────────────
+    clear, thick, thin, shadow = classes
     n_clear = np.sum(blocks == clear, axis=2)
-    n_thin = np.sum(blocks == thin_cloud, axis=2)
-    n_cloud = np.sum(blocks == cloud, axis=2)
+    n_thick = np.sum(blocks == thick, axis=2)
+    n_thin = np.sum(blocks == thin, axis=2)
     n_shadow = np.sum(blocks == shadow, axis=2)
-    n_cloudy = n_cloud + n_thin
 
-    # Initialize output
-    out = np.full((new_h, new_w), clear, dtype=np.uint8)
-
-    # Check majority (any class >= n/2)
     has_majority = (
-        (n_clear >= half_n) | (n_thin >= half_n) | (n_cloud >= half_n) | (n_shadow >= half_n)
+        (n_clear >= half_n) | (n_thick >= half_n) | (n_thin >= half_n) | (n_shadow >= half_n)
     )
-
-    # Assign majority class where exists
+    # Assign in increasing priority order; thick wins ties (last assignment)
     out[n_clear >= half_n] = clear
-    out[n_thin >= half_n] = thin_cloud
-    out[n_cloud >= half_n] = cloud
+    out[n_thin >= half_n] = thin
     out[n_shadow >= half_n] = shadow
+    out[n_thick >= half_n] = thick
 
-    # For non-majority pixels, apply conservative criteria (Fig. 2)
     no_maj = ~has_majority
+    contaminated = n_thick + n_thin + n_shadow
+    contam_dom = no_maj & (contaminated >= half_n)
+    max_count = np.maximum.reduce([n_thick, n_thin, n_shadow])
+    out[contam_dom & (n_thin == max_count)] = thin
+    out[contam_dom & (n_shadow == max_count)] = shadow
+    out[contam_dom & (n_thick == max_count)] = thick
+    # Remaining no-majority blocks stay clear.
 
-    # Branch: n_cloudy >= n_shadow
-    cloudy_dom = no_maj & (n_cloudy >= n_shadow)
-    shadow_dom = no_maj & (n_cloudy < n_shadow)
-
-    # Cloudy dominant branch
-    cloudy_vs_clear = cloudy_dom & (n_cloudy >= n_clear)
-    out[cloudy_vs_clear & (n_cloud >= n_thin)] = cloud
-    out[cloudy_vs_clear & (n_cloud < n_thin)] = thin_cloud
-    out[cloudy_dom & (n_cloudy < n_clear)] = clear
-
-    # Shadow dominant branch
-    shadow_cloudy_clear = shadow_dom & (n_cloudy >= n_clear)
-    out[shadow_cloudy_clear] = shadow
-
-    shadow_clear_dom = shadow_dom & (n_cloudy < n_clear)
-    out[shadow_clear_dom & (n_shadow >= n_clear)] = shadow
-    out[shadow_clear_dom & (n_shadow < n_clear)] = clear
-
-    # Apply class merging if requested
     if merge_cloud_classes:
-        # Map: 0→0 (clear), 1→1 (thin), 2→1 (cloud), 3→2 (shadow)
-        out[out == THIN_CLOUD] = 1  # Keep thin as 1
-        out[out == CLOUD] = 1  # Merge cloud to 1
-        out[out == SHADOW] = 2  # Shadow becomes 2
+        out[out == thick] = 1
+        out[out == thin] = 1
+        out[out == shadow] = 2
 
     return out

@@ -31,8 +31,8 @@ s2_labels = ...     # shape: (512, 512), uint8, classes 0-3
 mss, mss_labels, scale_factor = satharmony.emulate_s2_with_labels(
     s2_image, s2_labels, seed=42
 )
-# mss.shape:        (4, 73, 73)
-# mss_labels.shape: (73, 73)
+# mss.shape:        (4, 85, 85)   # 512 @ 10 m -> 60 m grid
+# mss_labels.shape: (85, 85)
 
 # Or emulate separately (must pass scale_factor to labels)
 mss, sf = satharmony.emulate_s2(s2_image, seed=42)
@@ -46,8 +46,8 @@ The MSS emulator applies physically-motivated degradations:
 | Degradation | Description |
 |-------------|-------------|
 | **Spectral** | Band selection (B3, B4, B7, B8 → MSS 4 bands) |
-| **Spatial** | PSF convolution + downsampling (10m → 60-80m) |
-| **Radiometric** | 6-bit quantization, sqrt compression, saturation |
+| **Spatial** | PSF convolution (MSS IFOV ~79-82 m) + 60 m sampling |
+| **Radiometric** | 6-bit quantization with sqrt companding (decompressed back to linear reflectance) |
 | **Striping** | 6-detector gain/offset mismatch artifacts |
 | **Memory Effect** | Bright target recovery trailing |
 | **Noise** | Coherent (periodic) + random (gaussian/poisson) |
@@ -68,19 +68,36 @@ labels = satharmony.emulate_labels(labels, scale_factor=sf)
 from satharmony import MSSEmulator, PipelineConfig
 
 config = PipelineConfig()
-config.spatial.target_gsd.min = 60.0
-config.spatial.target_gsd.max = 60.0  # fixed 60m
+config.spatial.sampling_gsd = 60.0          # output grid (ESA GTC)
+config.spatial.psf_fwhm_m = Range(79, 82)   # sensor IFOV, independent of grid
 
 emulator = MSSEmulator(config)
 mss = emulator(image)
+
+# Reproduce the 0.1.13 behaviour used by the published model
+config_legacy = PipelineConfig.legacy_0_1_13()
 ```
+
+## Behavior changes in 0.2.0
+
+- Radiometry is linear again: the sqrt companding is inverted after 6-bit quantization.
+- Decimation is centred (average pooling after the PSF), matching the label grid.
+- `sampling_gsd` (60 m) and `psf_fwhm_m` (79-82 m) are independent.
+- Labels use the CloudSEN12 encoding (0 clear, 1 thick, 2 thin, 3 shadow) and a
+  conservative contamination rule.
+- `PipelineConfig.legacy_0_1_13()` reproduces the 0.1.13 output bit for bit
+  (same seed and input).
 
 ## Label Aggregation
 
-CloudSEN12 labels (10m) are aggregated using conservative criteria from [Roy et al.](https://doi.org/10.1016/j.rse.2024.114439):
+CloudSEN12 labels (10m) are aggregated to the MSS grid. The default rule uses
+the CloudSEN12 Table 3 encoding and priority (thick > shadow > thin > clear):
+a class with >= 50 % of the block wins; if no class reaches 50 %, a block with
+>= 50 % contaminated pixels is assigned to the most frequent contaminated
+class; otherwise it is clear.
 
-- **Precedence**: cloud > shadow > thin_cloud > clear
-- **Classes**: 0=clear, 1=thin_cloud, 2=cloud, 3=shadow
+- **Classes**: 0=clear, 1=thick_cloud, 2=thin_cloud, 3=shadow
+- **Legacy**: `aggregate_cloudsen12(..., legacy=True)` reproduces the 0.1.13 rule.
 
 ## Citation
 
@@ -89,7 +106,7 @@ CloudSEN12 labels (10m) are aggregated using conservative criteria from [Roy et 
   author  = {Contreras, Julio},
   title   = {SatHarmony: Sensor Emulation for Earth Observation},
   year    = {2025},
-  url     = {https://github.com/IPL-UV/satharmony}
+  url     = {https://github.com/JulioContrerasH/satharmony}
 }
 ```
 

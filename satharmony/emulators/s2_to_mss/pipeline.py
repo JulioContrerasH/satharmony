@@ -40,7 +40,11 @@ class MSSEmulator:
                 scale = image.shape[1] // x.shape[1]
                 from .labels import aggregate_cloudsen12
 
-                current_labels = aggregate_cloudsen12(current_labels, scale_factor=scale)
+                current_labels = aggregate_cloudsen12(
+                    current_labels, scale_factor=scale,
+                    merge_cloud_classes=False,
+                    legacy=self.config.labels_legacy,
+                )
 
         if self._should_apply(self.config.radiometric):
             x = apply_radiometric_degradation(x, self.config.radiometric)

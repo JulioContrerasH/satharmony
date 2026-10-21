@@ -17,6 +17,8 @@ class Range(BaseModel):
 
 
 class RangeInt(BaseModel):
+    """Integer range for stochastic sampling."""
+
     min: int
     max: int
 
@@ -35,7 +37,7 @@ class CenteredRange(BaseModel):
 
 
 class BandScaleRange(BaseModel):
-    """Per-band scaling con rango más amplio."""
+    """Per-band scaling."""
 
     green: CenteredRange = CenteredRange(mean=0.60, variation=0.20)
     red: CenteredRange = CenteredRange(mean=0.58, variation=0.20)
@@ -62,24 +64,40 @@ class SpectralConfig(BaseModel):
 
 
 class SpatialConfig(BaseModel):
-    """PSF + downsampling. S2 10m -> MSS ~60-80m."""
+    """PSF + downsampling.
+
+    ``sampling_gsd`` is the output grid (60 m for the ESA GTC product).
+    ``psf_fwhm_m`` is the sensor IFOV (79-82 m for MSS), independent of the
+    sampling grid. Set both to ``None`` to reproduce the 0.1.13 behaviour,
+    which used ``target_gsd`` and ``psf_sigma`` coupled to the scale factor.
+    """
 
     enabled: bool = True
     probability: float = 1.0
-    target_gsd: Range = Range(min=60.0, max=80.0)
     input_gsd: float = 10.0
+    sampling_gsd: float | None = 60.0
+    psf_fwhm_m: Range | None = Range(min=79.0, max=82.0)
+    center_decimation: bool = True
+    method: Literal["average", "gaussian"] = "average"
+    # Legacy 0.1.13 fields (used when sampling_gsd/psf_fwhm_m are None).
+    target_gsd: Range = Range(min=60.0, max=80.0)
     psf_sigma: Range = Range(min=0.4, max=0.6)
-    method: Literal["average", "gaussian"] = "gaussian"
 
 
 class RadiometricConfig(BaseModel):
-    """Quantization 6-bit + sqrt compression + saturation."""
+    """Quantization 6-bit + sqrt compression + saturation.
+
+    With ``decompress_after_quantization=True`` the sqrt companding is
+    inverted after the 6-bit quantization, so the output stays linear in
+    reflectance (as the MSS L1 TOA product is).
+    """
 
     enabled: bool = True
     probability: float = 1.0
     quantization_bits: int = 6
     sqrt_compression: bool = True
     sqrt_bands: list[int] = [0, 1, 2]
+    decompress_after_quantization: bool = True
     saturation_threshold: Range = Range(min=0.8, max=0.95)
     reflectance_boost: Range = Range(min=1.0, max=1.3)
     reflectance_boost_prob: float = 0.3
@@ -154,6 +172,25 @@ class PipelineConfig(BaseModel):
     random_noise: RandomNoiseConfig = RandomNoiseConfig()
     scan_artifacts: ScanArtifactsConfig = ScanArtifactsConfig()
     final_scaling: FinalScalingConfig = FinalScalingConfig()
+    labels_legacy: bool = False
 
     seed: int | None = None
     output_dtype: Literal["float32", "uint8"] = "float32"
+
+    @classmethod
+    def legacy_0_1_13(cls) -> "PipelineConfig":
+        """Return the configuration used to train the 0.1.13 model.
+
+        Reproduces the old (buggy) radiometry, non-centred decimation,
+        scale-coupled PSF and the old CloudSEN12 label rule.
+        """
+        cfg = cls()
+        cfg.spatial.method = "gaussian"
+        cfg.spatial.center_decimation = False
+        cfg.spatial.sampling_gsd = None
+        cfg.spatial.psf_fwhm_m = None
+        cfg.spatial.target_gsd = Range(min=60.0, max=80.0)
+        cfg.spatial.psf_sigma = Range(min=0.4, max=0.6)
+        cfg.radiometric.decompress_after_quantization = False
+        cfg.labels_legacy = True
+        return cfg

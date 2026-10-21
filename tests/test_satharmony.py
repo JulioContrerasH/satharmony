@@ -249,3 +249,120 @@ class TestEdgeCases:
         labels = np.full((60, 60), 3, dtype=np.uint8)  # All shadow
         result = aggregate_cloudsen12(labels, scale_factor=6)
         assert np.all(result == 3)
+
+
+# =============================================================================
+# P0 regression tests
+# =============================================================================
+
+class TestP0Radiometry:
+    def test_linear_output(self):
+        from satharmony.emulators.s2_to_mss.config import RadiometricConfig, Range
+        from satharmony.emulators.s2_to_mss.degradations.radiometric import (
+            apply_radiometric_degradation,
+        )
+
+        cfg = RadiometricConfig()
+        cfg.reflectance_boost_prob = 0.0
+        cfg.saturation_threshold = Range(min=0.9, max=0.9)
+        cfg.decompress_after_quantization = True
+        img = np.full((4, 8, 8), 0.25, dtype=np.float32)
+        out = apply_radiometric_degradation(img, cfg)
+        assert abs(float(out.mean()) - 0.25) < 0.01
+
+    def test_legacy_is_compressed(self):
+        from satharmony.emulators.s2_to_mss.config import RadiometricConfig, Range
+        from satharmony.emulators.s2_to_mss.degradations.radiometric import (
+            apply_radiometric_degradation,
+        )
+
+        cfg = RadiometricConfig()
+        cfg.reflectance_boost_prob = 0.0
+        cfg.saturation_threshold = Range(min=0.9, max=0.9)
+        cfg.decompress_after_quantization = False
+        img = np.full((4, 8, 8), 0.25, dtype=np.float32)
+        out = apply_radiometric_degradation(img, cfg)
+        assert float(out.mean()) > 0.4
+
+    def test_ramp_is_linear(self):
+        from satharmony.emulators.s2_to_mss.config import RadiometricConfig, Range
+        from satharmony.emulators.s2_to_mss.degradations.radiometric import (
+            apply_radiometric_degradation,
+        )
+
+        cfg = RadiometricConfig()
+        cfg.reflectance_boost_prob = 0.0
+        cfg.saturation_threshold = Range(min=0.9, max=0.9)
+        cfg.decompress_after_quantization = True
+        ramp = np.tile(np.linspace(0.02, 0.8, 256, dtype=np.float32), (4, 8, 1))
+        out = apply_radiometric_degradation(ramp, cfg)
+        x = ramp[0].ravel()
+        y = out[0].ravel()
+        slope = np.polyfit(x, y, 1)[0]
+        assert 0.98 < slope < 1.02
+
+
+class TestP0Spatial:
+    def test_60m_from_1024(self):
+        from satharmony.emulators.s2_to_mss.config import Range, SpatialConfig
+        from satharmony.emulators.s2_to_mss.degradations.spatial import (
+            apply_spatial_degradation,
+        )
+
+        cfg = SpatialConfig(sampling_gsd=60.0, psf_fwhm_m=Range(min=79.0, max=79.0))
+        img = np.random.rand(4, 1024, 1024).astype(np.float32)
+        out = apply_spatial_degradation(img, cfg)
+        assert out.shape == (4, 170, 170)
+
+    def test_psf_independent_of_sampling(self):
+        from satharmony.emulators.s2_to_mss.config import Range, SpatialConfig
+        from satharmony.emulators.s2_to_mss.degradations.spatial import (
+            apply_spatial_degradation,
+        )
+
+        img = np.random.rand(4, 1024, 1024).astype(np.float32)
+        cfg60 = SpatialConfig(sampling_gsd=60.0, psf_fwhm_m=Range(min=79.0, max=79.0))
+        cfg80 = SpatialConfig(sampling_gsd=80.0, psf_fwhm_m=Range(min=79.0, max=79.0))
+        assert apply_spatial_degradation(img, cfg60).shape == (4, 170, 170)
+        assert apply_spatial_degradation(img, cfg80).shape == (4, 128, 128)
+
+    def test_centered_decimation(self):
+        from satharmony.emulators.s2_to_mss.config import Range, SpatialConfig
+        from satharmony.emulators.s2_to_mss.degradations.spatial import (
+            apply_spatial_degradation,
+        )
+
+        cfg = SpatialConfig(sampling_gsd=60.0, psf_fwhm_m=Range(min=79.0, max=79.0))
+        ramp = np.tile(np.arange(600, dtype=np.float32) / 600, (4, 600, 1))
+        out = apply_spatial_degradation(ramp, cfg)
+        x_sample = out[0].mean(axis=0) * 600
+        x_label = np.arange(out.shape[2]) * 6 + 2.5
+        diff = (x_sample - x_label)[5:-5]
+        assert abs(float(diff.mean())) < 0.1
+
+
+class TestP0Labels:
+    def test_thick_and_thin_encoding(self):
+        labels = np.zeros((6, 6), dtype=np.uint8)
+        labels[:4, :] = 1  # 24 thick pixels
+        assert aggregate_cloudsen12(labels, scale_factor=6)[0, 0] == 1
+
+        labels = np.zeros((6, 6), dtype=np.uint8)
+        labels[:4, :] = 2  # 24 thin pixels
+        assert aggregate_cloudsen12(labels, scale_factor=6)[0, 0] == 2
+
+    def test_contaminated_block_not_clear(self):
+        # 15 clear, 12 thick, 9 shadow: 58 % contaminated but clear is the
+        # largest single class. New rule must not return clear.
+        labels = np.zeros((6, 6), dtype=np.uint8)
+        labels.ravel()[15:27] = 1
+        labels.ravel()[27:36] = 3
+        assert aggregate_cloudsen12(labels, scale_factor=6)[0, 0] == 1
+        assert aggregate_cloudsen12(labels, scale_factor=6, legacy=True)[0, 0] == 0
+
+    def test_priority_tie(self):
+        # 12 thick, 12 shadow, 12 clear: tie -> thick (priority 1)
+        labels = np.zeros((6, 6), dtype=np.uint8)
+        labels.ravel()[13:25] = 1
+        labels.ravel()[25:37] = 3
+        assert aggregate_cloudsen12(labels, scale_factor=6)[0, 0] == 1
