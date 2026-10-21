@@ -177,6 +177,30 @@ class PipelineConfig(BaseModel):
     seed: int | None = None
     output_dtype: Literal["float32", "uint8"] = "float32"
 
+
+    @classmethod
+    def mss5_esa_gtc_v1(cls) -> "PipelineConfig":
+        """Perfil calibrado provisional (MSS L5, grilla ESA GTC 60 m).
+
+        - muestreo fijo 60 m y PSF 79-82 m (IFOV MSS)
+        - decimacion centrada y radiometria lineal (P0)
+        - saturacion fisica conservadora, sin boost aleatorio
+        - striping/ruido en rangos medidos en MSS real
+        """
+        cfg = cls()
+        cfg.spatial.sampling_gsd = 60.0
+        cfg.spatial.psf_fwhm_m = Range(min=79.0, max=82.0)
+        cfg.spatial.center_decimation = True
+        cfg.spatial.method = "average"
+        cfg.radiometric.decompress_after_quantization = True
+        cfg.radiometric.saturation_threshold = Range(min=0.85, max=0.92)
+        cfg.radiometric.reflectance_boost_prob = 0.0
+        cfg.striping.gain_std = Range(min=0.005, max=0.02)
+        cfg.striping.offset_std = Range(min=0.002, max=0.008)
+        cfg.random_noise.snr_db = Range(min=30.0, max=40.0)
+        cfg.labels_legacy = False
+        return cfg
+
     @classmethod
     def legacy_0_1_13(cls) -> "PipelineConfig":
         """Return the configuration used to train the 0.1.13 model.

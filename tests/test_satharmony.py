@@ -366,3 +366,19 @@ class TestP0Labels:
         labels.ravel()[13:25] = 1
         labels.ravel()[25:37] = 3
         assert aggregate_cloudsen12(labels, scale_factor=6)[0, 0] == 1
+
+
+class TestCalibratedProfile:
+    def test_profile_fields(self):
+        cfg = PipelineConfig.mss5_esa_gtc_v1()
+        assert cfg.spatial.sampling_gsd == 60.0
+        assert cfg.spatial.center_decimation is True
+        assert cfg.spatial.psf_fwhm_m is not None
+        assert cfg.radiometric.decompress_after_quantization is True
+        assert cfg.labels_legacy is False
+
+    def test_profile_shape(self, s2_image_512):
+        cfg = PipelineConfig.mss5_esa_gtc_v1()
+        mss, sf = satharmony.emulate_s2(s2_image_512, seed=42, config=cfg)
+        assert sf == 6
+        assert mss.shape[1:] == (512 // 6, 512 // 6)
