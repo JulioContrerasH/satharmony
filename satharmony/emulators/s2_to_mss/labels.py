@@ -98,6 +98,8 @@ def aggregate_cloudsen12(
         return out
 
     # ── New rule: CloudSEN12 Table 3 encoding and priority ──────────────────
+    # For odd block sizes (e.g. sf=5) require ceil(n/2) to avoid two winners.
+    half_n = (n + 1) // 2
     clear, thick, thin, shadow = classes
     n_clear = np.sum(blocks == clear, axis=2)
     n_thick = np.sum(blocks == thick, axis=2)
