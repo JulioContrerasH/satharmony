@@ -99,6 +99,13 @@ class; otherwise it is clear.
 - **Classes**: 0=clear, 1=thick_cloud, 2=thin_cloud, 3=shadow
 - **Legacy**: `aggregate_cloudsen12(..., legacy=True)` reproduces the 0.1.13 rule.
 
+## Calibrated profile (0.3.0)
+
+```python
+from satharmony import PipelineConfig
+config = PipelineConfig.mss5_esa_gtc_v1()  # 60 m, PSF 79-82 m, linear radiometry
+```
+
 ## Citation
 
 ```bibtex
