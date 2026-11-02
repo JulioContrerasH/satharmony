@@ -1,9 +1,13 @@
 """MSS Emulator Configuration."""
 
+import json
+from pathlib import Path
 from typing import Literal
 
 import numpy as np
 from pydantic import BaseModel
+
+PROFILE_DIR = Path(__file__).resolve().parents[2] / "profiles"
 
 
 class Range(BaseModel):
@@ -234,6 +238,31 @@ class PipelineConfig(BaseModel):
 
     seed: int | None = None
     output_dtype: Literal["float32", "uint8"] = "float32"
+
+    @classmethod
+    def from_profile(cls, profile: str | Path) -> "PipelineConfig":
+        """Load a versioned JSON profile by name or path.
+
+        Args:
+            profile: Profile name without ``.json`` (resolved inside
+                ``satharmony/profiles/``) or a path to a JSON file.
+
+        Returns:
+            The validated configuration.
+
+        Raises:
+            FileNotFoundError: If neither the name nor the path exists.
+        """
+        path = Path(profile)
+        if not path.exists():
+            path = PROFILE_DIR / f"{profile}.json"
+        if not path.exists():
+            available = sorted(p.stem for p in PROFILE_DIR.glob("*.json"))
+            raise FileNotFoundError(
+                f"profile {profile!r} not found; available: {', '.join(available)}"
+            )
+        payload = json.loads(path.read_text())
+        return cls.model_validate(payload.get("config", payload))
 
     @classmethod
     def mss5_esa_gtc_v1(cls) -> "PipelineConfig":

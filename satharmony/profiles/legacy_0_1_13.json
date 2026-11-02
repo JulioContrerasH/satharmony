@@ -1,0 +1,209 @@
+{
+  "schema_version": 1,
+  "name": "legacy_0_1_13",
+  "created": "2026-11-03",
+  "description": "Comportamiento de satharmony 0.1.13, con sus bugs, para reproducir el modelo publicado.",
+  "config": {
+    "spectral": {
+      "enabled": true,
+      "probability": 1.0,
+      "mode": "legacy",
+      "sensor": "S2A",
+      "s2_bands": [
+        2,
+        3,
+        6,
+        7
+      ],
+      "srf_adjustment": false,
+      "srf_noise_std": {
+        "min": 0.0,
+        "max": 0.02,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      }
+    },
+    "spatial": {
+      "enabled": true,
+      "probability": 1.0,
+      "input_gsd": 10.0,
+      "sampling_gsd": null,
+      "psf_fwhm_m": null,
+      "center_decimation": false,
+      "method": "gaussian",
+      "target_gsd": {
+        "min": 60.0,
+        "max": 80.0,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "psf_sigma": {
+        "min": 0.4,
+        "max": 0.6,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      }
+    },
+    "radiometric": {
+      "enabled": true,
+      "probability": 1.0,
+      "quantization_bits": 6,
+      "sqrt_compression": true,
+      "sqrt_bands": [
+        0,
+        1,
+        2
+      ],
+      "decompress_after_quantization": false,
+      "saturation_model": "legacy_random",
+      "satellite": "L5_MSS",
+      "sun_elevation_deg": {
+        "min": 25.0,
+        "max": 70.0,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "earth_sun_distance_au": 1.0,
+      "saturation_threshold": {
+        "min": 0.8,
+        "max": 0.95,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "reflectance_boost": {
+        "min": 1.0,
+        "max": 1.3,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "reflectance_boost_prob": 0.3
+    },
+    "striping": {
+      "enabled": true,
+      "probability": 0.8,
+      "num_detectors": 6,
+      "gain_std": {
+        "min": 0.01,
+        "max": 0.05,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "offset_std": {
+        "min": 0.005,
+        "max": 0.02,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "per_band_variation": true,
+      "detector_geometry": "rows",
+      "sampling_gsd": 60.0,
+      "scan_line_period_m": 474.0,
+      "yaw_deg": 9.0
+    },
+    "memory_effect": {
+      "enabled": true,
+      "probability": 0.4,
+      "trigger_threshold": {
+        "min": 0.6,
+        "max": 0.85,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "decay_pixels": {
+        "min": 50,
+        "max": 200
+      },
+      "amplitude": {
+        "min": 0.02,
+        "max": 0.08,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      }
+    },
+    "coherent_noise": {
+      "enabled": true,
+      "probability": 0.3,
+      "frequencies": [
+        0.16666666666666666,
+        0.3333333333333333,
+        0.5
+      ],
+      "amplitude": {
+        "min": 0.005,
+        "max": 0.02,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "random_phase": true
+    },
+    "random_noise": {
+      "enabled": true,
+      "probability": 0.7,
+      "snr_db": {
+        "min": 25.0,
+        "max": 45.0,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "noise_type": "mixed",
+      "poisson_weight": {
+        "min": 0.2,
+        "max": 0.5,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      }
+    },
+    "scan_artifacts": {
+      "enabled": true,
+      "probability": 0.2,
+      "dropout_prob": {
+        "min": 0.001,
+        "max": 0.01,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "max_consecutive_lines": {
+        "min": 1,
+        "max": 3
+      }
+    },
+    "final_scaling": {
+      "enabled": true,
+      "band_scaling": {
+        "green": {
+          "mean": 0.6,
+          "variation": 0.2
+        },
+        "red": {
+          "mean": 0.58,
+          "variation": 0.2
+        },
+        "nir1": {
+          "mean": 0.6,
+          "variation": 0.2
+        },
+        "nir2": {
+          "mean": 0.85,
+          "variation": 0.2
+        }
+      }
+    },
+    "labels_legacy": true,
+    "seed": null,
+    "output_dtype": "float32"
+  }
+}
