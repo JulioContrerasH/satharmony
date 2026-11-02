@@ -10,10 +10,13 @@ SatHarmony provides physically-based sensor emulation to create synthetic histor
 
 ## Installation
 
+Python 3.10 to 3.13 (`Requires-Python >=3.10,<3.14`, the range the CI matrix
+tests).
+
 ```bash
 pip install satharmony
 
-# With GeoTIFF I/O support
+# With GeoTIFF I/O support (rasterio, needed by satharmony.datasets)
 pip install satharmony[io]
 ```
 
@@ -45,7 +48,7 @@ The MSS emulator applies physically-motivated degradations:
 
 | Degradation | Description |
 |-------------|-------------|
-| **Spectral** | Band selection (B3, B4, B7, B8 → MSS 4 bands) |
+| **Spectral** | Legacy band selection (B3/B4/B7/B8) or SBAF: non-negative linear mixing of nine S2 VNIR bands plus a water-vapour term for B4, per sensor |
 | **Spatial** | PSF convolution (MSS IFOV ~79-82 m) + 60 m sampling |
 | **Radiometric** | 6-bit quantization with sqrt companding (decompressed back to linear reflectance) |
 | **Striping** | 6-detector gain/offset mismatch artifacts |
@@ -70,6 +73,10 @@ from satharmony import MSSEmulator, PipelineConfig
 config = PipelineConfig()
 config.spatial.sampling_gsd = 60.0          # output grid (ESA GTC)
 config.spatial.psf_fwhm_m = Range(79, 82)   # sensor IFOV, independent of grid
+
+# Spectral mode: "legacy" (B3/B4/B7/B8, default) or "sbaf" (fitted SBAF)
+config.spectral.mode = "sbaf"
+config.spectral.sensor = "S2A"              # S2A, S2B or S2C
 
 emulator = MSSEmulator(config)
 mss = emulator(image)
@@ -99,12 +106,64 @@ class; otherwise it is clear.
 - **Classes**: 0=clear, 1=thick_cloud, 2=thin_cloud, 3=shadow
 - **Legacy**: `aggregate_cloudsen12(..., legacy=True)` reproduces the 0.1.13 rule.
 
-## Calibrated profile (0.3.0)
+## Calibrated profile (0.4.0)
 
 ```python
 from satharmony import PipelineConfig
 config = PipelineConfig.mss5_esa_gtc_v1()  # 60 m, PSF 79-82 m, linear radiometry
 ```
+
+The profile uses the SBAF with a water-vapour correction in B4 and the sun
+elevation distribution measured on the 178 MSS/TM pairs (7.6-62.3 deg,
+mean 42.8, std 12.25).
+
+## Cloud / shadow baseline (G4, optional)
+
+`satharmony.models` contains the 4-band U-Net used as the cloud-mask baseline
+of the pseudo-MSS fixture (G4). It needs torch, which is **not** a core
+dependency:
+
+```bash
+pip install torch
+```
+
+```python
+import numpy as np
+from satharmony.models import load_model, predict_masks
+
+model, checkpoint = load_model("cloud_unet_mss_pseudo.pt")
+mss = np.load("mss_chip.npy").astype(np.float32) / 10000.0   # (4, 64, 64) TOA
+mask = predict_masks(model, mss, checkpoint.band_mean, checkpoint.band_std)
+# 0 clear, 1 thick cloud, 2 thin cloud, 3 cloud shadow
+```
+
+`import satharmony` never imports torch; only `satharmony.models` does.
+
+## Status and limitations (0.4.0)
+
+- The cloud baseline is trained on pseudo-MSS from CloudSEN12 and evaluated on a
+  scene split of that pseudo-test: mIoU 0.518, versus 0.722 for OmniCloudMask
+  fed with 10 m B04/B03/B8A. It is a reproducible baseline, not a validated
+  cloud mask on real MSS.
+- The 40 human-labelled chips are prepared (60 m chips, empty CSVs, annotation
+  tooling), but they are not annotated: no accuracy and no kappa on real MSS
+  yet.
+- `mss5_esa_gtc_v1()` is calibrated on five desert PICS, all winter/autumn with
+  SZA 50-59 deg. ERA5 puts their water-vapour column at 0.46-1.83 cm, so
+  `gamma = 0.112` and the B4 scale stay degenerate with the site-to-site
+  spread: the gamma is fitted, not measured. A humid or summer PICS is still
+  missing (Makgadikgadi was rejected: s2cloudless flags 28-58 % of the pan as
+  cloud and the window is not pseudo-invariant).
+- `parse_mtl` is tested against three real Landsat 1-3 MTLs (1978, 1982, 1983)
+  and one of them, the Landsat 1 scene, has `"NULL"` for the whole band 4:
+  `parse_mtl` keeps it as `None` and `dn_to_radiance` refuses to convert with a
+  message naming the band.
+- The SBAF is linear and has no atmosphere: the O2-A core at 0.76 um inside MSS
+  band 3 is invisible to it, which is why `band_scaling.nir1` is 0.867 and not
+  0.93. 6SV quantifies the gap (0.953 of gas scale at 1 cm); the gas term is
+  not in the emulator yet.
+- The paper figures are not in this release: the numbers in
+  `version_to_paper/` still mix the old test v7 and the QA4EO-2 model.
 
 ## Citation
 

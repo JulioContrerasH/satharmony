@@ -3,11 +3,24 @@
 import numpy as np
 from numpy.typing import NDArray
 
-# CloudSEN12 class encoding (Aybar et al. 2022, Table 3)
+# CloudSEN12 class encoding (Aybar et al. 2022, Table 3).
+# 0 = clear, 1 = thick cloud, 2 = thin cloud, 3 = cloud shadow.
+# The 0.1.13 code had 1 = thin and 2 = thick, so the two were swapped.
 CLEAR = 0
 THICK_CLOUD = 1
 THIN_CLOUD = 2
 SHADOW = 3
+
+CLASS_NAMES: dict[int, str] = {
+    CLEAR: "clear",
+    THICK_CLOUD: "thick_cloud",
+    THIN_CLOUD: "thin_cloud",
+    SHADOW: "cloud_shadow",
+}
+
+# Fail loudly if a future edit reintroduces the 0.1.13 swap.
+if (CLEAR, THICK_CLOUD, THIN_CLOUD, SHADOW) != (0, 1, 2, 3):
+    raise RuntimeError("CloudSEN12 encoding must be 0=clear, 1=thick, 2=thin, 3=shadow")
 
 
 def aggregate_cloudsen12(
@@ -16,6 +29,7 @@ def aggregate_cloudsen12(
     classes: tuple[int, int, int, int] = (CLEAR, THICK_CLOUD, THIN_CLOUD, SHADOW),
     merge_cloud_classes: bool = False,
     legacy: bool = False,
+    min_contaminated_fraction: float = 0.5,
 ) -> NDArray[np.uint8]:
     """Aggregate CloudSEN12 labels from 10m to coarser resolution.
 
@@ -35,6 +49,10 @@ def aggregate_cloudsen12(
         classes: Tuple of (clear, thick_cloud, thin_cloud, shadow) values.
         merge_cloud_classes: If True, thick+thin → 1, shadow → 2.
         legacy: Reproduce the 0.1.13 behaviour.
+        min_contaminated_fraction: Fraction of thick+thin+shadow pixels that
+            makes a no-majority block take its most frequent contaminated
+            class instead of clear. The 0.1.13 rule effectively used 1.0
+            (clear won whenever it was the largest single class).
 
     Returns:
         Aggregated labels (H', W') where H' = H // scale_factor.
@@ -98,8 +116,12 @@ def aggregate_cloudsen12(
         return out
 
     # ── New rule: CloudSEN12 Table 3 encoding and priority ──────────────────
+    if not 0.0 < min_contaminated_fraction <= 1.0:
+        raise ValueError("min_contaminated_fraction must be in (0, 1]")
+
     # For odd block sizes (e.g. sf=5) require ceil(n/2) to avoid two winners.
     half_n = (n + 1) // 2
+    min_contaminated = int(np.ceil(min_contaminated_fraction * n - 1e-12))
     clear, thick, thin, shadow = classes
     n_clear = np.sum(blocks == clear, axis=2)
     n_thick = np.sum(blocks == thick, axis=2)
@@ -117,7 +139,7 @@ def aggregate_cloudsen12(
 
     no_maj = ~has_majority
     contaminated = n_thick + n_thin + n_shadow
-    contam_dom = no_maj & (contaminated >= half_n)
+    contam_dom = no_maj & (contaminated >= min_contaminated)
     max_count = np.maximum.reduce([n_thick, n_thin, n_shadow])
     out[contam_dom & (n_thin == max_count)] = thin
     out[contam_dom & (n_shadow == max_count)] = shadow

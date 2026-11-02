@@ -3,7 +3,7 @@
 import numpy as np
 from numpy.typing import NDArray
 
-from .constants import ESUN_MSS, earth_sun_distance
+from .constants import ESUN_MSS, LMAX_MSS, earth_sun_distance
 from .metadata import MSSCalibration
 
 
@@ -25,6 +25,7 @@ def dn_to_radiance(
     Returns:
         Radiance in W/(m² sr μm), with nodata pixels set to 0
     """
+    calib.require_full_calibration()
     dn = dn.astype(np.float32)
 
     # Create nodata mask (pixels where ALL bands are nodata)
@@ -79,6 +80,55 @@ def radiance_to_toa(
     toa[:, nodata_mask] = 0
 
     return toa
+
+
+def saturation_reflectance(
+    spacecraft: str = "L5_MSS",
+    sun_elevation: float = 45.0,
+    earth_sun_distance_au: float = 1.0,
+) -> NDArray[np.float32]:
+    """TOA reflectance at which the MSS product reaches its top code.
+
+    Uses the same equation as ``radiance_to_toa`` but with LMAX instead of
+    the scene radiance::
+
+        rho_sat = pi * LMAX * d^2 / (ESUN * sin(theta))
+
+    The result depends on the band (LMAX and ESUN differ) and on the scene
+    sun elevation, which is what the 0.1.13 emulator ignored by drawing a
+    single random threshold in [0.8, 0.95] for every band.
+
+    Note:
+        LMAX is the rescaling range of the product, so ``rho_sat`` is the
+        top of the dynamic range (DN 255), not the detector clip at the raw
+        6-bit count 63 (USGS DFCB p. 18). The emulator uses it as the upper
+        bound of the product; the true detector clip is lower and varies
+        between the six detectors.
+
+    Args:
+        spacecraft: ``L1_MSS`` ... ``L5_MSS``.
+        sun_elevation: Sun elevation above the horizon, degrees (0, 90].
+        earth_sun_distance_au: Earth-Sun distance in AU (1.0 = mean).
+
+    Returns:
+        (4,) float32 array with the saturation reflectance per MSS band.
+    """
+    if spacecraft not in LMAX_MSS:
+        raise ValueError(
+            f"unknown spacecraft {spacecraft!r}; expected one of {sorted(LMAX_MSS)}"
+        )
+    if not 0.0 < sun_elevation <= 90.0:
+        raise ValueError(f"sun_elevation must be in (0, 90], got {sun_elevation}")
+    if earth_sun_distance_au <= 0.0:
+        raise ValueError(
+            f"earth_sun_distance_au must be positive, got {earth_sun_distance_au}"
+        )
+
+    lmax = np.asarray(LMAX_MSS[spacecraft], dtype=np.float64)
+    esun = np.asarray(ESUN_MSS[spacecraft], dtype=np.float64)
+    sin_sun = np.sin(np.deg2rad(sun_elevation))
+    rho = np.pi * lmax * earth_sun_distance_au**2 / (esun * sin_sun)
+    return rho.astype(np.float32)
 
 
 def dn_to_toa(

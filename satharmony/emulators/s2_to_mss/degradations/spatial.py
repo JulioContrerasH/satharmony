@@ -29,9 +29,16 @@ def apply_spatial_degradation(image: np.ndarray, config: SpatialConfig) -> np.nd
     # Output grid and scale factor
     if config.sampling_gsd is not None:
         target_gsd = config.sampling_gsd
+        ratio = target_gsd / config.input_gsd
+        if abs(ratio - round(ratio)) > 1e-6:
+            raise ValueError(
+                f"sampling_gsd={target_gsd} m is not an integer multiple of "
+                f"input_gsd={config.input_gsd} m; the output grid would be "
+                f"{round(ratio) * config.input_gsd} m, not {target_gsd} m"
+            )
     else:
         target_gsd = config.target_gsd.sample()
-    scale_factor = max(1, int(round(target_gsd / config.input_gsd)))
+    scale_factor = max(1, round(target_gsd / config.input_gsd))
 
     # PSF in input pixels
     if config.psf_fwhm_m is not None:

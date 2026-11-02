@@ -21,7 +21,7 @@ def apply_coherent_noise(image: np.ndarray, config: CoherentNoiseConfig) -> np.n
     if not config.enabled:
         return image
 
-    C, H, W = image.shape
+    _C, H, W = image.shape
     amplitude = config.amplitude.sample()
 
     # Generate noise pattern

@@ -7,13 +7,36 @@ from pydantic import BaseModel
 
 
 class Range(BaseModel):
-    """Uniform range for stochastic sampling."""
+    """Range for stochastic sampling.
+
+    ``distribution="uniform"`` (default) keeps the historical behaviour.
+    ``distribution="truncated_normal"`` draws from a normal distribution with
+    ``mean`` and ``std`` clipped to ``[min, max]``; it is used for the sun
+    elevation, whose measured distribution is not uniform.
+    """
 
     min: float
     max: float
+    distribution: Literal["uniform", "truncated_normal"] = "uniform"
+    mean: float | None = None
+    std: float | None = None
 
     def sample(self) -> float:
-        return np.random.uniform(self.min, self.max)
+        if self.distribution == "truncated_normal":
+            center = self.mean if self.mean is not None else 0.5 * (self.min + self.max)
+            spread = self.std if self.std is not None else 0.25 * (self.max - self.min)
+            return float(np.clip(np.random.normal(center, spread), self.min, self.max))
+        return float(np.random.uniform(self.min, self.max))
+
+
+#: Sun-elevation distribution measured on the 178 MSS/TM calibration pairs.
+MEASURED_SUN_ELEVATION = {
+    "min": 7.6,
+    "max": 62.3,
+    "distribution": "truncated_normal",
+    "mean": 42.8,
+    "std": 12.25,
+}
 
 
 class RangeInt(BaseModel):
@@ -54,10 +77,17 @@ class BandScaleRange(BaseModel):
 
 
 class SpectralConfig(BaseModel):
-    """S2 bands -> MSS bands mapping."""
+    """S2 bands -> MSS bands mapping.
+
+    ``mode="legacy"`` keeps the 0.1.13 band selection (B3/B4/B7/B8) and is the
+    default, so existing callers do not change.  ``mode="sbaf"`` uses the
+    fitted spectral band adjustment factors with the SRF of ``sensor``.
+    """
 
     enabled: bool = True
     probability: float = 1.0
+    mode: Literal["legacy", "sbaf"] = "legacy"
+    sensor: Literal["S2A", "S2B", "S2C"] = "S2A"
     s2_bands: list[int] = [2, 3, 6, 7]
     srf_adjustment: bool = False
     srf_noise_std: Range = Range(min=0.0, max=0.02)
@@ -90,6 +120,13 @@ class RadiometricConfig(BaseModel):
     With ``decompress_after_quantization=True`` the sqrt companding is
     inverted after the 6-bit quantization, so the output stays linear in
     reflectance (as the MSS L1 TOA product is).
+
+    ``saturation_model="physical"`` derives the per-band threshold from
+    LMAX, ESUN and the scene sun elevation
+    (``pi * LMAX * d^2 / (ESUN * sin(theta))``). The 0.1.13 model drew a
+    single random threshold in [0.8, 0.95] shared by every band, which meant
+    a different reflectance in the sqrt bands than in the linear band.
+    ``"legacy_random"`` keeps that behaviour for ``legacy_0_1_13()``.
     """
 
     enabled: bool = True
@@ -98,13 +135,30 @@ class RadiometricConfig(BaseModel):
     sqrt_compression: bool = True
     sqrt_bands: list[int] = [0, 1, 2]
     decompress_after_quantization: bool = True
+    saturation_model: Literal["physical", "legacy_random"] = "physical"
+    satellite: str = "L5_MSS"
+    # Scene sun elevation. Measured on the 178 MSS/TM pairs used for the
+    # calibration (7.64-62.33 deg, mean 42.80, std 12.25); the old 25-70
+    # range was a placeholder. A truncated normal keeps the winter tail
+    # without pretending the distribution is uniform.
+    sun_elevation_deg: Range = Range(**MEASURED_SUN_ELEVATION)
+    earth_sun_distance_au: float = 1.0
+    # Legacy 0.1.13 threshold, only read with saturation_model="legacy_random".
     saturation_threshold: Range = Range(min=0.8, max=0.95)
     reflectance_boost: Range = Range(min=1.0, max=1.3)
     reflectance_boost_prob: float = 0.3
 
 
 class StripingConfig(BaseModel):
-    """6-detector gain/offset mismatch."""
+    """6-detector gain/offset mismatch.
+
+    The MSS scans six lines per mirror sweep, with the detectors spaced
+    79 m along track: one period is 474 m (Handbook p. 85), i.e. 7.9 px on
+    the 60 m ESA grid and not six image rows. The scan lines are tilted
+    with respect to the rows because the ground track of the 99° orbit is
+    not north-south (Taranik p. 36). ``detector_geometry="rows"`` keeps the
+    0.1.13 row-aligned pattern for ``legacy_0_1_13()``.
+    """
 
     enabled: bool = True
     probability: float = 0.8
@@ -112,6 +166,10 @@ class StripingConfig(BaseModel):
     gain_std: Range = Range(min=0.01, max=0.05)
     offset_std: Range = Range(min=0.005, max=0.02)
     per_band_variation: bool = True
+    detector_geometry: Literal["scan_lines", "rows"] = "scan_lines"
+    sampling_gsd: float = 60.0
+    scan_line_period_m: float = 474.0
+    yaw_deg: float = 9.0
 
 
 class MemoryEffectConfig(BaseModel):
@@ -177,7 +235,6 @@ class PipelineConfig(BaseModel):
     seed: int | None = None
     output_dtype: Literal["float32", "uint8"] = "float32"
 
-
     @classmethod
     def mss5_esa_gtc_v1(cls) -> "PipelineConfig":
         """Perfil calibrado provisional (MSS L5, grilla ESA GTC 60 m).
@@ -186,6 +243,17 @@ class PipelineConfig(BaseModel):
         - decimacion centrada y radiometria lineal (P0)
         - saturacion fisica conservadora, sin boost aleatorio
         - striping/ruido en rangos medidos en MSS real
+        - SBAF S2A con las SRF oficiales (``mode="sbaf"``)
+        - termino de vapor de agua en B4 (``rho_B8A * log(rho_B8A / rho_B9)``)
+        - elevacion solar con la distribucion medida en 178 pares MSS/TM
+        - ``final_scaling.band_scaling`` calibrado en 5 PICS (Libya-4,
+          Algeria-3, Niger-1, Egypt-1, Arabia-2), no a ojo
+
+        Origen de las constantes (regenerable): ``sbaf_pics_table.md`` y
+        ``sbaf_pics_regression.json`` del vault, escritos por
+        ``scripts/validate_sbaf_pics.py``. La tabla da la pendiente, el offset
+        y el IC bootstrap por banda; el JSON es la version que se puede leer
+        desde codigo.
         """
         cfg = cls()
         cfg.spatial.sampling_gsd = 60.0
@@ -193,11 +261,38 @@ class PipelineConfig(BaseModel):
         cfg.spatial.center_decimation = True
         cfg.spatial.method = "average"
         cfg.radiometric.decompress_after_quantization = True
-        cfg.radiometric.saturation_threshold = Range(min=0.85, max=0.92)
+        cfg.radiometric.saturation_model = "physical"
+        cfg.radiometric.satellite = "L5_MSS"
         cfg.radiometric.reflectance_boost_prob = 0.0
+        cfg.radiometric.sun_elevation_deg = Range(**MEASURED_SUN_ELEVATION)
+        cfg.striping.detector_geometry = "scan_lines"
         cfg.striping.gain_std = Range(min=0.005, max=0.02)
         cfg.striping.offset_std = Range(min=0.002, max=0.008)
         cfg.random_noise.snr_db = Range(min=30.0, max=40.0)
+        # Calibrated on five CEOS PICS (15 km, cloud-free S2A L1C paired with
+        # L5 MSS L1TP at the same sun height): Libya-4 (CEOS), Algeria-3,
+        # Niger-1, Egypt-1 and Arabia-2. The mean is the median per-band scale
+        # <SBAF, MSS> / <SBAF, SBAF>; the variation is 2x the site-to-site
+        # standard deviation, floored at 0.03. Egypt-1 is the low outlier in
+        # all four bands (surface/calibration); it stays in the table but the
+        # median is used.
+        #
+        # B4 used to land at 0.820 because the linear predictors stop at
+        # 0.88 um and cannot see the 0.94 um water-vapour absorption inside
+        # the MSS 0.8-1.1 um band. The SBAF now subtracts
+        # gamma * rho_B8A * log(rho_B8A / rho_B9) from B4 (gamma=0.112,
+        # calibrated on the same PICS). That cuts the B4 TOA bias from
+        # 17-28 % to 4-15 % and lifts the B4 scale to 0.933, in line with
+        # B2 (0.933): the remaining offset is sensor calibration, not water
+        # vapour.
+        cfg.final_scaling.band_scaling = BandScaleRange(
+            green=CenteredRange(mean=0.956, variation=0.044),
+            red=CenteredRange(mean=0.933, variation=0.045),
+            nir1=CenteredRange(mean=0.867, variation=0.050),
+            nir2=CenteredRange(mean=0.933, variation=0.072),
+        )
+        cfg.spectral.mode = "sbaf"
+        cfg.spectral.sensor = "S2A"
         cfg.labels_legacy = False
         return cfg
 
@@ -216,5 +311,10 @@ class PipelineConfig(BaseModel):
         cfg.spatial.target_gsd = Range(min=60.0, max=80.0)
         cfg.spatial.psf_sigma = Range(min=0.4, max=0.6)
         cfg.radiometric.decompress_after_quantization = False
+        cfg.radiometric.saturation_model = "legacy_random"
+        # Unused by legacy_random, but keep the 0.1.13 field value so the
+        # legacy config is unchanged end to end.
+        cfg.radiometric.sun_elevation_deg = Range(min=25.0, max=70.0)
+        cfg.striping.detector_geometry = "rows"
         cfg.labels_legacy = True
         return cfg

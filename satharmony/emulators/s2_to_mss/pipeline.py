@@ -20,36 +20,32 @@ class MSSEmulator:
 
     def __init__(self, config: PipelineConfig | None = None):
         self.config = config or PipelineConfig()
-        self._labels = None  # Para pasar labels al módulo de saturación
 
     def __call__(self, image: np.ndarray, labels: np.ndarray | None = None) -> np.ndarray:
-        """Apply MSS emulation pipeline."""
+        """Apply MSS emulation pipeline.
+
+        ``labels`` is accepted for backwards compatibility but is not used
+        here: label aggregation happens once in ``emulate_s2_with_labels``
+        with the same scale factor as the image. The old code aggregated the
+        labels here and then discarded them.
+        """
         if self.config.seed is not None:
             np.random.seed(self.config.seed)
 
         x = image.copy()
-        current_labels = labels  # Labels a resolución actual
 
         if self._should_apply(self.config.spectral):
             x = apply_spectral_degradation(x, self.config.spectral)
 
         if self._should_apply(self.config.spatial):
             x = apply_spatial_degradation(x, self.config.spatial)
-            # Downsample labels también si existen
-            if current_labels is not None:
-                scale = image.shape[1] // x.shape[1]
-                from .labels import aggregate_cloudsen12
-
-                current_labels = aggregate_cloudsen12(
-                    current_labels, scale_factor=scale,
-                    merge_cloud_classes=False,
-                    legacy=self.config.labels_legacy,
-                )
 
         if self.config.radiometric.decompress_after_quantization:
             # Physical order: artifacts and noise before 6-bit quantization
             if self._should_apply(self.config.striping):
-                x = apply_striping(x, self.config.striping)
+                x = apply_striping(
+                    x, self.config.striping, sampling_gsd=self._output_gsd
+                )
             if self._should_apply(self.config.memory_effect):
                 x = apply_memory_effect(x, self.config.memory_effect)
             if self._should_apply(self.config.coherent_noise):
@@ -65,7 +61,9 @@ class MSSEmulator:
             if self._should_apply(self.config.radiometric):
                 x = apply_radiometric_degradation(x, self.config.radiometric)
             if self._should_apply(self.config.striping):
-                x = apply_striping(x, self.config.striping)
+                x = apply_striping(
+                    x, self.config.striping, sampling_gsd=self._output_gsd
+                )
             if self._should_apply(self.config.memory_effect):
                 x = apply_memory_effect(x, self.config.memory_effect)
             if self._should_apply(self.config.coherent_noise):
@@ -89,3 +87,11 @@ class MSSEmulator:
 
     def _should_apply(self, cfg) -> bool:
         return cfg.enabled and np.random.random() < cfg.probability
+
+    @property
+    def _output_gsd(self) -> float | None:
+        """Pixel size of the grid striping is applied on, in metres."""
+        spatial = self.config.spatial
+        if not spatial.enabled:
+            return spatial.input_gsd
+        return spatial.sampling_gsd

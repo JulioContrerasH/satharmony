@@ -9,12 +9,12 @@ from .spectral import apply_spectral_degradation
 from .striping import apply_striping
 
 __all__ = [
-    "apply_spectral_degradation",
-    "apply_spatial_degradation",
-    "apply_radiometric_degradation",
-    "apply_striping",
-    "apply_memory_effect",
     "apply_coherent_noise",
+    "apply_memory_effect",
+    "apply_radiometric_degradation",
     "apply_random_noise",
     "apply_scan_artifacts",
+    "apply_spatial_degradation",
+    "apply_spectral_degradation",
+    "apply_striping",
 ]
