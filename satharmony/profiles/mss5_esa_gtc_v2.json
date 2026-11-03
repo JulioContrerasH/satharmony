@@ -569,7 +569,7 @@
     "legacy_rng": false
   },
   "provenance": {
-    "package_sha": "05a1f50d82d1facda0a094542aec895a068fdfa8",
+    "package_sha": "1785ce69deb8",
     "source": "MSS_S2/pics/pics_index.json",
     "source_sha256": "cf1c41197f2168a2a7b8016ef358ee3e5dfe9b16011baaae810bf812f1207aae",
     "held_out_sites": [
