@@ -31,8 +31,9 @@ def test_legacy_profile_matches_hardcoded_config() -> None:
 def test_profile_payload_has_provenance() -> None:
     path = REPO / "satharmony/profiles/mss5_esa_gtc_v1.json"
     payload = json.loads(path.read_text())
-    for key in ("schema_version", "name", "created", "config"):
+    for key in ("schema_version", "name", "created", "config", "provenance"):
         assert key in payload
+    assert payload["provenance"]["package_sha"]
     assert payload["schema_version"] == 1
 
 
@@ -60,5 +61,6 @@ def test_emulation_from_json_is_bit_identical() -> None:
 
 def test_v2_profile_loads_and_carries_the_gamma_scale() -> None:
     loaded = PipelineConfig.from_profile("mss5_esa_gtc_v2")
-    assert loaded.spectral.water_vapor_scale > 1.0
+    assert loaded.spectral.water_vapor_scale == pytest.approx(1.0)
     assert loaded.final_scaling.band_scaling.green.mean == pytest.approx(0.971, abs=0.01)
+    assert loaded.final_scaling.band_scaling.nir2.mean == pytest.approx(0.933, abs=0.001)

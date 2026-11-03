@@ -17,11 +17,11 @@
       "variation": 0.03
     },
     "B4": {
-      "mean": 0.9426866957031526,
-      "variation": 0.03210581581373812
+      "mean": 0.933,
+      "variation": 0.072
     }
   },
-  "gamma": 0.135,
+  "gamma": 0.112,
   "per_pair": [
     {
       "pair": "libya4_ceos",
@@ -350,7 +350,7 @@
         "mean": null,
         "std": null
       },
-      "water_vapor_scale": 1.205357142857143,
+      "water_vapor_scale": 1.0,
       "gas_mss3_scale": 1.0
     },
     "spatial": {
@@ -532,8 +532,8 @@
           "variation": 0.03
         },
         "nir2": {
-          "mean": 0.9426866957031526,
-          "variation": 0.03210581581373812
+          "mean": 0.933,
+          "variation": 0.072
         }
       }
     },
@@ -541,5 +541,10 @@
     "seed": null,
     "output_dtype": "float32",
     "legacy_rng": false
+  },
+  "provenance": {
+    "package_sha": "58687ff5e1de3105fc202a9b60990403c27de9c1",
+    "source": "MSS_S2/pics/pics_index.json",
+    "source_sha256": "cf1c41197f2168a2a7b8016ef358ee3e5dfe9b16011baaae810bf812f1207aae"
   }
 }

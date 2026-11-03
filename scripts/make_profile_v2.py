@@ -3,8 +3,11 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
+import subprocess
 import sys
+from dataclasses import replace
 from pathlib import Path
 
 import numpy as np
@@ -52,8 +55,25 @@ def main() -> None:
     print(f"{len(sites)} calibration sites")
     pairs = (load_pair(site) for site in sites)
     profile = fit_profile(pairs, name="mss5_esa_gtc_v2", n_boot=1000)
+    # B4 stays frozen at v1: the held-out deserts show that the fitted B4
+    # (scale 0.943, gamma 0.135) is slightly worse than v1 (0.933, 0.112).
+    # The gas term is still a hypothesis; do not move B4 until it is measured.
+    profile = replace(
+        profile,
+        band_scaling=(*profile.band_scaling[:3], 0.933),
+        variation=(*profile.variation[:3], 0.072),
+        gamma=0.112,
+    )
     payload = profile.to_dict()
     payload["config"] = profile.to_config().model_dump(mode="json")
+    index_path = PICS / "pics_index.json"
+    payload["provenance"] = {
+        "package_sha": subprocess.check_output(
+            ["git", "-C", str(REPO), "rev-parse", "HEAD"], text=True
+        ).strip(),
+        "source": "MSS_S2/pics/pics_index.json",
+        "source_sha256": hashlib.sha256(index_path.read_bytes()).hexdigest(),
+    }
     OUT.write_text(json.dumps(payload, indent=2) + "\n")
     print(
         "scales",

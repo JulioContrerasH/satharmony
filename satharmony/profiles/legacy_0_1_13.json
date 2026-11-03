@@ -208,5 +208,10 @@
     "seed": null,
     "output_dtype": "float32",
     "legacy_rng": true
+  },
+  "provenance": {
+    "package_sha": "58687ff5e1de3105fc202a9b60990403c27de9c1",
+    "source": "hardcoded profile",
+    "source_sha256": null
   }
 }

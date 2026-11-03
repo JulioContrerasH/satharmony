@@ -124,13 +124,15 @@ legacy = PipelineConfig.from_profile("legacy_0_1_13")
 | Profile | Band scaling (B1-B4) | gamma | Use |
 |---|---|---|---|
 | `mss5_esa_gtc_v1` | 0.956 / 0.933 / 0.867 / 0.933 | 0.112 | frozen, reproduces G4 |
-| `mss5_esa_gtc_v2` | 0.971 / 0.945 / 0.906 / 0.946 | 0.133 | 49 PICS |
+| `mss5_esa_gtc_v2` | 0.971 / 0.945 / 0.906 / 0.933 | 0.112 | 49 PICS, B4 frozen |
 | `legacy_0_1_13` | old defaults | 0.112 | bit-for-bit 0.1.13 |
 
 `mss5_esa_gtc_v2` is fitted from the 49-pixel S2/MSS calibration set: 34
 desert/salt sites, 14 validation sites (forest, water, crops). The validation
-sites never enter the constant. Outside the desert domain the scaled RMSE is
-14-23 %, so the profile is a desert correction, not a universal one.
+sites never enter the constant. B1-B3 move to the 34-site medians; B4 stays at
+v1 because the held-out deserts showed that the fitted B4 was slightly worse
+and the gas term is still a hypothesis. Outside the desert domain the scaled
+RMSE is 14-23 %, so the profile is a desert correction, not a universal one.
 
 The sun elevation distribution is measured on the 178 MSS/TM pairs
 (7.6-62.3 deg, mean 42.8, std 12.25).
