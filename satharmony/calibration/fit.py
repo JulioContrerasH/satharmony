@@ -53,6 +53,7 @@ class Profile:
     n_pairs: int
     variation: tuple[float, ...] = (0.03, 0.03, 0.03, 0.03)
     per_pair: list[dict[str, Any]] = field(default_factory=list)
+    intervals: dict[str, dict[str, float]] = field(default_factory=dict)
     schema_version: int = 1
     created: str = field(default_factory=lambda: time.strftime("%Y-%m-%d"))
 
@@ -70,6 +71,7 @@ class Profile:
                 )
             },
             "gamma": self.gamma,
+            "intervals": self.intervals,
             "per_pair": self.per_pair,
         }
 
@@ -252,4 +254,5 @@ def fit_profile(
         n_pairs=count,
         variation=variations,
         per_pair=per_pair,
+        intervals={band: summary[band] for band in BANDS},
     )

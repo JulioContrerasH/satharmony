@@ -58,11 +58,14 @@ def main() -> None:
     # B4 stays frozen at v1: the held-out deserts show that the fitted B4
     # (scale 0.943, gamma 0.135) is slightly worse than v1 (0.933, 0.112).
     # The gas term is still a hypothesis; do not move B4 until it is measured.
+    intervals = dict(profile.intervals)
+    intervals["B4"] = {"mean": 0.933, "low": 0.916, "high": 0.977, "n": 5}
     profile = replace(
         profile,
         band_scaling=(*profile.band_scaling[:3], 0.933),
         variation=(*profile.variation[:3], 0.072),
         gamma=0.112,
+        intervals=intervals,
     )
     payload = profile.to_dict()
     payload["config"] = profile.to_config().model_dump(mode="json")
