@@ -15,6 +15,8 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy.ndimage import shift as nd_shift
 
+from ..units import assert_toa_units
+
 
 @dataclass(frozen=True)
 class AlignResult:
@@ -155,6 +157,8 @@ def align_pair(
     Returns:
         The translation, its post-shift correlation and the method used.
     """
+    assert_toa_units(reference, name="align reference")
+    assert_toa_units(moving, name="align moving")
     dy, dx, peak = phase_shift(reference, moving, max_shift=max_shift)
     method = "phase"
     if refine:

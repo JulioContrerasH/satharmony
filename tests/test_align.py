@@ -20,7 +20,9 @@ from satharmony.calibration.align import align_pair, apply_shift, phase_shift  #
 def _texture(seed: int = 0, size: int = 128) -> np.ndarray:
     rng = np.random.default_rng(seed)
     raw = rng.normal(size=(size, size))
-    return gaussian_filter(raw, sigma=3.0).astype(np.float64)
+    texture = gaussian_filter(raw, sigma=3.0)
+    texture = (texture - texture.min()) / (texture.max() - texture.min())
+    return (0.1 + 0.8 * texture).astype(np.float64)
 
 
 def test_recovers_a_known_subpixel_shift() -> None:

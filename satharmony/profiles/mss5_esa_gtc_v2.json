@@ -600,6 +600,7 @@
       "kyzylkum",
       "bonneville"
     ],
-    "held_out_disjoint": true
+    "held_out_disjoint": true,
+    "v1_note": "v1 was fitted on 5 CEOS PICS, one of which (libya4_ceos) is in the held-out set; the comparison is conservative against v2."
   }
 }

@@ -6,6 +6,8 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy.ndimage import gaussian_filter
 
+from ..units import assert_toa_units
+
 
 def _as_pixels(
     array: NDArray[np.floating], valid: NDArray[np.bool_] | None = None
@@ -172,6 +174,8 @@ def summarize(
     valid: NDArray[np.bool_] | None = None,
 ) -> dict[str, float]:
     """One-line radiometric summary: SAM, RMSE and bias."""
+    assert_toa_units(prediction, name="metrics prediction")
+    assert_toa_units(observation, name="metrics observation")
     return {
         "sam_deg": sam(prediction, observation, valid),
         "rmse": rmse(prediction, observation, valid),

@@ -110,3 +110,33 @@ def mss_to_toa(
     if units == "sr":
         raise ValueError("surface reflectance is not accepted; the emulator is TOA")
     return assert_mss_toa_units(np.asarray(array) * scale, units="toa")
+
+
+def assert_toa_units(
+    array: np.ndarray,
+    *,
+    name: str = "TOA",
+    upper: float = 2.0,
+) -> np.ndarray:
+    """Reject arrays that are clearly DN instead of TOA reflectance.
+
+    Args:
+        array: Reflectance array of any shape.
+        name: Label used in the error message.
+        upper: Highest plausible TOA value; clouds can exceed 1, DN cannot.
+
+    Returns:
+        The array unchanged.
+
+    Raises:
+        ValueError: If values fall below -0.01 or above ``upper``.
+    """
+    data = np.asarray(array, dtype=np.float64)
+    if data.size == 0:
+        raise ValueError(f"{name}: empty array")
+    low, high = float(np.nanmin(data)), float(np.nanmax(data))
+    if low < -0.01 or high > upper:
+        raise ValueError(
+            f"{name} expects TOA reflectance in [0, 1]; got [{low:.3g}, {high:.3g}] (DN?)"
+        )
+    return array

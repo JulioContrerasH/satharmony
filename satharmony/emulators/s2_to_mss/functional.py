@@ -3,6 +3,7 @@
 import numpy as np
 from numpy.typing import NDArray
 
+from ...units import assert_toa_units
 from .config import PipelineConfig, Range
 from .labels import aggregate_cloudsen12
 from .pipeline import MSSEmulator
@@ -27,11 +28,7 @@ def emulate_s2(
     array = np.asarray(image)
     if array.ndim != 3:
         raise ValueError(f"expected (13, H, W) S2 TOA, got {array.shape}")
-    if np.nanmin(array) < -0.01 or np.nanmax(array) > 2.0:
-        raise ValueError(
-            "emulate_s2 expects TOA reflectance in [0, 1]; "
-            f"got range [{np.nanmin(array):.3g}, {np.nanmax(array):.3g}] (DN?)"
-        )
+    assert_toa_units(array, name="emulate_s2")
 
     cfg = config.model_copy(deep=True) if config is not None else PipelineConfig()
 

@@ -155,7 +155,9 @@ bootstrap delta against v1 crosses zero: with 5 held-out sites there is **no
 detectable difference** from v1, so v2 is reported as better provenance, not as
 a proven improvement. B3 is the least constrained band (95 % CI -0.018 to
 +0.018). B4 is kept at v1 for that reason. The JSON carries the domain, the
-held-out site names and the 14-23 % figure under `validity`.
+held-out site names and the 14-23 % figure under `validity`. One caveat: v1
+was fitted on 5 CEOS PICS and one of them (`libya4_ceos`) is in the held-out
+set, so the comparison is conservative against v2.
 
 ### Regenerate v2
 

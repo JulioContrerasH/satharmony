@@ -32,3 +32,14 @@ def test_toa_input_is_accepted() -> None:
     image = rng.uniform(0.02, 0.9, size=(13, 48, 48)).astype(np.float32)
     mss, _ = emulate_s2(image, config=PipelineConfig(seed=1))
     assert mss.shape == (4, 8, 8)
+
+
+def test_align_and_metrics_share_the_contract() -> None:
+    from satharmony.calibration.align import align_pair
+    from satharmony.calibration.metrics import summarize
+
+    dn = np.full((64, 64), 200.0, dtype=np.float32)
+    with pytest.raises(ValueError, match="TOA"):
+        align_pair(dn, dn)
+    with pytest.raises(ValueError, match="TOA"):
+        summarize(dn[None, ...], dn[None, ...])
