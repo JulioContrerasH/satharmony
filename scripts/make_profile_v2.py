@@ -58,9 +58,10 @@ def main() -> None:
     print(f"{len(sites)} calibration sites")
     pairs = (load_pair(site) for site in sites)
     profile = fit_profile(pairs, name="mss5_esa_gtc_v2", n_boot=1000)
-    # B4 stays frozen at v1: the held-out deserts show that the fitted B4
-    # (scale 0.943, gamma 0.135) is slightly worse than v1 (0.933, 0.112).
-    # The gas term is still a hypothesis; do not move B4 until it is measured.
+    fitted_gamma = float(profile.gamma)
+    fitted_b4 = float(profile.band_scaling[3])
+    # B4 stays frozen at v1: the gas term is still a hypothesis and the fitted
+    # B4 is not better on the held-out deserts.
     intervals = dict(profile.intervals)
     intervals["B4"] = {"mean": 0.933, "low": 0.916, "high": 0.977, "n": 5}
     profile = replace(
@@ -72,17 +73,51 @@ def main() -> None:
     )
     payload = profile.to_dict()
     payload["config"] = profile.to_config().model_dump(mode="json")
+    payload["gamma_frozen"] = True
+    payload["gamma_fitted"] = fitted_gamma
+    payload["b4_fitted_scale"] = fitted_b4
     index_path = PICS / "pics_index.json"
     payload["validity"] = {
         "calibration_domain": "desert and salt flats",
         "outside_domain": ["forest", "water", "crops", "wetland"],
         "held_out_sites": HELD_OUT,
         "held_out_disjoint": True,
-        "scaled_rmse_outside": [0.142, 0.231],
-        "note": (
-            "The 14 validation sites give 14-23 % scaled RMSE; v2 is not "
-            "better than v1 outside the calibration domain."
+        # Medians across sites, same convention as the SBAF tables in
+        # assets/md/fuentes/srf/pics_49/: "scaled" applies one in-sample
+        # multiplicative factor per site and band; "raw" uses the fixed
+        # profile scaling and is the number a user would get.
+        "desert_in_sample": {
+            "sbaf_scaled_rmse": [0.053, 0.062],
+            "v2_scaled_rmse": [0.057, 0.070],
+            "v2_raw_rmse": [0.082, 0.147],
+            "n_sites": 29,
+            "method": "29 calibration sites, median across sites",
+        },
+        "scaled_rmse_outside": [0.134, 0.236],
+        "raw_rmse_outside": [0.272, 0.600],
+        "n_validation_sites": 14,
+        "c2st_held_out": {
+            "deterministic_median": 0.999,
+            "deterministic_min": 0.956,
+            "stochastic_median": 0.880,
+            "stochastic_range": [0.810, 0.920],
+            "verdict": "distinguishable: a per-pixel classifier separates emulated from real",
+        },
+        "variation_note": (
+            "B1-B3 variation is the bootstrap half-width (0.031/0.030/0.030). "
+            "The build tagged v0.2.0 carried 0.12, inconsistent with the "
+            "stated 2.7-3.2 % interval."
         ),
+        "note": (
+            "The 5.3-6.2 % is the SBAF calibration error with an in-sample "
+            "per-site factor, not the v2 output. With v2 the same convention "
+            "gives 5.7-7.0 %; without the free factor the desert error is "
+            "8.2-14.7 %. Outside the domain the scaled error is 13.4-23.6 % "
+            "and the raw error 27.2-60.0 %. B4 scaling 0.933 and gamma 0.112 "
+            f"stay frozen at v1: the 29-site fit gives gamma {fitted_gamma:.3f} "
+            f"and B4 {fitted_b4:.3f}, and the gas term is still a hypothesis."
+        ),
+        "v1_note": "v1 was fitted on 5 CEOS PICS, one of which (libya4_ceos) is in the held-out set; the comparison is conservative against v2.",
     }
     payload["provenance"] = {
         "package_sha": subprocess.check_output(

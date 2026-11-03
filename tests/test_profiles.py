@@ -64,3 +64,42 @@ def test_v2_profile_loads_and_carries_the_gamma_scale() -> None:
     assert loaded.spectral.water_vapor_scale == pytest.approx(1.0)
     assert loaded.final_scaling.band_scaling.green.mean == pytest.approx(0.971, abs=0.01)
     assert loaded.final_scaling.band_scaling.nir2.mean == pytest.approx(0.933, abs=0.001)
+
+
+def _v2_payload() -> dict:
+    return json.loads((REPO / "satharmony/profiles/mss5_esa_gtc_v2.json").read_text())
+
+
+def test_v2_variation_is_the_stored_bootstrap_half_width() -> None:
+    """A regeneration must not move the variation away from the interval."""
+    payload = _v2_payload()
+    for band in ("B1", "B2", "B3"):
+        entry = payload["intervals"][band]
+        expected = float(np.clip(2.0 * (entry["high"] - entry["low"]) / 3.92, 0.03, 0.12))
+        assert payload["band_scaling"][band]["variation"] == pytest.approx(expected, abs=1e-9)
+    assert payload["band_scaling"]["B4"]["variation"] == pytest.approx(0.072)
+    assert payload["band_scaling"]["B4"]["mean"] == pytest.approx(0.933)
+
+
+def test_v2_declares_the_frozen_gamma_and_the_provenance_of_its_numbers() -> None:
+    payload = _v2_payload()
+    assert payload["gamma"] == pytest.approx(0.112)
+    assert payload["gamma_frozen"] is True
+    assert payload["gamma_fitted"] == pytest.approx(0.14)
+    assert payload["b4_fitted_scale"] == pytest.approx(0.942, abs=0.002)
+    # The per-pair table must not leak the held-out deserts.
+    names = {row["pair"] for row in payload["per_pair"]}
+    assert names.isdisjoint(payload["validity"]["held_out_sites"])
+
+    validity = payload["validity"]
+    assert validity["scaled_rmse_outside"][0] == pytest.approx(0.134)
+    assert validity["scaled_rmse_outside"][1] == pytest.approx(0.236)
+    # The raw error is what a user gets; it must be larger than the rescaled one.
+    assert validity["raw_rmse_outside"][0] > validity["scaled_rmse_outside"][0]
+    assert validity["raw_rmse_outside"][1] > validity["scaled_rmse_outside"][1]
+    desert = validity["desert_in_sample"]
+    assert desert["v2_raw_rmse"][0] > desert["v2_scaled_rmse"][0]
+    assert desert["v2_scaled_rmse"][0] >= desert["sbaf_scaled_rmse"][0]
+    c2st = validity["c2st_held_out"]
+    assert c2st["stochastic_median"] < c2st["deterministic_median"]
+    assert 0.5 < c2st["stochastic_range"][0] < c2st["stochastic_range"][1] <= 1.0

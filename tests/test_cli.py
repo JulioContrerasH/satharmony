@@ -54,6 +54,23 @@ def test_metrics_prints_sam_and_rmse(tmp_path: Path, capsys) -> None:
     assert abs(payload["rmse"]) < 1e-9
 
 
+def test_metrics_c2st_with_a_mask(tmp_path: Path, capsys) -> None:
+    import pytest
+
+    pytest.importorskip("sklearn")
+    _, mss_path, _, mss = _arrays(tmp_path)
+    mask_path = tmp_path / "mask.npy"
+    mask = np.zeros(mss.shape[1:], dtype=bool)
+    mask[: mss.shape[1] // 2, :] = True
+    np.save(mask_path, mask)
+    assert (
+        main(["metrics", str(mss_path), str(mss_path), "--c2st", "--mask", str(mask_path)]) == 0
+    )
+    payload = json.loads(capsys.readouterr().out)
+    assert set(payload) == {"sam_deg", "rmse", "bias", "c2st"}
+    assert 0.3 < payload["c2st"] < 0.7
+
+
 def test_fit_writes_a_loadable_profile(tmp_path: Path, capsys) -> None:
     s2_path, mss_path, _s2, _mss = _arrays(tmp_path)
     manifest = tmp_path / "manifest.csv"

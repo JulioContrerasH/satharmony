@@ -11,7 +11,7 @@ import numpy as np
 
 from .calibration.align import align_pair
 from .calibration.fit import Pair, fit_profile
-from .calibration.metrics import summarize
+from .calibration.metrics import c2st, summarize
 from .emulators.s2_to_mss.config import PipelineConfig
 from .emulators.s2_to_mss.functional import emulate_s2
 from .manifests.manifest import load_manifest, verify_manifest
@@ -69,10 +69,28 @@ def _align(args: argparse.Namespace) -> int:
     return 0
 
 
+def _read_mask(path: str | Path) -> np.ndarray:
+    """Read a mask where nonzero pixels are used."""
+    mask = _read_array(path)
+    if mask.ndim == 3:
+        mask = mask[0]
+    return np.asarray(mask) > 0
+
+
 def _metrics(args: argparse.Namespace) -> int:
     prediction = _read_array(args.prediction)
     observation = _read_array(args.observation)
-    print(json.dumps(summarize(prediction, observation), indent=2))
+    valid = _read_mask(args.mask) if args.mask else None
+    result = summarize(prediction, observation, valid)
+    if args.c2st:
+        result["c2st"] = c2st(
+            prediction,
+            observation,
+            n_splits=args.c2st_splits,
+            seed=args.seed,
+            valid=valid,
+        )
+    print(json.dumps(result, indent=2))
     return 0
 
 
@@ -134,9 +152,13 @@ def build_parser() -> argparse.ArgumentParser:
     align.add_argument("--no-ecc", action="store_true")
     align.set_defaults(func=_align)
 
-    metrics = sub.add_parser("metrics", help="SAM, RMSE and bias")
+    metrics = sub.add_parser("metrics", help="SAM, RMSE, bias and optional C2ST")
     metrics.add_argument("prediction")
     metrics.add_argument("observation")
+    metrics.add_argument("--mask", help="raster where nonzero pixels are used")
+    metrics.add_argument("--c2st", action="store_true", help="add the classifier two-sample test")
+    metrics.add_argument("--c2st-splits", type=int, default=3)
+    metrics.add_argument("--seed", type=int, default=0)
     metrics.set_defaults(func=_metrics)
 
     fit = sub.add_parser("fit", help="fit a profile from an s2_mss manifest")

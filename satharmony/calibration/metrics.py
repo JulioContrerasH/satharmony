@@ -145,26 +145,32 @@ def c2st(
     emulated: NDArray[np.floating],
     n_splits: int = 3,
     seed: int = 0,
+    valid: NDArray[np.bool_] | None = None,
 ) -> float:
     """Classifier two-sample test accuracy (0.5 = indistinguishable).
 
     A logistic regression is trained to separate the two samples; the score
-    is cross-validated accuracy.  Requires scikit-learn.
+    is cross-validated accuracy with shuffled, seeded folds.  Pixels outside
+    ``valid`` (for example saturated or cloudy) are dropped before fitting.
+    Requires scikit-learn.
     """
     try:
         from sklearn.linear_model import LogisticRegression
-        from sklearn.model_selection import cross_val_score
+        from sklearn.model_selection import StratifiedKFold, cross_val_score
     except ImportError as error:  # pragma: no cover - optional dependency
         raise ImportError("c2st needs scikit-learn") from error
 
-    first = _as_pixels(real)
-    second = _as_pixels(emulated)
+    first = _as_pixels(real, valid)
+    second = _as_pixels(emulated, valid)
     if first.shape[1] != second.shape[1]:
         raise ValueError("real and emulated must have the same number of bands")
+    if first.shape[0] < n_splits or second.shape[0] < n_splits:
+        raise ValueError("not enough valid pixels for the requested folds")
     features = np.vstack([first, second])
     labels = np.r_[np.zeros(len(first)), np.ones(len(second))]
+    folds = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=seed)
     model = LogisticRegression(max_iter=1000)
-    scores = cross_val_score(model, features, labels, cv=n_splits)
+    scores = cross_val_score(model, features, labels, cv=folds)
     return float(np.mean(scores))
 
 

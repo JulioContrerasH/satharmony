@@ -136,12 +136,13 @@ legacy = PipelineConfig.from_profile("legacy_0_1_13")
 | `mss5_esa_gtc_v2` | 0.966 / 0.936 / 0.907 / 0.933 | 0.112 | 29 PICS, B4 frozen |
 | `legacy_0_1_13` | old defaults | 0.112 | bit-for-bit 0.1.13 |
 
-`mss5_esa_gtc_v2` is fitted from the 49-pixel S2/MSS calibration set: 34
-desert/salt sites, 14 validation sites (forest, water, crops). The validation
-sites never enter the constant. B1-B3 move to the 34-site medians; B4 stays at
-v1 because the held-out deserts showed that the fitted B4 was slightly worse
-and the gas term is still a hypothesis. Outside the desert domain the scaled
-RMSE is 14-23 %, so the profile is a desert correction, not a universal one.
+`mss5_esa_gtc_v2` is fitted from the 49-pixel S2/MSS calibration set: 35
+desert/salt sites, 5 of them held out and 14 reserved for validation (forest,
+water, crops). The validation sites never enter the constant. B1-B3 move to the
+29-site medians; B4 stays at v1 because the held-out deserts showed that the
+fitted B4 was slightly worse and the gas term is still a hypothesis. Outside
+the desert domain the scaled RMSE is 13.4-23.6 % and the raw error is 27-60 %,
+so the profile is a desert correction, not a universal one.
 
 The sun elevation distribution is measured on the 178 MSS/TM pairs
 (7.6-62.3 deg, mean 42.8, std 12.25). The CLI default is
@@ -150,14 +151,26 @@ The sun elevation distribution is measured on the 178 MSS/TM pairs
 ### Validity
 
 `mss5_esa_gtc_v2` is a desert correction. The 14 reserved validation sites
-(forest, water, crops, wetland) give a scaled RMSE of **14-23 %**, and the
+(forest, water, crops, wetland) give a scaled RMSE of **13.4-23.6 %**, and the
 bootstrap delta against v1 crosses zero: with 5 held-out sites there is **no
 detectable difference** from v1, so v2 is reported as better provenance, not as
 a proven improvement. B3 is the least constrained band (95 % CI -0.018 to
 +0.018). B4 is kept at v1 for that reason. The JSON carries the domain, the
-held-out site names and the 14-23 % figure under `validity`. One caveat: v1
-was fitted on 5 CEOS PICS and one of them (`libya4_ceos`) is in the held-out
-set, so the comparison is conservative against v2.
+held-out site names and the measured figures under `validity`.
+
+Two numbers are easy to mix up. The **5.3-6.2 %** desert figure is the SBAF
+calibration error with one in-sample factor per site and band; with v2 and the
+same convention it is 5.7-7.0 %, and without the free factor it is 8.2-14.7 %.
+The **13.4-23.6 %** outside figure also uses one in-sample factor per site;
+without it, the raw error is 27-60 %.
+
+The classifier two-sample test (C2ST) on the 5 held-out deserts gives 0.999
+median for the deterministic emulation and 0.880 for the seeded stochastic one:
+the cubes are still distinguishable. That is expected with 62 500 pixels per
+site and a residual bias; it is reported, not hidden.
+
+One caveat: v1 was fitted on 5 CEOS PICS and one of them (`libya4_ceos`) is in
+the held-out set, so the comparison is conservative against v2.
 
 ### Regenerate v2
 
@@ -173,6 +186,7 @@ python scripts/make_profile_v2.py
 satharmony emulate scene.npy -o mss.npy --profile mss5_esa_gtc_v2
 satharmony align reference.npy moving.npy
 satharmony metrics prediction.npy observation.npy
+satharmony metrics prediction.npy observation.npy --c2st --mask valid.npy
 satharmony fit manifest.csv -o profile.json --name my_profile
 satharmony verify manifest.csv
 ```
@@ -214,10 +228,12 @@ mask = predict_masks(model, mss, checkpoint.band_mean, checkpoint.band_std)
   tooling), but they are not annotated: no accuracy and no kappa on real MSS
   yet.
 - `mss5_esa_gtc_v1()` is frozen at five CEOS PICS because it trained G4.
-  `mss5_esa_gtc_v2()` uses 29 calibration PICS (49 total, 5 held out, 14 reserved for
-  validation) and `gamma = 0.133`. The validation sites (forest, water, crops)
-  give a scaled RMSE of 14-23 %, so the profile is a desert correction and
-  does not extrapolate to those surfaces.
+  `mss5_esa_gtc_v2()` uses 29 calibration PICS (49 total: 35 calibration, one
+  wet Uyuni scene removed, 5 held out, 14 reserved for validation) with
+  `gamma = 0.112` frozen from v1 (the 29-site fit gives 0.14). The validation
+  sites (forest, water, crops) give a scaled RMSE of 13.4-23.6 % and a raw
+  error of 27-60 %, so the profile is a desert correction and does not
+  extrapolate to those surfaces.
 - The B4 water-vapour coefficient is fitted, not measured with an independent
   sounder. `gas_mss3_scale` is an optional field for the 6SV O2-A correction,
   off by default until reserved pairs show that it improves MSS3 without

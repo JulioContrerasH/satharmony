@@ -76,6 +76,38 @@ def test_c2st_separates_shifted_samples() -> None:
     assert c2st(real, shifted) > 0.9
 
 
+def test_c2st_seed_sets_the_fold_shuffle(monkeypatch) -> None:
+    pytest.importorskip("sklearn")
+    import sklearn.model_selection as selection
+
+    seen: dict[str, int | None] = {}
+
+    def fake_scores(model, features, labels, cv):
+        seen["seed"] = cv.random_state
+        return np.array([0.5, 0.6, 0.7])
+
+    monkeypatch.setattr(selection, "cross_val_score", fake_scores)
+    cube = np.zeros((4, 8, 8))
+    assert c2st(cube, cube, seed=7) == pytest.approx(0.6)
+    assert seen["seed"] == 7
+    c2st(cube, cube, seed=11)
+    assert seen["seed"] == 11
+
+
+def test_c2st_respects_the_valid_mask() -> None:
+    pytest.importorskip("sklearn")
+    rng = np.random.default_rng(7)
+    real = rng.normal(0.0, 0.1, size=(4, 40, 40))
+    emulated = real + rng.normal(0.0, 0.1, size=real.shape)
+    emulated[:, :20, :] += 1.0
+    mask = np.ones((40, 40), dtype=bool)
+    mask[:20, :] = False
+    masked = c2st(real, emulated, valid=mask)
+    unmasked = c2st(real, emulated)
+    assert masked < 0.65
+    assert unmasked > masked + 0.1
+
+
 def test_summarize_has_the_three_numbers() -> None:
     rng = np.random.default_rng(6)
     cube = rng.uniform(0.1, 0.5, size=(4, 8, 8))

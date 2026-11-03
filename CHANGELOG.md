@@ -16,6 +16,16 @@
   cloud fraction and reason. `manifests/manifest_178.csv` pins the 178 MSS/TM
   calibration pairs.
 - `satharmony` CLI with `emulate`, `align`, `metrics`, `fit` and `verify`.
+  `metrics` accepts `--c2st` and `--mask`; the C2ST uses seeded stratified
+  folds and drops pixels outside the mask.
+- v2 validation is now measured with the profile itself:
+  `scripts/c2st_v2.py`, `scripts/desert_v2_error.py` and
+  `scripts/validate_v2_outside.py` write C2ST, desert and out-of-domain
+  tables. The profile `validity` block separates rescaled from raw error and
+  declares `gamma_frozen` with the fitted 0.14.
+- v2 `variation` for B1-B3 is regenerated from the stored bootstrap interval
+  (0.031 / 0.030 / 0.030). The previous 0.12 was inconsistent with the stated
+  2.7-3.2 % CI.
 - Optional `gas_mss3_scale` for the 6SV O2-A correction; off by default.
 
 - `parse_mtl` survives a real MTL with `"NULL"` coefficients: the Landsat 1
