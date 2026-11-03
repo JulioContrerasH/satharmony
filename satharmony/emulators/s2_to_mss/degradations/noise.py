@@ -5,7 +5,9 @@ import numpy as np
 from ..config import CoherentNoiseConfig, RandomNoiseConfig
 
 
-def apply_coherent_noise(image: np.ndarray, config: CoherentNoiseConfig) -> np.ndarray:
+def apply_coherent_noise(
+    image: np.ndarray, config: CoherentNoiseConfig, rng: np.random.Generator | None = None
+) -> np.ndarray:
     """Apply periodic electronic noise.
 
     Fixed frequency interference from detector readout.
@@ -20,16 +22,18 @@ def apply_coherent_noise(image: np.ndarray, config: CoherentNoiseConfig) -> np.n
     """
     if not config.enabled:
         return image
+    generator = rng if rng is not None else np.random.default_rng()
+    generator = rng if rng is not None else np.random.default_rng()
 
     _C, H, W = image.shape
-    amplitude = config.amplitude.sample()
+    amplitude = config.amplitude.sample(generator)
 
     # Generate noise pattern
     x = np.arange(W)
     noise = np.zeros((H, W))
 
     for freq in config.frequencies:
-        phase = np.random.uniform(0, 2 * np.pi) if config.random_phase else 0
+        phase = generator.uniform(0, 2 * np.pi) if config.random_phase else 0
         noise += np.sin(2 * np.pi * freq * x + phase)
 
     # Normalize and scale
@@ -41,7 +45,9 @@ def apply_coherent_noise(image: np.ndarray, config: CoherentNoiseConfig) -> np.n
     return result.astype(np.float32)
 
 
-def apply_random_noise(image: np.ndarray, config: RandomNoiseConfig) -> np.ndarray:
+def apply_random_noise(
+    image: np.ndarray, config: RandomNoiseConfig, rng: np.random.Generator | None = None
+) -> np.ndarray:
     """Apply gaussian and/or poisson noise.
 
     Args:
@@ -53,8 +59,10 @@ def apply_random_noise(image: np.ndarray, config: RandomNoiseConfig) -> np.ndarr
     """
     if not config.enabled:
         return image
+    generator = rng if rng is not None else np.random.default_rng()
+    generator = rng if rng is not None else np.random.default_rng()
 
-    snr_db = config.snr_db.sample()
+    snr_db = config.snr_db.sample(generator)
     snr_linear = 10 ** (snr_db / 20)
 
     # Signal power (mean of image)
@@ -62,24 +70,24 @@ def apply_random_noise(image: np.ndarray, config: RandomNoiseConfig) -> np.ndarr
     noise_std = np.sqrt(signal_power) / snr_linear
 
     if config.noise_type == "gaussian":
-        noise = np.random.normal(0, noise_std, image.shape)
+        noise = generator.normal(0, noise_std, image.shape)
         result = image + noise
 
     elif config.noise_type == "poisson":
         # Scale for poisson, then scale back
         scale = 1.0 / (noise_std**2 + 1e-10)
-        noisy = np.random.poisson(np.clip(image * scale, 0, None))
+        noisy = generator.poisson(np.clip(image * scale, 0, None))
         result = noisy / scale
 
     else:  # mixed
-        w = config.poisson_weight.sample()
+        w = config.poisson_weight.sample(generator)
 
         # Gaussian component
-        gaussian = np.random.normal(0, noise_std * (1 - w), image.shape)
+        gaussian = generator.normal(0, noise_std * (1 - w), image.shape)
 
         # Poisson component
         scale = 1.0 / ((noise_std * w) ** 2 + 1e-10)
-        poisson = np.random.poisson(np.clip(image * scale, 0, None)) / scale - image
+        poisson = generator.poisson(np.clip(image * scale, 0, None)) / scale - image
 
         result = image + gaussian + poisson
 

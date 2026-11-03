@@ -6,7 +6,9 @@ from ..config import SpectralConfig
 from ..sbaf import sbaf_transform
 
 
-def apply_spectral_degradation(image: np.ndarray, config: SpectralConfig) -> np.ndarray:
+def apply_spectral_degradation(
+    image: np.ndarray, config: SpectralConfig, rng: np.random.Generator | None = None
+) -> np.ndarray:
     """Select and adjust S2 bands to match MSS spectral response.
 
     Two modes are available:
@@ -32,6 +34,7 @@ def apply_spectral_degradation(image: np.ndarray, config: SpectralConfig) -> np.
     """
     if not config.enabled:
         return image
+    generator = rng if rng is not None else np.random.default_rng()
 
     if config.mode == "sbaf":
         selected = sbaf_transform(image, sensor=config.sensor)
@@ -43,9 +46,9 @@ def apply_spectral_degradation(image: np.ndarray, config: SpectralConfig) -> np.
         )
 
     if config.srf_adjustment:
-        noise_std = config.srf_noise_std.sample()
+        noise_std = config.srf_noise_std.sample(generator)
         if noise_std > 0:
-            noise = np.random.normal(0, noise_std, selected.shape)
+            noise = generator.normal(0, noise_std, selected.shape)
             selected = selected + noise * selected
 
     return selected.astype(np.float32)

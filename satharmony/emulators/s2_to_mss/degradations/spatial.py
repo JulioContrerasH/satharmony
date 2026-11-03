@@ -8,7 +8,9 @@ from ..config import SpatialConfig
 FWHM_TO_SIGMA = 1.0 / (2.0 * np.sqrt(2.0 * np.log(2.0)))  # 0.4247
 
 
-def apply_spatial_degradation(image: np.ndarray, config: SpatialConfig) -> np.ndarray:
+def apply_spatial_degradation(
+    image: np.ndarray, config: SpatialConfig, rng: np.random.Generator | None = None
+) -> np.ndarray:
     """Degrade spatial resolution from S2 10m to the MSS grid.
 
     The output grid (``sampling_gsd``, 60 m for ESA GTC) and the sensor PSF
@@ -25,6 +27,7 @@ def apply_spatial_degradation(image: np.ndarray, config: SpatialConfig) -> np.nd
     """
     if not config.enabled:
         return image
+    generator = rng if rng is not None else np.random.default_rng()
 
     # Output grid and scale factor
     if config.sampling_gsd is not None:
@@ -37,16 +40,16 @@ def apply_spatial_degradation(image: np.ndarray, config: SpatialConfig) -> np.nd
                 f"{round(ratio) * config.input_gsd} m, not {target_gsd} m"
             )
     else:
-        target_gsd = config.target_gsd.sample()
+        target_gsd = config.target_gsd.sample(generator)
     scale_factor = max(1, round(target_gsd / config.input_gsd))
 
     # PSF in input pixels
     if config.psf_fwhm_m is not None:
-        fwhm_m = config.psf_fwhm_m.sample()
+        fwhm_m = config.psf_fwhm_m.sample(generator)
         sigma_pixels = fwhm_m * FWHM_TO_SIGMA / config.input_gsd
     else:
         # Legacy 0.1.13: sigma expressed in units of the scale factor
-        sigma_pixels = config.psf_sigma.sample() * scale_factor
+        sigma_pixels = config.psf_sigma.sample(generator) * scale_factor
 
     C, H, W = image.shape
     new_h = H // scale_factor

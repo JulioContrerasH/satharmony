@@ -6,7 +6,9 @@ from ....corrections.landsat.mss import saturation_reflectance
 from ..config import RadiometricConfig
 
 
-def _band_saturation(config: RadiometricConfig, bands: int) -> np.ndarray | float:
+def _band_saturation(
+    config: RadiometricConfig, bands: int, rng: np.random.Generator
+) -> np.ndarray | float:
     """Saturation threshold per band, shaped (bands, 1, 1) for broadcasting.
 
     ``"physical"`` uses ``rho_sat = pi * LMAX * d^2 / (ESUN * sin(theta))``
@@ -15,9 +17,9 @@ def _band_saturation(config: RadiometricConfig, bands: int) -> np.ndarray | floa
     bands, as 0.1.13 did.
     """
     if config.saturation_model == "legacy_random":
-        return float(config.saturation_threshold.sample())
+        return float(config.saturation_threshold.sample(rng))
 
-    sun_elevation = config.sun_elevation_deg.sample()
+    sun_elevation = config.sun_elevation_deg.sample(rng)
     rho_sat = saturation_reflectance(
         spacecraft=config.satellite,
         sun_elevation=sun_elevation,
@@ -31,7 +33,9 @@ def _band_saturation(config: RadiometricConfig, bands: int) -> np.ndarray | floa
     return rho_sat[:bands].reshape(-1, 1, 1)
 
 
-def apply_radiometric_degradation(image: np.ndarray, config: RadiometricConfig) -> np.ndarray:
+def apply_radiometric_degradation(
+    image: np.ndarray, config: RadiometricConfig, rng: np.random.Generator | None = None
+) -> np.ndarray:
     """Apply MSS radiometric characteristics.
 
     The real MSS records 6 bits after a roughly square-root companding. The
@@ -53,14 +57,15 @@ def apply_radiometric_degradation(image: np.ndarray, config: RadiometricConfig) 
     if not config.enabled:
         return image
 
+    generator = rng if rng is not None else np.random.default_rng()
     result = image.copy()
 
     # Optional reflectance boost (increases saturation)
-    if np.random.random() < config.reflectance_boost_prob:
-        boost = config.reflectance_boost.sample()
+    if generator.random() < config.reflectance_boost_prob:
+        boost = config.reflectance_boost.sample(generator)
         result = result * boost
 
-    sat = _band_saturation(config, result.shape[0])
+    sat = _band_saturation(config, result.shape[0], generator)
     levels = 2**config.quantization_bits
 
     # ── Legacy 0.1.13 path (sqrt never inverted, floor bias kept) ───────────

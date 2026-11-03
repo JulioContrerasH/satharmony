@@ -10,6 +10,11 @@ from pydantic import BaseModel
 PROFILE_DIR = Path(__file__).resolve().parents[2] / "profiles"
 
 
+def _rng_or_default(rng: np.random.Generator | None) -> np.random.Generator:
+    """Return ``rng`` or a fresh generator when the caller did not pass one."""
+    return rng if rng is not None else np.random.default_rng()
+
+
 class Range(BaseModel):
     """Range for stochastic sampling.
 
@@ -25,12 +30,13 @@ class Range(BaseModel):
     mean: float | None = None
     std: float | None = None
 
-    def sample(self) -> float:
+    def sample(self, rng: np.random.Generator | None = None) -> float:
+        generator = _rng_or_default(rng)
         if self.distribution == "truncated_normal":
             center = self.mean if self.mean is not None else 0.5 * (self.min + self.max)
             spread = self.std if self.std is not None else 0.25 * (self.max - self.min)
-            return float(np.clip(np.random.normal(center, spread), self.min, self.max))
-        return float(np.random.uniform(self.min, self.max))
+            return float(np.clip(generator.normal(center, spread), self.min, self.max))
+        return float(generator.uniform(self.min, self.max))
 
 
 #: Sun-elevation distribution measured on the 178 MSS/TM calibration pairs.
@@ -49,8 +55,8 @@ class RangeInt(BaseModel):
     min: int
     max: int
 
-    def sample(self) -> int:
-        return np.random.randint(self.min, self.max + 1)
+    def sample(self, rng: np.random.Generator | None = None) -> int:
+        return int(_rng_or_default(rng).integers(self.min, self.max + 1))
 
 
 class CenteredRange(BaseModel):
@@ -59,8 +65,9 @@ class CenteredRange(BaseModel):
     mean: float
     variation: float
 
-    def sample(self) -> float:
-        return self.mean + np.random.uniform(-self.variation, self.variation)
+    def sample(self, rng: np.random.Generator | None = None) -> float:
+        generator = _rng_or_default(rng)
+        return float(self.mean + generator.uniform(-self.variation, self.variation))
 
 
 class BandScaleRange(BaseModel):
@@ -71,12 +78,13 @@ class BandScaleRange(BaseModel):
     nir1: CenteredRange = CenteredRange(mean=0.60, variation=0.20)
     nir2: CenteredRange = CenteredRange(mean=0.85, variation=0.20)
 
-    def sample(self) -> list[float]:
+    def sample(self, rng: np.random.Generator | None = None) -> list[float]:
+        generator = _rng_or_default(rng)
         return [
-            self.green.sample(),
-            self.red.sample(),
-            self.nir1.sample(),
-            self.nir2.sample(),
+            self.green.sample(generator),
+            self.red.sample(generator),
+            self.nir1.sample(generator),
+            self.nir2.sample(generator),
         ]
 
 
@@ -238,6 +246,8 @@ class PipelineConfig(BaseModel):
 
     seed: int | None = None
     output_dtype: Literal["float32", "uint8"] = "float32"
+    #: Reproduce 0.1.13 bit for byte, including its global RandomState.
+    legacy_rng: bool = False
 
     @classmethod
     def from_profile(cls, profile: str | Path) -> "PipelineConfig":
@@ -346,4 +356,5 @@ class PipelineConfig(BaseModel):
         cfg.radiometric.sun_elevation_deg = Range(min=25.0, max=70.0)
         cfg.striping.detector_geometry = "rows"
         cfg.labels_legacy = True
+        cfg.legacy_rng = True
         return cfg

@@ -5,7 +5,9 @@ import numpy as np
 from ..config import MemoryEffectConfig
 
 
-def apply_memory_effect(image: np.ndarray, config: MemoryEffectConfig) -> np.ndarray:
+def apply_memory_effect(
+    image: np.ndarray, config: MemoryEffectConfig, rng: np.random.Generator | None = None
+) -> np.ndarray:
     """Apply detector memory effect.
 
     After bright pixels, detectors show exponential recovery
@@ -20,12 +22,13 @@ def apply_memory_effect(image: np.ndarray, config: MemoryEffectConfig) -> np.nda
     """
     if not config.enabled:
         return image
+    generator = rng if rng is not None else np.random.default_rng()
 
     C, H, W = image.shape
 
-    threshold = config.trigger_threshold.sample()
-    decay = config.decay_pixels.sample()
-    amplitude = config.amplitude.sample()
+    threshold = config.trigger_threshold.sample(generator)
+    decay = config.decay_pixels.sample(generator)
+    amplitude = config.amplitude.sample(generator)
 
     result = image.copy()
 

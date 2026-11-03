@@ -72,6 +72,7 @@ def apply_striping(
     image: np.ndarray,
     config: StripingConfig,
     sampling_gsd: float | None = None,
+    rng: np.random.Generator | None = None,
 ) -> np.ndarray:
     """Apply 6-detector striping artifact.
 
@@ -91,12 +92,13 @@ def apply_striping(
     if not config.enabled:
         return image
 
+    generator = rng if rng is not None else np.random.default_rng()
     C, H, W = image.shape
     n_det = config.num_detectors
 
     # Sample gain/offset per detector
-    gain_std = config.gain_std.sample()
-    offset_std = config.offset_std.sample()
+    gain_std = config.gain_std.sample(generator)
+    offset_std = config.offset_std.sample(generator)
 
     result = image.copy()
 
@@ -105,8 +107,8 @@ def apply_striping(
         for c in range(C):
             # Per-band variation or same for all bands
             if config.per_band_variation or c == 0:
-                gains = 1.0 + np.random.normal(0, gain_std, n_det)
-                offsets = np.random.normal(0, offset_std, n_det)
+                gains = 1.0 + generator.normal(0, gain_std, n_det)
+                offsets = generator.normal(0, offset_std, n_det)
 
             # Apply to each detector's lines
             for d in range(n_det):
@@ -125,8 +127,8 @@ def apply_striping(
 
     for c in range(C):
         if config.per_band_variation or c == 0:
-            gains = 1.0 + np.random.normal(0, gain_std, n_det)
-            offsets = np.random.normal(0, offset_std, n_det)
+            gains = 1.0 + generator.normal(0, gain_std, n_det)
+            offsets = generator.normal(0, offset_std, n_det)
         result[c] = result[c] * gains[detector] + offsets[detector]
 
     return result.astype(np.float32)

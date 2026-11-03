@@ -13,6 +13,7 @@ def emulate_s2(
     scale_factor: int | None = None,
     seed: int | None = None,
     config: PipelineConfig | None = None,
+    rng: np.random.Generator | None = None,
 ) -> tuple[NDArray[np.float32], int]:
     """Emulate MSS from S2 image."""
     cfg = config.model_copy(deep=True) if config is not None else PipelineConfig()
@@ -28,7 +29,10 @@ def emulate_s2(
             cfg.spatial.sampling_gsd = target_gsd
         cfg.spatial.target_gsd = Range(min=target_gsd, max=target_gsd)
 
-    emulator = MSSEmulator(cfg)
+    if rng is None and seed is not None and not cfg.legacy_rng:
+        rng = np.random.default_rng(seed)
+
+    emulator = MSSEmulator(cfg, rng=rng)
     mss = emulator(image)
 
     sf_used = image.shape[1] // mss.shape[1]
@@ -58,6 +62,7 @@ def emulate_s2_with_labels(
     seed: int | None = None,
     config: PipelineConfig | None = None,
     merge_cloud_classes: bool = False,
+    rng: np.random.Generator | None = None,
 ) -> tuple[NDArray[np.float32], NDArray[np.uint8], int]:
     """Emulate S2 image AND labels together."""
     cfg = config if config is not None else PipelineConfig()
@@ -67,6 +72,7 @@ def emulate_s2_with_labels(
         scale_factor=scale_factor,
         seed=seed,
         config=cfg,
+        rng=rng,
     )
 
     mss_labels = aggregate_cloudsen12(

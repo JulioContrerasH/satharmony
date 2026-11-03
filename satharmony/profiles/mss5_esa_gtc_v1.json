@@ -2,7 +2,7 @@
   "schema_version": 1,
   "name": "mss5_esa_gtc_v1",
   "created": "2026-11-03",
-  "description": "Perfil calibrado con 5 PICS CEOS. Congelado: es el que entren\u00f3 G4.",
+  "description": "Perfil calibrado con 5 PICS CEOS. Es el que entren\u00f3 G4.",
   "config": {
     "spectral": {
       "enabled": true,
@@ -210,6 +210,7 @@
     },
     "labels_legacy": false,
     "seed": null,
-    "output_dtype": "float32"
+    "output_dtype": "float32",
+    "legacy_rng": false
   }
 }

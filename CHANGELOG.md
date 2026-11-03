@@ -1,6 +1,7 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 (2026-11-03)
+
 - `parse_mtl` survives a real MTL with `"NULL"` coefficients: the Landsat 1
   product `LM01_L1GS_043044_19780107` has no radiance or reflectance
   calibration for band 4, and the parser used to die on
@@ -30,7 +31,6 @@
   reference, but removing it only moves B3 from 0.867 to 0.879, so the profile
   is left untouched until v2.
 
-## 0.4.0 (2026-10-24)
 - `satharmony.corrections.landsat.parse_mtl` reads the MSS bands of Landsat 1-3
   MTLs, where the sensor bands are numbered 4-7, as well as 1-4 on Landsat 4/5.
   Before it raised `KeyError` on every L1-L3 MTL (audit of 0.1.13).
@@ -101,7 +101,6 @@
 - Striping: 474 m period along the ground trace (7.9 px at 60 m) and ~9 deg
   tilt from the image rows, instead of six row-aligned bands. The applied grid
   follows `spatial.sampling_gsd`; row geometry preserved in `legacy_0_1_13()`.
-
 ### Known limitations
 - The cloud baseline is trained and evaluated on pseudo-MSS built from
   CloudSEN12. The test split is independent of training, but its labels are
@@ -118,7 +117,6 @@
   (ERA5/MODIS) are missing, so `gamma=0.112` and the B4 scale are degenerate
   with the site-to-site spread.
 
-## 0.3.0 (2026-10-21)
 - New calibrated profile `PipelineConfig.mss5_esa_gtc_v1()`.
 - Physical order: striping, memory, coherent/random noise and scan artifacts
   before 6-bit quantization in the new profile; legacy order preserved.
@@ -126,7 +124,6 @@
 - CloudSEN12 Table 3 label encoding; odd-block aggregation fixed.
 - 35 tests; wheel builds.
 
-## 0.2.0 (2026-10-21)
 - P0: linear radiometry (sqrt companded then decompressed), centered
   decimation, independent 60 m sampling and PSF, CloudSEN12 labels.
 - `PipelineConfig.legacy_0_1_13()` reproduces 0.1.13.

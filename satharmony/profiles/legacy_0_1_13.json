@@ -204,6 +204,7 @@
     },
     "labels_legacy": true,
     "seed": null,
-    "output_dtype": "float32"
+    "output_dtype": "float32",
+    "legacy_rng": true
   }
 }
