@@ -1,0 +1,545 @@
+{
+  "schema_version": 1,
+  "name": "mss5_esa_gtc_v2",
+  "created": "2026-11-03",
+  "n_pairs": 34,
+  "band_scaling": {
+    "B1": {
+      "mean": 0.9708713904820578,
+      "variation": 0.03
+    },
+    "B2": {
+      "mean": 0.9451393682228506,
+      "variation": 0.03
+    },
+    "B3": {
+      "mean": 0.9061651704492756,
+      "variation": 0.03
+    },
+    "B4": {
+      "mean": 0.9426866957031526,
+      "variation": 0.03210581581373812
+    }
+  },
+  "gamma": 0.135,
+  "per_pair": [
+    {
+      "pair": "libya4_ceos",
+      "valid_pixels": 62500,
+      "B1": 0.9802149326230764,
+      "B2": 0.9401340219885148,
+      "B3": 0.8668254008509424,
+      "B4": 0.982176243843206,
+      "gamma": 0.135
+    },
+    {
+      "pair": "libya2",
+      "valid_pixels": 62500,
+      "B1": 1.0174191586641534,
+      "B2": 0.9682095884770184,
+      "B3": 0.9085295749838396,
+      "B4": 0.950527216547372,
+      "gamma": 0.135
+    },
+    {
+      "pair": "algeria3",
+      "valid_pixels": 62500,
+      "B1": 0.9633623341067012,
+      "B2": 0.9329002402728568,
+      "B3": 0.8588660186926992,
+      "B4": 0.9284047433949046,
+      "gamma": 0.135
+    },
+    {
+      "pair": "mauritania1",
+      "valid_pixels": 62500,
+      "B1": 0.9583430498559259,
+      "B2": 0.9501447144571865,
+      "B3": 0.8713462210992748,
+      "B4": 0.8715799903044033,
+      "gamma": 0.135
+    },
+    {
+      "pair": "mauritania2",
+      "valid_pixels": 62500,
+      "B1": 0.9663960012113556,
+      "B2": 0.9680935812369382,
+      "B3": 0.892568407695523,
+      "B4": 0.906328210970788,
+      "gamma": 0.135
+    },
+    {
+      "pair": "niger1",
+      "valid_pixels": 62500,
+      "B1": 0.9423549655358878,
+      "B2": 0.9364779782303083,
+      "B3": 0.9003990850304143,
+      "B4": 0.9513376731157449,
+      "gamma": 0.135
+    },
+    {
+      "pair": "niger2",
+      "valid_pixels": 62500,
+      "B1": 0.8622261383133943,
+      "B2": 0.8443684364669986,
+      "B3": 0.8160891925065893,
+      "B4": 0.8443812451266562,
+      "gamma": 0.135
+    },
+    {
+      "pair": "sudan1",
+      "valid_pixels": 62500,
+      "B1": 0.9656470513246047,
+      "B2": 0.9650015174753941,
+      "B3": 0.9274388053672229,
+      "B4": 0.9561980854705702,
+      "gamma": 0.135
+    },
+    {
+      "pair": "sudan2",
+      "valid_pixels": 62500,
+      "B1": 1.0807198473399624,
+      "B2": 1.039498134254074,
+      "B3": 0.9883395378016826,
+      "B4": 1.004675063480527,
+      "gamma": 0.135
+    },
+    {
+      "pair": "egypt1",
+      "valid_pixels": 62500,
+      "B1": 0.9227350926768103,
+      "B2": 0.8860274041363587,
+      "B3": 0.8386465877462806,
+      "B4": 0.8933536255597274,
+      "gamma": 0.135
+    },
+    {
+      "pair": "egypt2",
+      "valid_pixels": 62500,
+      "B1": 0.9335742208145388,
+      "B2": 0.9220494032247307,
+      "B3": 0.8413874848379858,
+      "B4": 0.8644424629542301,
+      "gamma": 0.135
+    },
+    {
+      "pair": "arabia1",
+      "valid_pixels": 62500,
+      "B1": 0.9753467797527602,
+      "B2": 0.9608135244116788,
+      "B3": 0.9067304223400702,
+      "B4": 0.9256919128348358,
+      "gamma": 0.135
+    },
+    {
+      "pair": "arabia2",
+      "valid_pixels": 62500,
+      "B1": 0.9554185245974871,
+      "B2": 0.9321240909988907,
+      "B3": 0.8900735119272517,
+      "B4": 1.0022775969851594,
+      "gamma": 0.135
+    },
+    {
+      "pair": "arabia3",
+      "valid_pixels": 62500,
+      "B1": 1.1342727608556964,
+      "B2": 1.0886347950175688,
+      "B3": 1.0263346709927252,
+      "B4": 0.9428283335379706,
+      "gamma": 0.135
+    },
+    {
+      "pair": "oman1",
+      "valid_pixels": 62500,
+      "B1": 1.0866652677807918,
+      "B2": 1.081023823407498,
+      "B3": 1.0342890250308265,
+      "B4": 1.1120332390213181,
+      "gamma": 0.135
+    },
+    {
+      "pair": "chad1",
+      "valid_pixels": 62500,
+      "B1": 1.0975859350427146,
+      "B2": 1.0694689168096616,
+      "B3": 1.0395028518036313,
+      "B4": 0.9766825621940888,
+      "gamma": 0.135
+    },
+    {
+      "pair": "namib",
+      "valid_pixels": 62500,
+      "B1": 0.999899777871757,
+      "B2": 0.9639653357137101,
+      "B3": 0.9247650708746481,
+      "B4": 0.9315609679686294,
+      "gamma": 0.135
+    },
+    {
+      "pair": "thar",
+      "valid_pixels": 62500,
+      "B1": 1.1265492567132822,
+      "B2": 1.130358301387319,
+      "B3": 1.0514415455560353,
+      "B4": 1.0890628603059807,
+      "gamma": 0.135
+    },
+    {
+      "pair": "thar2",
+      "valid_pixels": 62500,
+      "B1": 0.9982039544482519,
+      "B2": 1.0237961058438538,
+      "B3": 0.9798701394527465,
+      "B4": 1.0212589574265842,
+      "gamma": 0.135
+    },
+    {
+      "pair": "taklamakan",
+      "valid_pixels": 62500,
+      "B1": 1.0412465380906524,
+      "B2": 0.9934516325696142,
+      "B3": 0.9688365127161409,
+      "B4": 1.026396588793102,
+      "gamma": 0.135
+    },
+    {
+      "pair": "karakum",
+      "valid_pixels": 62500,
+      "B1": 0.9814062807895182,
+      "B2": 0.9237076783317476,
+      "B3": 0.913808963259272,
+      "B4": 1.000696687172788,
+      "gamma": 0.135
+    },
+    {
+      "pair": "kyzylkum",
+      "valid_pixels": 62500,
+      "B1": 0.8674519120828876,
+      "B2": 0.8358753676074528,
+      "B3": 0.8891476010028355,
+      "B4": 0.9563349760882234,
+      "gamma": 0.135
+    },
+    {
+      "pair": "lut",
+      "valid_pixels": 62500,
+      "B1": 1.098491870098087,
+      "B2": 1.0733562566697064,
+      "B3": 1.013268822868936,
+      "B4": 1.0511047033744938,
+      "gamma": 0.135
+    },
+    {
+      "pair": "kavir",
+      "valid_pixels": 62500,
+      "B1": 0.8557582843279351,
+      "B2": 0.8467493893661469,
+      "B3": 0.810520236637887,
+      "B4": 0.8184126828625174,
+      "gamma": 0.135
+    },
+    {
+      "pair": "sonora",
+      "valid_pixels": 62500,
+      "B1": 0.9510023753756712,
+      "B2": 0.9185932207587958,
+      "B3": 0.8939231501187583,
+      "B4": 0.34109764549507876,
+      "gamma": 0.135
+    },
+    {
+      "pair": "mojave",
+      "valid_pixels": 62500,
+      "B1": 1.0040813296984383,
+      "B2": 0.9887757523365327,
+      "B3": 0.9733083567717677,
+      "B4": 0.9910278075546851,
+      "gamma": 0.135
+    },
+    {
+      "pair": "chihuahua",
+      "valid_pixels": 62500,
+      "B1": 0.8500790469045191,
+      "B2": 0.7698160871035608,
+      "B3": 0.8361408051367923,
+      "B4": 0.8668862113051955,
+      "gamma": 0.135
+    },
+    {
+      "pair": "death_valley",
+      "valid_pixels": 62500,
+      "B1": 0.8555724460679927,
+      "B2": 0.8285607321890116,
+      "B3": 0.7982524021895723,
+      "B4": 0.2938658955192857,
+      "gamma": 0.135
+    },
+    {
+      "pair": "bonneville",
+      "valid_pixels": 62500,
+      "B1": 1.0604607011976808,
+      "B2": 0.9718426177056714,
+      "B3": 0.8266555608906191,
+      "B4": 0.6298503693009503,
+      "gamma": 0.135
+    },
+    {
+      "pair": "atacama_salar",
+      "valid_pixels": 62500,
+      "B1": 0.8823891076022659,
+      "B2": 0.8968062720297968,
+      "B3": 0.9075363640705383,
+      "B4": 0.9025633103779624,
+      "gamma": 0.135
+    },
+    {
+      "pair": "simpson",
+      "valid_pixels": 62500,
+      "B1": 0.8543158203748785,
+      "B2": 0.8216597449405937,
+      "B3": 0.8404420367121879,
+      "B4": 0.8747690816738597,
+      "gamma": 0.135
+    },
+    {
+      "pair": "great_sandy",
+      "valid_pixels": 62500,
+      "B1": 0.9240424202838697,
+      "B2": 0.9099680938959822,
+      "B3": 0.9413132072977438,
+      "B4": 0.9425450578683344,
+      "gamma": 0.135
+    },
+    {
+      "pair": "nullarbor",
+      "valid_pixels": 62500,
+      "B1": 1.0879922363344423,
+      "B2": 1.1950527577321668,
+      "B3": 1.2311240578743181,
+      "B4": 1.0989169210178429,
+      "gamma": 0.135
+    },
+    {
+      "pair": "tanami",
+      "valid_pixels": 62500,
+      "B1": 1.0037826969939452,
+      "B2": 0.8865146628209306,
+      "B3": 0.905599918558481,
+      "B4": 0.9362372282152476,
+      "gamma": 0.135
+    }
+  ],
+  "config": {
+    "spectral": {
+      "enabled": true,
+      "probability": 1.0,
+      "mode": "sbaf",
+      "sensor": "S2A",
+      "s2_bands": [
+        2,
+        3,
+        6,
+        7
+      ],
+      "srf_adjustment": false,
+      "srf_noise_std": {
+        "min": 0.0,
+        "max": 0.02,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "water_vapor_scale": 1.205357142857143,
+      "gas_mss3_scale": 1.0
+    },
+    "spatial": {
+      "enabled": true,
+      "probability": 1.0,
+      "input_gsd": 10.0,
+      "sampling_gsd": 60.0,
+      "psf_fwhm_m": {
+        "min": 79.0,
+        "max": 82.0,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "center_decimation": true,
+      "method": "average",
+      "target_gsd": {
+        "min": 60.0,
+        "max": 80.0,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "psf_sigma": {
+        "min": 0.4,
+        "max": 0.6,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      }
+    },
+    "radiometric": {
+      "enabled": true,
+      "probability": 1.0,
+      "quantization_bits": 6,
+      "sqrt_compression": true,
+      "sqrt_bands": [
+        0,
+        1,
+        2
+      ],
+      "decompress_after_quantization": true,
+      "saturation_model": "physical",
+      "satellite": "L5_MSS",
+      "sun_elevation_deg": {
+        "min": 7.6,
+        "max": 62.3,
+        "distribution": "truncated_normal",
+        "mean": 42.8,
+        "std": 12.25
+      },
+      "earth_sun_distance_au": 1.0,
+      "saturation_threshold": {
+        "min": 0.8,
+        "max": 0.95,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "reflectance_boost": {
+        "min": 1.0,
+        "max": 1.3,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "reflectance_boost_prob": 0.0
+    },
+    "striping": {
+      "enabled": true,
+      "probability": 0.8,
+      "num_detectors": 6,
+      "gain_std": {
+        "min": 0.005,
+        "max": 0.02,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "offset_std": {
+        "min": 0.002,
+        "max": 0.008,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "per_band_variation": true,
+      "detector_geometry": "scan_lines",
+      "sampling_gsd": 60.0,
+      "scan_line_period_m": 474.0,
+      "yaw_deg": 9.0
+    },
+    "memory_effect": {
+      "enabled": true,
+      "probability": 0.4,
+      "trigger_threshold": {
+        "min": 0.6,
+        "max": 0.85,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "decay_pixels": {
+        "min": 50,
+        "max": 200
+      },
+      "amplitude": {
+        "min": 0.02,
+        "max": 0.08,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      }
+    },
+    "coherent_noise": {
+      "enabled": true,
+      "probability": 0.3,
+      "frequencies": [
+        0.16666666666666666,
+        0.3333333333333333,
+        0.5
+      ],
+      "amplitude": {
+        "min": 0.005,
+        "max": 0.02,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "random_phase": true
+    },
+    "random_noise": {
+      "enabled": true,
+      "probability": 0.7,
+      "snr_db": {
+        "min": 30.0,
+        "max": 40.0,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "noise_type": "mixed",
+      "poisson_weight": {
+        "min": 0.2,
+        "max": 0.5,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      }
+    },
+    "scan_artifacts": {
+      "enabled": true,
+      "probability": 0.2,
+      "dropout_prob": {
+        "min": 0.001,
+        "max": 0.01,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "max_consecutive_lines": {
+        "min": 1,
+        "max": 3
+      }
+    },
+    "final_scaling": {
+      "enabled": true,
+      "band_scaling": {
+        "green": {
+          "mean": 0.9708713904820578,
+          "variation": 0.03
+        },
+        "red": {
+          "mean": 0.9451393682228506,
+          "variation": 0.03
+        },
+        "nir1": {
+          "mean": 0.9061651704492756,
+          "variation": 0.03
+        },
+        "nir2": {
+          "mean": 0.9426866957031526,
+          "variation": 0.03210581581373812
+        }
+      }
+    },
+    "labels_legacy": false,
+    "seed": null,
+    "output_dtype": "float32",
+    "legacy_rng": false
+  }
+}

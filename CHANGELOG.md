@@ -2,6 +2,22 @@
 
 ## 0.2.0 (2026-11-03)
 
+- Versioned JSON profiles: `mss5_esa_gtc_v1`, `mss5_esa_gtc_v2` and
+  `legacy_0_1_13`, loaded with `PipelineConfig.from_profile()`. The v2 profile
+  is fitted from the 49-pixel S2/MSS calibration set (34 calibration sites,
+  14 validation sites).
+- The emulator uses a local `numpy.random.Generator` per call. Only the legacy
+  profile keeps the global RandomState, because it promises a byte-for-byte
+  reproduction of 0.1.13.
+- `satharmony.calibration` adds subpixel alignment (phase correlation + ECC),
+  `fit_profile()` with bootstrap intervals, and SAM/RMSE/bias/SNR/FWHM/C2ST
+  metrics.
+- `satharmony.manifests` reads and verifies CSV pair manifests with SHA-256,
+  cloud fraction and reason. `manifests/manifest_178.csv` pins the 178 MSS/TM
+  calibration pairs.
+- `satharmony` CLI with `emulate`, `align`, `metrics`, `fit` and `verify`.
+- Optional `gas_mss3_scale` for the 6SV O2-A correction; off by default.
+
 - `parse_mtl` survives a real MTL with `"NULL"` coefficients: the Landsat 1
   product `LM01_L1GS_043044_19780107` has no radiance or reflectance
   calibration for band 4, and the parser used to die on

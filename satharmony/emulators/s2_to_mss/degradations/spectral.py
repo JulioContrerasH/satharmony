@@ -37,13 +37,19 @@ def apply_spectral_degradation(
     generator = rng if rng is not None else np.random.default_rng()
 
     if config.mode == "sbaf":
-        selected = sbaf_transform(image, sensor=config.sensor)
+        selected = sbaf_transform(
+            image, sensor=config.sensor, water_vapor_scale=config.water_vapor_scale
+        )
     elif config.mode == "legacy":
         selected = image[config.s2_bands]
     else:
         raise ValueError(
             f"Unknown spectral mode {config.mode!r}; expected 'legacy' or 'sbaf'"
         )
+
+    if config.gas_mss3_scale != 1.0:
+        selected = selected.copy()
+        selected[2] = selected[2] * config.gas_mss3_scale
 
     if config.srf_adjustment:
         noise_std = config.srf_noise_std.sample(generator)

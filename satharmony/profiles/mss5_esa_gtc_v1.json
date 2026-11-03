@@ -22,7 +22,9 @@
         "distribution": "uniform",
         "mean": null,
         "std": null
-      }
+      },
+      "water_vapor_scale": 1.0,
+      "gas_mss3_scale": 1.0
     },
     "spatial": {
       "enabled": true,

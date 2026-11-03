@@ -18,6 +18,9 @@ pip install satharmony
 
 # With GeoTIFF I/O support (rasterio, needed by satharmony.datasets)
 pip install satharmony[io]
+
+# With the calibration metrics and ECC refinement
+pip install satharmony[calib]
 ```
 
 ## Quick Start
@@ -67,9 +70,11 @@ mss, sf = satharmony.emulate_s2(image, seed=42)
 mss, sf = satharmony.emulate_s2(image, scale_factor=8)  # fixed scale
 labels = satharmony.emulate_labels(labels, scale_factor=sf)
 
-# Low-level access
+# Versioned profile (v2 is the 49-PICS calibration)
 from satharmony import MSSEmulator, PipelineConfig
+config = PipelineConfig.from_profile("mss5_esa_gtc_v2")
 
+# Low-level access
 config = PipelineConfig()
 config.spatial.sampling_gsd = 60.0          # output grid (ESA GTC)
 config.spatial.psf_fwhm_m = Range(79, 82)   # sensor IFOV, independent of grid
@@ -106,16 +111,44 @@ class; otherwise it is clear.
 - **Classes**: 0=clear, 1=thick_cloud, 2=thin_cloud, 3=shadow
 - **Legacy**: `aggregate_cloudsen12(..., legacy=True)` reproduces the 0.1.13 rule.
 
-## Calibrated profile (0.2.0)
+## Profiles (0.2.0)
 
 ```python
 from satharmony import PipelineConfig
-config = PipelineConfig.mss5_esa_gtc_v1()  # 60 m, PSF 79-82 m, linear radiometry
+
+v1 = PipelineConfig.from_profile("mss5_esa_gtc_v1")  # 5 CEOS PICS, trained G4
+v2 = PipelineConfig.from_profile("mss5_esa_gtc_v2")  # 34 calibration PICS
+legacy = PipelineConfig.from_profile("legacy_0_1_13")
 ```
 
-The profile uses the SBAF with a water-vapour correction in B4 and the sun
-elevation distribution measured on the 178 MSS/TM pairs (7.6-62.3 deg,
-mean 42.8, std 12.25).
+| Profile | Band scaling (B1-B4) | gamma | Use |
+|---|---|---|---|
+| `mss5_esa_gtc_v1` | 0.956 / 0.933 / 0.867 / 0.933 | 0.112 | frozen, reproduces G4 |
+| `mss5_esa_gtc_v2` | 0.971 / 0.945 / 0.906 / 0.946 | 0.133 | 49 PICS |
+| `legacy_0_1_13` | old defaults | 0.112 | bit-for-bit 0.1.13 |
+
+`mss5_esa_gtc_v2` is fitted from the 49-pixel S2/MSS calibration set: 34
+desert/salt sites, 14 validation sites (forest, water, crops). The validation
+sites never enter the constant. Outside the desert domain the scaled RMSE is
+14-23 %, so the profile is a desert correction, not a universal one.
+
+The sun elevation distribution is measured on the 178 MSS/TM pairs
+(7.6-62.3 deg, mean 42.8, std 12.25).
+
+## Command line
+
+```bash
+satharmony emulate scene.npy -o mss.npy --profile mss5_esa_gtc_v2
+satharmony align reference.npy moving.npy
+satharmony metrics prediction.npy observation.npy
+satharmony fit manifest.csv -o profile.json --name my_profile
+satharmony verify manifest.csv
+```
+
+The manifest is a CSV with `id, kind, input_path, reference_path,
+input_sha256, reference_sha256, cloud_fraction, reason`; `kind` is `s2_mss` or
+`mss_tm`. `satharmony verify` checks that every file exists and its SHA-256
+matches.
 
 ## Cloud / shadow baseline (G4, optional)
 
@@ -148,20 +181,22 @@ mask = predict_masks(model, mss, checkpoint.band_mean, checkpoint.band_std)
 - The 40 human-labelled chips are prepared (60 m chips, empty CSVs, annotation
   tooling), but they are not annotated: no accuracy and no kappa on real MSS
   yet.
-- `mss5_esa_gtc_v1()` is calibrated on five desert PICS, all winter/autumn with
-  SZA 50-59 deg. ERA5 puts their water-vapour column at 0.46-1.83 cm, so
-  `gamma = 0.112` and the B4 scale stay degenerate with the site-to-site
-  spread: the gamma is fitted, not measured. A humid or summer PICS is still
-  missing (Makgadikgadi was rejected: s2cloudless flags 28-58 % of the pan as
-  cloud and the window is not pseudo-invariant).
+- `mss5_esa_gtc_v1()` is frozen at five CEOS PICS because it trained G4.
+  `mss5_esa_gtc_v2()` uses 34 calibration PICS (49 total, 14 reserved for
+  validation) and `gamma = 0.133`. The validation sites (forest, water, crops)
+  give a scaled RMSE of 14-23 %, so the profile is a desert correction and
+  does not extrapolate to those surfaces.
+- The B4 water-vapour coefficient is fitted, not measured with an independent
+  sounder. `gas_mss3_scale` is an optional field for the 6SV O2-A correction,
+  off by default until reserved pairs show that it improves MSS3 without
+  hurting the other bands.
 - `parse_mtl` is tested against three real Landsat 1-3 MTLs (1978, 1982, 1983)
   and one of them, the Landsat 1 scene, has `"NULL"` for the whole band 4:
   `parse_mtl` keeps it as `None` and `dn_to_radiance` refuses to convert with a
   message naming the band.
 - The SBAF is linear and has no atmosphere: the O2-A core at 0.76 um inside MSS
-  band 3 is invisible to it, which is why `band_scaling.nir1` is 0.867 and not
-  0.93. 6SV quantifies the gap (0.953 of gas scale at 1 cm); the gas term is
-  not in the emulator yet.
+  band 3 is invisible to it. 6SV quantifies the gap (0.953 of gas scale at
+  1 cm); `gas_mss3_scale` exists but is off by default.
 - The paper figures are not in this release: the numbers in
   `version_to_paper/` still mix the old test v7 and the QA4EO-2 model.
 

@@ -103,6 +103,10 @@ class SpectralConfig(BaseModel):
     s2_bands: list[int] = [2, 3, 6, 7]
     srf_adjustment: bool = False
     srf_noise_std: Range = Range(min=0.0, max=0.02)
+    #: Multiplier on the packaged B4 water-vapour coefficient (1.0 = package).
+    water_vapor_scale: float = 1.0
+    #: Optional B3 gas scale (1.0 = off; 6SV suggests about 1.054).
+    gas_mss3_scale: float = 1.0
 
 
 class SpatialConfig(BaseModel):

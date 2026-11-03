@@ -56,3 +56,9 @@ def test_emulation_from_json_is_bit_identical() -> None:
     )
     from_code, _ = emulate_s2(s2, config=PipelineConfig.mss5_esa_gtc_v1(), seed=7)
     np.testing.assert_array_equal(from_json, from_code)
+
+
+def test_v2_profile_loads_and_carries_the_gamma_scale() -> None:
+    loaded = PipelineConfig.from_profile("mss5_esa_gtc_v2")
+    assert loaded.spectral.water_vapor_scale > 1.0
+    assert loaded.final_scaling.band_scaling.green.mean == pytest.approx(0.971, abs=0.01)
