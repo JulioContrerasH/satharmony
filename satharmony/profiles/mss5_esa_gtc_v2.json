@@ -2,19 +2,19 @@
   "schema_version": 1,
   "name": "mss5_esa_gtc_v2",
   "created": "2026-11-03",
-  "n_pairs": 34,
+  "n_pairs": 29,
   "band_scaling": {
     "B1": {
-      "mean": 0.9708713904820578,
-      "variation": 0.03
+      "mean": 0.9663960012113556,
+      "variation": 0.12
     },
     "B2": {
-      "mean": 0.9451393682228506,
-      "variation": 0.03
+      "mean": 0.9364779782303083,
+      "variation": 0.12
     },
     "B3": {
-      "mean": 0.9061651704492756,
-      "variation": 0.03
+      "mean": 0.9067304223400702,
+      "variation": 0.12
     },
     "B4": {
       "mean": 0.933,
@@ -24,22 +24,22 @@
   "gamma": 0.112,
   "intervals": {
     "B1": {
-      "mean": 0.9708713904820578,
-      "low": 0.9532104499865792,
+      "mean": 0.9663960012113556,
+      "low": 0.9423549655358878,
       "high": 1.0037826969939452,
-      "n": 34
+      "n": 29
     },
     "B2": {
-      "mean": 0.9451393682228506,
-      "low": 0.9220494032247307,
-      "high": 0.968460718387552,
-      "n": 34
+      "mean": 0.9364779782303083,
+      "low": 0.9185932207587958,
+      "high": 0.9682095884770184,
+      "n": 29
     },
     "B3": {
-      "mean": 0.9061651704492756,
-      "low": 0.8891476010028355,
-      "high": 0.9274388053672229,
-      "n": 34
+      "mean": 0.9067304223400702,
+      "low": 0.8900735119272517,
+      "high": 0.9413132072977438,
+      "n": 29
     },
     "B4": {
       "mean": 0.933,
@@ -546,16 +546,16 @@
       "enabled": true,
       "band_scaling": {
         "green": {
-          "mean": 0.9708713904820578,
-          "variation": 0.03
+          "mean": 0.9663960012113556,
+          "variation": 0.12
         },
         "red": {
-          "mean": 0.9451393682228506,
-          "variation": 0.03
+          "mean": 0.9364779782303083,
+          "variation": 0.12
         },
         "nir1": {
-          "mean": 0.9061651704492756,
-          "variation": 0.03
+          "mean": 0.9067304223400702,
+          "variation": 0.12
         },
         "nir2": {
           "mean": 0.933,
@@ -571,7 +571,14 @@
   "provenance": {
     "package_sha": "05a1f50d82d1facda0a094542aec895a068fdfa8",
     "source": "MSS_S2/pics/pics_index.json",
-    "source_sha256": "cf1c41197f2168a2a7b8016ef358ee3e5dfe9b16011baaae810bf812f1207aae"
+    "source_sha256": "cf1c41197f2168a2a7b8016ef358ee3e5dfe9b16011baaae810bf812f1207aae",
+    "held_out_sites": [
+      "libya4_ceos",
+      "sudan1",
+      "oman1",
+      "kyzylkum",
+      "bonneville"
+    ]
   },
   "validity": {
     "calibration_domain": "desert and salt flats",
@@ -585,6 +592,14 @@
       0.142,
       0.231
     ],
-    "note": "The 14 validation sites give 14-23 % scaled RMSE; v2 is not better than v1 outside the calibration domain."
+    "note": "v2 is fitted on 29 calibration sites; the 5 held-out deserts are excluded. At the 14 validation sites the scaled RMSE is 14-23 %; outside the desert domain there is no detectable difference from v1 with 5 sites.",
+    "held_out_sites": [
+      "libya4_ceos",
+      "sudan1",
+      "oman1",
+      "kyzylkum",
+      "bonneville"
+    ],
+    "held_out_disjoint": true
   }
 }

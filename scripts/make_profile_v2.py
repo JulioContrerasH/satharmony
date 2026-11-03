@@ -20,6 +20,7 @@ from satharmony.calibration.fit import Pair, fit_profile  # noqa: E402
 from satharmony.emulators.s2_to_mss.sbaf import S2_BAND_ORDER  # noqa: E402
 
 PICS = Path("/data/databases/CLOUD_MSS/MSS_S2/pics")
+HELD_OUT = ["libya4_ceos", "sudan1", "oman1", "kyzylkum", "bonneville"]
 OUT = REPO / "satharmony/profiles/mss5_esa_gtc_v2.json"
 
 
@@ -50,7 +51,9 @@ def main() -> None:
     sites = [
         entry["site"]
         for entry in index["sites"]
-        if entry.get("role", "calibration") == "calibration" and entry["site"] != "uyuni"
+        if entry.get("role", "calibration") == "calibration"
+        and entry["site"] != "uyuni"
+        and entry["site"] not in HELD_OUT
     ]
     print(f"{len(sites)} calibration sites")
     pairs = (load_pair(site) for site in sites)
@@ -73,6 +76,8 @@ def main() -> None:
     payload["validity"] = {
         "calibration_domain": "desert and salt flats",
         "outside_domain": ["forest", "water", "crops", "wetland"],
+        "held_out_sites": HELD_OUT,
+        "held_out_disjoint": True,
         "scaled_rmse_outside": [0.142, 0.231],
         "note": (
             "The 14 validation sites give 14-23 % scaled RMSE; v2 is not "

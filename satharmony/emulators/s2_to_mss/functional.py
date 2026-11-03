@@ -15,7 +15,24 @@ def emulate_s2(
     config: PipelineConfig | None = None,
     rng: np.random.Generator | None = None,
 ) -> tuple[NDArray[np.float32], int]:
-    """Emulate MSS from S2 image."""
+    """Emulate MSS from an S2 TOA image.
+
+    The input is ``(13, H, W)`` in the package band order
+    (B1..B12, B8A) with TOA reflectance in [0, 1].  Values above 2 or below
+    -0.01 are rejected: they almost always mean the caller passed DN.
+
+    Raises:
+        ValueError: If the input is not 3D or is outside the TOA range.
+    """
+    array = np.asarray(image)
+    if array.ndim != 3:
+        raise ValueError(f"expected (13, H, W) S2 TOA, got {array.shape}")
+    if np.nanmin(array) < -0.01 or np.nanmax(array) > 2.0:
+        raise ValueError(
+            "emulate_s2 expects TOA reflectance in [0, 1]; "
+            f"got range [{np.nanmin(array):.3g}, {np.nanmax(array):.3g}] (DN?)"
+        )
+
     cfg = config.model_copy(deep=True) if config is not None else PipelineConfig()
 
     if seed is not None:

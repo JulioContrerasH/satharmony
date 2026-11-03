@@ -45,6 +45,15 @@ mss, sf = satharmony.emulate_s2(s2_image, seed=42)
 mss_labels = satharmony.emulate_labels(s2_labels, scale_factor=sf)
 ```
 
+## Input contract
+
+- **S2**: `(13, H, W)`, band order B1, B2, B3, B4, B5, B6, B7, B8, B9, B10,
+  B11, B12, B8A, TOA reflectance in **[0, 1]**.
+- **MSS**: `(4, H, W)`, B1-B4, TOA reflectance in **[0, 1]**.
+- `emulate_s2` rejects arrays with values >2 or <-0.01, which almost always
+  means the caller passed DN. `align` expects the same units in both rasters.
+- `fit_profile` takes S2 TOA 0-1 and MSS TOA 0-1 on the output grid.
+
 ## Features
 
 The MSS emulator applies physically-motivated degradations:
@@ -117,14 +126,14 @@ class; otherwise it is clear.
 from satharmony import PipelineConfig
 
 v1 = PipelineConfig.from_profile("mss5_esa_gtc_v1")  # 5 CEOS PICS, trained G4
-v2 = PipelineConfig.from_profile("mss5_esa_gtc_v2")  # 34 calibration PICS
+v2 = PipelineConfig.from_profile("mss5_esa_gtc_v2")  # 29 calibration PICS
 legacy = PipelineConfig.from_profile("legacy_0_1_13")
 ```
 
 | Profile | Band scaling (B1-B4) | gamma | Use |
 |---|---|---|---|
 | `mss5_esa_gtc_v1` | 0.956 / 0.933 / 0.867 / 0.933 | 0.112 | frozen, reproduces G4 |
-| `mss5_esa_gtc_v2` | 0.971 / 0.945 / 0.906 / 0.933 | 0.112 | 49 PICS, B4 frozen |
+| `mss5_esa_gtc_v2` | 0.966 / 0.936 / 0.907 / 0.933 | 0.112 | 29 PICS, B4 frozen |
 | `legacy_0_1_13` | old defaults | 0.112 | bit-for-bit 0.1.13 |
 
 `mss5_esa_gtc_v2` is fitted from the 49-pixel S2/MSS calibration set: 34
@@ -142,17 +151,18 @@ The sun elevation distribution is measured on the 178 MSS/TM pairs
 
 `mss5_esa_gtc_v2` is a desert correction. The 14 reserved validation sites
 (forest, water, crops, wetland) give a scaled RMSE of **14-23 %**, and the
-bootstrap delta against v1 crosses zero: v2 is **equivalent** to v1 with better
-traceability, not a proven improvement outside the calibration domain. B4 is
-kept at v1 for that reason. The JSON carries the domain and the 14-23 % figure
-under `validity`.
+bootstrap delta against v1 crosses zero: with 5 held-out sites there is **no
+detectable difference** from v1, so v2 is reported as better provenance, not as
+a proven improvement. B3 is the least constrained band (95 % CI -0.018 to
++0.018). B4 is kept at v1 for that reason. The JSON carries the domain, the
+held-out site names and the 14-23 % figure under `validity`.
 
 ### Regenerate v2
 
 ```bash
 python scripts/make_profile_v2.py
-# 34 calibration sites
-# scales 0.9709 0.9451 0.9062 0.933, gamma 0.112
+# 29 calibration sites (5 held out)
+# scales 0.9664 0.9365 0.9067 0.933, gamma 0.112
 ```
 
 ## Command line
@@ -202,7 +212,7 @@ mask = predict_masks(model, mss, checkpoint.band_mean, checkpoint.band_std)
   tooling), but they are not annotated: no accuracy and no kappa on real MSS
   yet.
 - `mss5_esa_gtc_v1()` is frozen at five CEOS PICS because it trained G4.
-  `mss5_esa_gtc_v2()` uses 34 calibration PICS (49 total, 14 reserved for
+  `mss5_esa_gtc_v2()` uses 29 calibration PICS (49 total, 5 held out, 14 reserved for
   validation) and `gamma = 0.133`. The validation sites (forest, water, crops)
   give a scaled RMSE of 14-23 %, so the profile is a desert correction and
   does not extrapolate to those surfaces.
