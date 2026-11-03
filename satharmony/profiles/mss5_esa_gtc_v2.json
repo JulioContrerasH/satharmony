@@ -582,7 +582,7 @@
     "v1_note": "v1 was fitted on 5 CEOS PICS, one of which (libya4_ceos) is in the held-out set; the comparison is conservative against v2."
   },
   "provenance": {
-    "package_sha": "ccab397540e72876669ce7830977c723c75a64fb",
+    "package_sha": "189dfe79451b40b5821a7c98225cc9fafd06705e",
     "source": "MSS_S2/pics/pics_index.json",
     "source_sha256": "cf1c41197f2168a2a7b8016ef358ee3e5dfe9b16011baaae810bf812f1207aae"
   }
