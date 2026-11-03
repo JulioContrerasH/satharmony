@@ -135,7 +135,25 @@ and the gas term is still a hypothesis. Outside the desert domain the scaled
 RMSE is 14-23 %, so the profile is a desert correction, not a universal one.
 
 The sun elevation distribution is measured on the 178 MSS/TM pairs
-(7.6-62.3 deg, mean 42.8, std 12.25).
+(7.6-62.3 deg, mean 42.8, std 12.25). The CLI default is
+`mss5_esa_gtc_v1`; pass `--profile mss5_esa_gtc_v2` explicitly.
+
+### Validity
+
+`mss5_esa_gtc_v2` is a desert correction. The 14 reserved validation sites
+(forest, water, crops, wetland) give a scaled RMSE of **14-23 %**, and the
+bootstrap delta against v1 crosses zero: v2 is **equivalent** to v1 with better
+traceability, not a proven improvement outside the calibration domain. B4 is
+kept at v1 for that reason. The JSON carries the domain and the 14-23 % figure
+under `validity`.
+
+### Regenerate v2
+
+```bash
+python scripts/make_profile_v2.py
+# 34 calibration sites
+# scales 0.9709 0.9451 0.9062 0.933, gamma 0.112
+```
 
 ## Command line
 

@@ -70,6 +70,15 @@ def main() -> None:
     payload = profile.to_dict()
     payload["config"] = profile.to_config().model_dump(mode="json")
     index_path = PICS / "pics_index.json"
+    payload["validity"] = {
+        "calibration_domain": "desert and salt flats",
+        "outside_domain": ["forest", "water", "crops", "wetland"],
+        "scaled_rmse_outside": [0.142, 0.231],
+        "note": (
+            "The 14 validation sites give 14-23 % scaled RMSE; v2 is not "
+            "better than v1 outside the calibration domain."
+        ),
+    }
     payload["provenance"] = {
         "package_sha": subprocess.check_output(
             ["git", "-C", str(REPO), "rev-parse", "HEAD"], text=True

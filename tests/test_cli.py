@@ -104,3 +104,38 @@ def test_verify_reports_ok(tmp_path: Path, capsys) -> None:
     assert main(["verify", str(manifest)]) == 0
     payload = json.loads(capsys.readouterr().out)
     assert payload["ok"] is True
+
+
+def test_help_lists_all_commands(capsys) -> None:
+    import pytest
+
+    with pytest.raises(SystemExit):
+        main(["--help"])
+    out = capsys.readouterr().out
+    for command in ("emulate", "align", "metrics", "fit", "verify"):
+        assert command in out
+
+
+def test_fit_then_emulate_roundtrip(tmp_path: Path) -> None:
+    s2_path, mss_path, _s2, _mss = _arrays(tmp_path)
+    manifest = tmp_path / "manifest.csv"
+    write_manifest(
+        [
+            ManifestRecord(
+                id="synthetic",
+                kind="s2_mss",
+                input_path=s2_path,
+                reference_path=mss_path,
+                input_sha256=sha256_file(s2_path),
+                reference_sha256=sha256_file(mss_path),
+                cloud_fraction=0.0,
+                reason="unit test",
+            )
+        ],
+        manifest,
+    )
+    profile = tmp_path / "profile.json"
+    assert main(["fit", str(manifest), "-o", str(profile), "--n-boot", "10"]) == 0
+    out = tmp_path / "emulated.npy"
+    assert main(["emulate", str(s2_path), "-o", str(out), "--profile", str(profile)]) == 0
+    assert np.load(out).shape == (4, 8, 8)
