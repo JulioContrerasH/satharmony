@@ -106,7 +106,7 @@ class; otherwise it is clear.
 - **Classes**: 0=clear, 1=thick_cloud, 2=thin_cloud, 3=shadow
 - **Legacy**: `aggregate_cloudsen12(..., legacy=True)` reproduces the 0.1.13 rule.
 
-## Calibrated profile (0.4.0)
+## Calibrated profile (0.2.0)
 
 ```python
 from satharmony import PipelineConfig
@@ -139,7 +139,7 @@ mask = predict_masks(model, mss, checkpoint.band_mean, checkpoint.band_std)
 
 `import satharmony` never imports torch; only `satharmony.models` does.
 
-## Status and limitations (0.4.0)
+## Status and limitations (0.2.0)
 
 - The cloud baseline is trained on pseudo-MSS from CloudSEN12 and evaluated on a
   scene split of that pseudo-test: mIoU 0.518, versus 0.722 for OmniCloudMask

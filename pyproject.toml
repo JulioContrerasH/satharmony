@@ -1,6 +1,6 @@
 [tool.poetry]
 name        = "satharmony"
-version     = "0.4.0"
+version     = "0.2.0"
 description = "Sensor emulation and harmonization for Earth Observation (Sentinel-2 → Landsat MSS)."
 authors     = ["Julio Contreras <contrerasnetk@gmail.com>"]
 license     = "MIT"

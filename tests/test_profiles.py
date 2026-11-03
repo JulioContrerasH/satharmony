@@ -18,7 +18,7 @@ from satharmony.emulators.s2_to_mss.functional import emulate_s2  # noqa: E402
 
 
 def test_v1_profile_matches_hardcoded_config() -> None:
-    """The JSON is the source of truth and still equals the 0.4.0 defaults."""
+    """The JSON is the source of truth and still equals the hardcoded defaults."""
     loaded = PipelineConfig.from_profile("mss5_esa_gtc_v1")
     assert loaded.model_dump() == PipelineConfig.mss5_esa_gtc_v1().model_dump()
 
