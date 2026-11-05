@@ -136,7 +136,7 @@ legacy = PipelineConfig.from_profile("legacy_0_1_13")
 | `mss5_esa_gtc_v2` | 0.966 / 0.936 / 0.907 / 0.933 | 0.112 | 29 PICS, B4 frozen |
 | `legacy_0_1_13` | old defaults | 0.112 | bit-for-bit 0.1.13 |
 
-`mss5_esa_gtc_v2` is fitted from the 49-pixel S2/MSS calibration set: 35
+`mss5_esa_gtc_v2` is fitted from the 49-site S2/MSS calibration set: 35
 desert/salt sites, 5 of them held out and 14 reserved for validation (forest,
 water, crops). The validation sites never enter the constant. B1-B3 move to the
 29-site medians; B4 stays at v1 because the held-out deserts showed that the

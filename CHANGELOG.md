@@ -4,8 +4,8 @@
 
 - Versioned JSON profiles: `mss5_esa_gtc_v1`, `mss5_esa_gtc_v2` and
   `legacy_0_1_13`, loaded with `PipelineConfig.from_profile()`. The v2 profile
-  is fitted from the 49-pixel S2/MSS calibration set (34 calibration sites,
-  14 validation sites).
+  is fitted from the 49-site S2/MSS calibration set (35 calibration sites, 5
+  held out, 14 validation sites); the v2 constants come from the remaining 29.
 - The emulator uses a local `numpy.random.Generator` per call. Only the legacy
   profile keeps the global RandomState, because it promises a byte-for-byte
   reproduction of 0.1.13.

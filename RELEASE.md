@@ -39,3 +39,11 @@ git push origin fix-p0 v0.2.0
 ```
 
 El push y el tag necesitan permiso de Julio; el CI se dispara solo.
+
+## Procedencia
+
+`validity` y `provenance` viajan dentro de cada perfil. `provenance.package_sha`
+es el commit del código que generó el JSON, no necesariamente el último commit:
+al regenerar el perfil después de un commit aparece un segundo commit
+(`sha de procedencia`) que solo actualiza ese campo. El tag debe apuntar al
+último de los dos.
