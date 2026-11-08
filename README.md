@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/logo.svg" width="120" alt="satharmony">
+  <img src="https://raw.githubusercontent.com/JulioContrerasH/satharmony/main/docs/assets/logo.png" width="120" alt="satharmony">
 </p>
 
 <h1 align="center">satharmony</h1>
@@ -21,7 +21,7 @@
 satharmony turns a Sentinel-2 TOA scene into what Landsat 5 MSS would have recorded:
 four bands, 60 m pixels, 6-bit radiometry, detector striping and sensor noise.
 
-<p align="center"><img src="docs/assets/pipeline.svg" width="880" alt="pipeline"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/JulioContrerasH/satharmony/main/docs/assets/pipeline.png" width="880" alt="pipeline"></p>
 
 - **13 bands to 4.** An SBAF mixes nine S2 VNIR bands into MSS1-MSS4, plus a water-vapour term for MSS4.
 - **10 m to 60 m.** A Gaussian PSF of 79-82 m, then centred averaging on the 60 m grid.
@@ -70,9 +70,9 @@ satharmony metrics mss.npy reference_mss.npy --c2st --mask valid.npy
 Libya-2, a calibration site. Left: Sentinel-2 true colour. Middle: emulated MSS. Right: the
 real Landsat 5 scene. The two MSS panels share one stretch, taken from the real scene.
 
-<p align="center"><img src="docs/assets/example.png" width="900" alt="example scene"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/JulioContrerasH/satharmony/main/docs/assets/example.png" width="900" alt="example scene"></p>
 
-<p align="center"><img src="docs/assets/example.gif" width="360" alt="emulated and real, blinking"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/JulioContrerasH/satharmony/main/docs/assets/example.gif" width="360" alt="emulated and real, blinking"></p>
 
 The GIF blinks between emulated and real. The emulated panel is the deterministic core; the
 real 1987 scene still carries its own sensor noise.
@@ -104,7 +104,7 @@ user gets.
 | Desert and salt flats | 29 | 5.7-7.0 % | 8.2-14.7 % |
 | Forest, water, crops, wetland | 14 | 13.4-23.6 % | 27.2-60.0 % |
 
-<p align="center"><img src="docs/assets/validation.png" width="980" alt="radiometric validation"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/JulioContrerasH/satharmony/main/docs/assets/validation.png" width="980" alt="radiometric validation"></p>
 
 Outside the calibration domain the profile is not a correction. The SBAF cannot absorb
 vegetation, water or atmosphere, and no per-band scale fixes it. That is a limit of the
@@ -128,7 +128,7 @@ The emulator is still distinguishable. With 62 500 pixels per site and a residua
 The PSF (79-82 m), the 60 m sampling and the 474 m detector period are checked against
 five PICS with radial PSDs and a striping metric.
 
-<p align="center"><img src="docs/assets/psd.png" width="760" alt="radial PSD"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/JulioContrerasH/satharmony/main/docs/assets/psd.png" width="760" alt="radial PSD"></p>
 
 The FWHM of an edge is **not** measured: the PICS are homogeneous and have no slanted
 edges. The PSF is set by specification, not recovered from data.

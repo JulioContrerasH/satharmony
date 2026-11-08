@@ -248,6 +248,27 @@ def psd_figure(mss: np.ndarray, pred: np.ndarray) -> None:
     plt.close(figure)
 
 
+def rasterize_svgs() -> None:
+    """PNG copies for environments that do not render SVG, such as PyPI."""
+    try:
+        import cairosvg
+    except ImportError:
+        print("cairosvg is not installed; SVGs are left as they are")
+        return
+    cairosvg.svg2png(
+        url=str(OUT / "logo.svg"),
+        write_to=str(OUT / "logo.png"),
+        output_width=360,
+        background_color="white",
+    )
+    cairosvg.svg2png(
+        url=str(OUT / "pipeline.svg"),
+        write_to=str(OUT / "pipeline.png"),
+        output_width=1600,
+        background_color="white",
+    )
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     EVIDENCE.mkdir(parents=True, exist_ok=True)
@@ -258,6 +279,7 @@ def main() -> None:
     smooth, _ = emulate_s2(s2, config=deterministic(profile))
     print(SITE, "grid", mss.shape, "pred", pred.shape, "factor", factor)
 
+    rasterize_svgs()
     example_figure(s2, mss, smooth)
     gif(s2, mss, smooth)
     psd_figure(mss, smooth)
