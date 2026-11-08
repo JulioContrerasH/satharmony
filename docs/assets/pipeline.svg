@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 120" width="900" height="120" role="img" aria-label="Pipeline: Sentinel-2 bands, SBAF mixing, PSF and 60 m sampling, square root and 6-bit quantization, striping and noise, MSS bands">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <g font-family="Helvetica Neue, Arial, sans-serif" font-size="12" text-anchor="middle">
+    <rect x="10" y="28" width="128" height="58" rx="6" fill="#f0fdfa" stroke="#0f766e" stroke-width="1.4"/>
+    <text x="74" y="52" fill="#134e4a">Sentinel-2 TOA</text>
+    <text x="74" y="70" fill="#0f766e">13 bands, 10 m</text>
+
+    <rect x="160" y="28" width="128" height="58" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+    <text x="224" y="52" fill="#1f2328">SBAF</text>
+    <text x="224" y="70" fill="#6b7280">9 VNIR bands</text>
+
+    <rect x="310" y="28" width="128" height="58" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+    <text x="374" y="52" fill="#1f2328">PSF 79-82 m</text>
+    <text x="374" y="70" fill="#6b7280">60 m grid</text>
+
+    <rect x="460" y="28" width="128" height="58" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+    <text x="524" y="52" fill="#1f2328">sqrt + 6 bits</text>
+    <text x="524" y="70" fill="#6b7280">then expanded</text>
+
+    <rect x="610" y="28" width="128" height="58" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+    <text x="674" y="52" fill="#1f2328">striping</text>
+    <text x="674" y="70" fill="#6b7280">memory, noise</text>
+
+    <rect x="760" y="28" width="128" height="58" rx="6" fill="#1f2328" stroke="#1f2328" stroke-width="1.4"/>
+    <text x="824" y="52" fill="#ffffff">MSS TOA</text>
+    <text x="824" y="70" fill="#99f6e4">4 bands, 60 m</text>
+
+    <g stroke="#6b7280" stroke-width="1.4" marker-end="url(#arrow)">
+      <line x1="140" y1="57" x2="156" y2="57"/>
+      <line x1="290" y1="57" x2="306" y2="57"/>
+      <line x1="440" y1="57" x2="456" y2="57"/>
+      <line x1="590" y1="57" x2="606" y2="57"/>
+      <line x1="740" y1="57" x2="756" y2="57"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,418 @@
+{
+  "profile": "mss5_esa_gtc_v2",
+  "sites": [
+    "sahel",
+    "white_sands",
+    "coipasa",
+    "lake_eyre",
+    "congo",
+    "amazon",
+    "cerrado",
+    "pampa",
+    "pantanal",
+    "okavango",
+    "deccan",
+    "titicaca",
+    "victoria",
+    "great_salt_lake"
+  ],
+  "method": "v2 emulation with saturation and range mask; per-site relative RMSE, median across the 14 sites; rmse_rel_rescaled applies one in-sample per-site factor, the same convention as the old SBAF table (sbaf_pics_summary_validation.csv)",
+  "results": {
+    "deterministic": {
+      "median_across_sites": {
+        "B1": {
+          "rmse_rel_median": 0.2724129149228569,
+          "rmse_rel_rescaled_median": 0.13350419082153292,
+          "rmse_rel_rescaled_min": 0.06941969674559068,
+          "rmse_rel_rescaled_max": 0.47712554092009835
+        },
+        "B2": {
+          "rmse_rel_median": 0.41950018571338654,
+          "rmse_rel_rescaled_median": 0.18912795077085554,
+          "rmse_rel_rescaled_min": 0.06726374113164478,
+          "rmse_rel_rescaled_max": 0.7459038491154706
+        },
+        "B3": {
+          "rmse_rel_median": 0.3409349608995057,
+          "rmse_rel_rescaled_median": 0.18544292104253313,
+          "rmse_rel_rescaled_min": 0.06243251227558656,
+          "rmse_rel_rescaled_max": 1.1517920144170128
+        },
+        "B4": {
+          "rmse_rel_median": 0.600161264169105,
+          "rmse_rel_rescaled_median": 0.23624186883356973,
+          "rmse_rel_rescaled_min": 0.09243018924215927,
+          "rmse_rel_rescaled_max": 1.919961643369172
+        }
+      },
+      "per_site": [
+        {
+          "site": "sahel",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.15800151299993664,
+          "B1_rmse_rel_rescaled": 0.06941969674559068,
+          "B2_rmse_rel": 0.1697957440389984,
+          "B2_rmse_rel_rescaled": 0.09323816265061449,
+          "B3_rmse_rel": 0.16635161083385083,
+          "B3_rmse_rel_rescaled": 0.08944629228009567,
+          "B4_rmse_rel": 0.10029661523343575,
+          "B4_rmse_rel_rescaled": 0.09878416004394945
+        },
+        {
+          "site": "white_sands",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.614577930552896,
+          "B1_rmse_rel_rescaled": 0.07452355584418384,
+          "B2_rmse_rel": 0.6222382756361517,
+          "B2_rmse_rel_rescaled": 0.06726374113164478,
+          "B3_rmse_rel": 0.3769170825383165,
+          "B3_rmse_rel_rescaled": 0.06243251227558656,
+          "B4_rmse_rel": 4.718044973509909,
+          "B4_rmse_rel_rescaled": 0.09243018924215927
+        },
+        {
+          "site": "coipasa",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 4.253890989961644,
+          "B1_rmse_rel_rescaled": 0.21862843417844552,
+          "B2_rmse_rel": 3.9761592329458004,
+          "B2_rmse_rel_rescaled": 0.3132775501347145,
+          "B3_rmse_rel": 5.663551925435966,
+          "B3_rmse_rel_rescaled": 0.7119176495374954,
+          "B4_rmse_rel": 11.531830195960561,
+          "B4_rmse_rel_rescaled": 1.3254978889626134
+        },
+        {
+          "site": "lake_eyre",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.2333306530779445,
+          "B1_rmse_rel_rescaled": 0.15813555018274714,
+          "B2_rmse_rel": 0.26917984933997385,
+          "B2_rmse_rel_rescaled": 0.19256886197177428,
+          "B3_rmse_rel": 0.546850279415245,
+          "B3_rmse_rel_rescaled": 0.17642505439427555,
+          "B4_rmse_rel": 1.5251640925247,
+          "B4_rmse_rel_rescaled": 0.3223006602099096
+        },
+        {
+          "site": "congo",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.42834883545885655,
+          "B1_rmse_rel_rescaled": 0.13568361106118199,
+          "B2_rmse_rel": 0.5043711063689011,
+          "B2_rmse_rel_rescaled": 0.1652348925197815,
+          "B3_rmse_rel": 0.11719838797142988,
+          "B3_rmse_rel_rescaled": 0.11687632264643004,
+          "B4_rmse_rel": 0.2623848057826123,
+          "B4_rmse_rel_rescaled": 0.10128768493826071
+        },
+        {
+          "site": "amazon",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.23275287078803825,
+          "B1_rmse_rel_rescaled": 0.23267302619251987,
+          "B2_rmse_rel": 0.33462926505787194,
+          "B2_rmse_rel_rescaled": 0.2937692471632019,
+          "B3_rmse_rel": 0.2113654819240165,
+          "B3_rmse_rel_rescaled": 0.2094924108999165,
+          "B4_rmse_rel": 0.2768618575190865,
+          "B4_rmse_rel_rescaled": 0.21601923202847198
+        },
+        {
+          "site": "cerrado",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.14914693212993677,
+          "B1_rmse_rel_rescaled": 0.11082745946728394,
+          "B2_rmse_rel": 0.21961778238105414,
+          "B2_rmse_rel_rescaled": 0.18568703956993676,
+          "B3_rmse_rel": 0.20183581297413802,
+          "B3_rmse_rel_rescaled": 0.15496865770494767,
+          "B4_rmse_rel": 0.38387086836849144,
+          "B4_rmse_rel_rescaled": 0.16767383386334145
+        },
+        {
+          "site": "pampa",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.15542657486049585,
+          "B1_rmse_rel_rescaled": 0.13132477058188388,
+          "B2_rmse_rel": 0.22354610851582155,
+          "B2_rmse_rel_rescaled": 0.21980355162824403,
+          "B3_rmse_rel": 0.28895509091809435,
+          "B3_rmse_rel_rescaled": 0.287871835448075,
+          "B4_rmse_rel": 0.3312233245708869,
+          "B4_rmse_rel_rescaled": 0.3136863628653295
+        },
+        {
+          "site": "pantanal",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.12872260221314943,
+          "B1_rmse_rel_rescaled": 0.07417368307812651,
+          "B2_rmse_rel": 0.163195037333106,
+          "B2_rmse_rel_rescaled": 0.1338373109502051,
+          "B3_rmse_rel": 0.2711839920914164,
+          "B3_rmse_rel_rescaled": 0.12079783003597454,
+          "B4_rmse_rel": 0.4406101831820996,
+          "B4_rmse_rel_rescaled": 0.13513965323505914
+        },
+        {
+          "site": "okavango",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.620905312242079,
+          "B1_rmse_rel_rescaled": 0.18596074655401945,
+          "B2_rmse_rel": 1.0718577165519865,
+          "B2_rmse_rel_rescaled": 0.2849612587839712,
+          "B3_rmse_rel": 0.4740693389730704,
+          "B3_rmse_rel_rescaled": 0.21345961928004475,
+          "B4_rmse_rel": 0.5704398494879909,
+          "B4_rmse_rel_rescaled": 0.24657428179383373
+        },
+        {
+          "site": "deccan",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.10970311859848901,
+          "B1_rmse_rel_rescaled": 0.0953558091427837,
+          "B2_rmse_rel": 0.1648868764369872,
+          "B2_rmse_rel_rescaled": 0.16020048035227683,
+          "B3_rmse_rel": 0.3049528392606949,
+          "B3_rmse_rel_rescaled": 0.1944607876907907,
+          "B4_rmse_rel": 0.6298826788502192,
+          "B4_rmse_rel_rescaled": 0.22590945587330571
+        },
+        {
+          "site": "titicaca",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.31149517676776933,
+          "B1_rmse_rel_rescaled": 0.23203403410321052,
+          "B2_rmse_rel": 0.6116394572686042,
+          "B2_rmse_rel_rescaled": 0.6019392122919216,
+          "B3_rmse_rel": 0.7534327003936969,
+          "B3_rmse_rel_rescaled": 0.5269450098249105,
+          "B4_rmse_rel": 1.3610977171649299,
+          "B4_rmse_rel_rescaled": 1.1566535846386914
+        },
+        {
+          "site": "victoria",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.5833189753610416,
+          "B1_rmse_rel_rescaled": 0.06987115709200611,
+          "B2_rmse_rel": 0.8340120310642979,
+          "B2_rmse_rel_rescaled": 0.09765191186837636,
+          "B3_rmse_rel": 0.9962813646901899,
+          "B3_rmse_rel_rescaled": 0.13376780920345663,
+          "B4_rmse_rel": 3.4936335462123265,
+          "B4_rmse_rel_rescaled": 0.4727978786684509
+        },
+        {
+          "site": "great_salt_lake",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 1.1295346171194927,
+          "B1_rmse_rel_rescaled": 0.47712554092009835,
+          "B2_rmse_rel": 2.587034422134307,
+          "B2_rmse_rel_rescaled": 0.7459038491154706,
+          "B3_rmse_rel": 4.235261233002902,
+          "B3_rmse_rel_rescaled": 1.1517920144170128,
+          "B4_rmse_rel": 8.549344695826708,
+          "B4_rmse_rel_rescaled": 1.919961643369172
+        }
+      ]
+    },
+    "stochastic_seed0": {
+      "median_across_sites": {
+        "B1": {
+          "rmse_rel_median": 0.3571668735341852,
+          "rmse_rel_rescaled_median": 0.16700299927712237,
+          "rmse_rel_rescaled_min": 0.08396468462170233,
+          "rmse_rel_rescaled_max": 0.4968578752943928
+        },
+        "B2": {
+          "rmse_rel_median": 0.4264870070769089,
+          "rmse_rel_rescaled_median": 0.2163866249322352,
+          "rmse_rel_rescaled_min": 0.09942303604865353,
+          "rmse_rel_rescaled_max": 0.7502225858930344
+        },
+        "B3": {
+          "rmse_rel_median": 0.2976164650729959,
+          "rmse_rel_rescaled_median": 0.20522748440949698,
+          "rmse_rel_rescaled_min": 0.09656630596670242,
+          "rmse_rel_rescaled_max": 1.1476350212450128
+        },
+        "B4": {
+          "rmse_rel_median": 0.5666170511660091,
+          "rmse_rel_rescaled_median": 0.24251435152673348,
+          "rmse_rel_rescaled_min": 0.10513122600298272,
+          "rmse_rel_rescaled_max": 1.9120613385662726
+        }
+      },
+      "per_site": [
+        {
+          "site": "sahel",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.19204210536473004,
+          "B1_rmse_rel_rescaled": 0.08396468462170233,
+          "B2_rmse_rel": 0.19245244513046952,
+          "B2_rmse_rel_rescaled": 0.09942303604865353,
+          "B3_rmse_rel": 0.14785023324274904,
+          "B3_rmse_rel_rescaled": 0.09656630596670242,
+          "B4_rmse_rel": 0.1640242369688295,
+          "B4_rmse_rel_rescaled": 0.10513122600298272
+        },
+        {
+          "site": "white_sands",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.5820230670866355,
+          "B1_rmse_rel_rescaled": 0.11427659251247858,
+          "B2_rmse_rel": 0.5119828100000972,
+          "B2_rmse_rel_rescaled": 0.14167531284158696,
+          "B3_rmse_rel": 0.2695763664193586,
+          "B3_rmse_rel_rescaled": 0.14077010455282024,
+          "B4_rmse_rel": 4.5231573110830885,
+          "B4_rmse_rel_rescaled": 0.11964247545945686
+        },
+        {
+          "site": "coipasa",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 4.132728222523487,
+          "B1_rmse_rel_rescaled": 0.21988801289470183,
+          "B2_rmse_rel": 2.9416198384103653,
+          "B2_rmse_rel_rescaled": 0.24487152944629353,
+          "B3_rmse_rel": 4.688130740510791,
+          "B3_rmse_rel_rescaled": 0.6703416105530436,
+          "B4_rmse_rel": 10.011880894131961,
+          "B4_rmse_rel_rescaled": 1.3229141766647092
+        },
+        {
+          "site": "lake_eyre",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.19336768336781945,
+          "B1_rmse_rel_rescaled": 0.1652449442803709,
+          "B2_rmse_rel": 0.2947468175600317,
+          "B2_rmse_rel_rescaled": 0.1956795840098483,
+          "B3_rmse_rel": 0.5380350250156158,
+          "B3_rmse_rel_rescaled": 0.17953713240457184,
+          "B4_rmse_rel": 1.3069409002925367,
+          "B4_rmse_rel_rescaled": 0.32027472751297953
+        },
+        {
+          "site": "congo",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.4823306306464328,
+          "B1_rmse_rel_rescaled": 0.1687610542738738,
+          "B2_rmse_rel": 0.510399696371386,
+          "B2_rmse_rel_rescaled": 0.20336355546093268,
+          "B3_rmse_rel": 0.1297363086101746,
+          "B3_rmse_rel_rescaled": 0.12917756737099084,
+          "B4_rmse_rel": 0.110779738878746,
+          "B4_rmse_rel_rescaled": 0.11030907191165648
+        },
+        {
+          "site": "amazon",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.2741516064729214,
+          "B1_rmse_rel_rescaled": 0.264654184575721,
+          "B2_rmse_rel": 0.3425743177824317,
+          "B2_rmse_rel_rescaled": 0.3137637077276241,
+          "B3_rmse_rel": 0.2300935688684008,
+          "B3_rmse_rel_rescaled": 0.22931670680012473,
+          "B4_rmse_rel": 0.2334526404108182,
+          "B4_rmse_rel_rescaled": 0.2332947102921984
+        },
+        {
+          "site": "cerrado",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.23076172164680414,
+          "B1_rmse_rel_rescaled": 0.1879222565226584,
+          "B2_rmse_rel": 0.272049309468438,
+          "B2_rmse_rel_rescaled": 0.23572516577301456,
+          "B3_rmse_rel": 0.24537932018724581,
+          "B3_rmse_rel_rescaled": 0.210293209992693,
+          "B4_rmse_rel": 0.2970785126559046,
+          "B4_rmse_rel_rescaled": 0.22104838891924697
+        },
+        {
+          "site": "pampa",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.20976336056353162,
+          "B1_rmse_rel_rescaled": 0.15373703256361293,
+          "B2_rmse_rel": 0.237093642005648,
+          "B2_rmse_rel_rescaled": 0.2294096944035377,
+          "B3_rmse_rel": 0.2936349040653458,
+          "B3_rmse_rel_rescaled": 0.2906601237856312,
+          "B4_rmse_rel": 0.3110832285562971,
+          "B4_rmse_rel_rescaled": 0.31066722605603453
+        },
+        {
+          "site": "pantanal",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.22342266309845768,
+          "B1_rmse_rel_rescaled": 0.12235938849746009,
+          "B2_rmse_rel": 0.2091919048636759,
+          "B2_rmse_rel_rescaled": 0.17025156818444923,
+          "B3_rmse_rel": 0.25439440201063285,
+          "B3_rmse_rel_rescaled": 0.13105130541415694,
+          "B4_rmse_rel": 0.1837459591031717,
+          "B4_rmse_rel_rescaled": 0.144086794938351
+        },
+        {
+          "site": "okavango",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.5127618486086746,
+          "B1_rmse_rel_rescaled": 0.19664788575028197,
+          "B2_rmse_rel": 1.0831438231857329,
+          "B2_rmse_rel_rescaled": 0.28873918296665496,
+          "B3_rmse_rel": 0.4973432536384681,
+          "B3_rmse_rel_rescaled": 0.21875372277462674,
+          "B4_rmse_rel": 0.5515749443260826,
+          "B4_rmse_rel_rescaled": 0.25173399276126857
+        },
+        {
+          "site": "deccan",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.11141565739258799,
+          "B1_rmse_rel_rescaled": 0.1114143129792464,
+          "B2_rmse_rel": 0.17874468856903328,
+          "B2_rmse_rel_rescaled": 0.16768716755357027,
+          "B3_rmse_rel": 0.301598026080646,
+          "B3_rmse_rel_rescaled": 0.20016175882630097,
+          "B4_rmse_rel": 0.5816591580059356,
+          "B4_rmse_rel_rescaled": 0.22721478556580754
+        },
+        {
+          "site": "titicaca",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.440182140595449,
+          "B1_rmse_rel_rescaled": 0.30570390146122756,
+          "B2_rmse_rel": 0.6735074625964138,
+          "B2_rmse_rel_rescaled": 0.6666690845861677,
+          "B3_rmse_rel": 0.7687421782728188,
+          "B3_rmse_rel_rescaled": 0.7385440417097937,
+          "B4_rmse_rel": 1.5905261276534242,
+          "B4_rmse_rel_rescaled": 1.2010174459228158
+        },
+        {
+          "site": "victoria",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 0.45503588457152333,
+          "B1_rmse_rel_rescaled": 0.10001171825392186,
+          "B2_rmse_rel": 0.7814626566583424,
+          "B2_rmse_rel_rescaled": 0.12424950192809671,
+          "B3_rmse_rel": 1.0954772650170237,
+          "B3_rmse_rel_rescaled": 0.19143417027294762,
+          "B4_rmse_rel": 3.516141619996246,
+          "B4_rmse_rel_rescaled": 0.5016486529226402
+        },
+        {
+          "site": "great_salt_lake",
+          "valid_pixels": 62500,
+          "B1_rmse_rel": 1.120953169602,
+          "B1_rmse_rel_rescaled": 0.4968578752943928,
+          "B2_rmse_rel": 2.633867535343302,
+          "B2_rmse_rel_rescaled": 0.7502225858930344,
+          "B3_rmse_rel": 4.26104277079098,
+          "B3_rmse_rel_rescaled": 1.1476350212450128,
+          "B4_rmse_rel": 7.715197015884389,
+          "B4_rmse_rel_rescaled": 1.9120613385662726
+        }
+      ]
+    }
+  }
+}

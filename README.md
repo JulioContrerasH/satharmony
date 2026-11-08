@@ -1,264 +1,196 @@
-# 🛰️ SatHarmony
+<p align="center">
+  <img src="docs/assets/logo.svg" width="120" alt="satharmony">
+</p>
 
-**Sensor emulation and harmonization for Earth Observation.**
+<h1 align="center">satharmony</h1>
 
-[![PyPI](https://img.shields.io/pypi/v/satharmony.svg)](https://pypi.org/project/satharmony/)
-[![Python](https://img.shields.io/pypi/pyversions/satharmony.svg)](https://pypi.org/project/satharmony/)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+<p align="center">Sentinel-2 in, Landsat MSS out. Same scene, 1980s sensor.</p>
 
-SatHarmony provides physically-based sensor emulation to create synthetic historical satellite imagery from modern sensors. Currently supports **Sentinel-2 → Landsat MSS** emulation with realistic degradation modeling.
+<p align="center">
+  <a href="https://github.com/JulioContrerasH/satharmony/actions/workflows/tests.yml"><img src="https://github.com/JulioContrerasH/satharmony/actions/workflows/tests.yml/badge.svg?branch=fix-p0" alt="tests"></a>
+  <img src="https://img.shields.io/badge/python-3.10--3.13-blue" alt="python">
+  <img src="https://img.shields.io/badge/version-0.2.0-blue" alt="version">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="license"></a>
+</p>
 
-## Installation
+> PyPI still serves **0.1.13**. The version documented here is **0.2.0**, waiting for its
+> TestPyPI check.
 
-Python 3.10 to 3.13 (`Requires-Python >=3.10,<3.14`, the range the CI matrix
-tests).
+## What it does
+
+satharmony turns a Sentinel-2 TOA scene into what Landsat 5 MSS would have recorded:
+four bands, 60 m pixels, 6-bit radiometry, detector striping and sensor noise.
+
+<p align="center"><img src="docs/assets/pipeline.svg" width="880" alt="pipeline"></p>
+
+- **13 bands to 4.** An SBAF mixes nine S2 VNIR bands into MSS1-MSS4, plus a water-vapour term for MSS4.
+- **10 m to 60 m.** A Gaussian PSF of 79-82 m, then centred averaging on the 60 m grid.
+- **TOA in, TOA out.** Reflectance in [0, 1]. No atmospheric correction and no surface reflectance.
+- **Deterministic or stochastic.** The same seed gives the same bytes. The stochastic profile adds striping, memory effect and noise.
+
+What it is not: a cloud mask, a super-resolution model, or a replacement for real MSS scenes.
+
+## Install
 
 ```bash
 pip install satharmony
 
-# With GeoTIFF I/O support (rasterio, needed by satharmony.datasets)
-pip install satharmony[io]
+# GeoTIFF reading (rasterio)
+pip install "satharmony[io]"
 
-# With the calibration metrics and ECC refinement
-pip install satharmony[calib]
+# C2ST, ECC alignment (scikit-learn, opencv)
+pip install "satharmony[calib]"
 ```
 
-## Quick Start
+Python 3.10 to 3.13. The CI matrix runs all four.
+
+## Quickstart
 
 ```python
 import numpy as np
-import satharmony
+from satharmony import PipelineConfig, emulate_s2
 
-# Load your Sentinel-2 image (C, H, W) and CloudSEN12 labels (H, W)
-s2_image = ...      # shape: (13, 512, 512), float32, [0, 1]
-s2_labels = ...     # shape: (512, 512), uint8, classes 0-3
-
-# Emulate both together (recommended - guarantees matching dimensions)
-mss, mss_labels, scale_factor = satharmony.emulate_s2_with_labels(
-    s2_image, s2_labels, seed=42
-)
-# mss.shape:        (4, 85, 85)   # 512 @ 10 m -> 60 m grid
-# mss_labels.shape: (85, 85)
-
-# Or emulate separately (must pass scale_factor to labels)
-mss, sf = satharmony.emulate_s2(s2_image, seed=42)
-mss_labels = satharmony.emulate_labels(s2_labels, scale_factor=sf)
-```
-
-## Input contract
-
-- **S2**: `(13, H, W)`, band order B1, B2, B3, B4, B5, B6, B7, B8, B9, B10,
-  B11, B12, B8A, TOA reflectance in **[0, 1]**.
-- **MSS**: `(4, H, W)`, B1-B4, TOA reflectance in **[0, 1]**.
-- `emulate_s2` rejects arrays with values >2 or <-0.01, which almost always
-  means the caller passed DN. `align` expects the same units in both rasters.
-- `fit_profile` takes S2 TOA 0-1 and MSS TOA 0-1 on the output grid.
-
-## Features
-
-The MSS emulator applies physically-motivated degradations:
-
-| Degradation | Description |
-|-------------|-------------|
-| **Spectral** | Legacy band selection (B3/B4/B7/B8) or SBAF: non-negative linear mixing of nine S2 VNIR bands plus a water-vapour term for B4, per sensor |
-| **Spatial** | PSF convolution (MSS IFOV ~79-82 m) + 60 m sampling |
-| **Radiometric** | 6-bit quantization with sqrt companding (decompressed back to linear reflectance) |
-| **Striping** | 6-detector gain/offset mismatch artifacts |
-| **Memory Effect** | Bright target recovery trailing |
-| **Noise** | Coherent (periodic) + random (gaussian/poisson) |
-| **Scan Artifacts** | Line dropouts and transmission errors |
-
-## API Reference
-
-```python
-# Combined emulation (recommended)
-mss, labels, sf = satharmony.emulate_s2_with_labels(image, labels, seed=42)
-
-# Independent emulation
-mss, sf = satharmony.emulate_s2(image, seed=42)
-mss, sf = satharmony.emulate_s2(image, scale_factor=8)  # fixed scale
-labels = satharmony.emulate_labels(labels, scale_factor=sf)
-
-# Versioned profile (v2 is the 49-PICS calibration)
-from satharmony import MSSEmulator, PipelineConfig
+s2 = np.load("scene_s2.npy").astype(np.float32)   # (13, H, W), TOA 0-1
 config = PipelineConfig.from_profile("mss5_esa_gtc_v2")
+mss, factor = emulate_s2(s2, config=config, seed=42)
 
-# Low-level access
-config = PipelineConfig()
-config.spatial.sampling_gsd = 60.0          # output grid (ESA GTC)
-config.spatial.psf_fwhm_m = Range(79, 82)   # sensor IFOV, independent of grid
-
-# Spectral mode: "legacy" (B3/B4/B7/B8, default) or "sbaf" (fitted SBAF)
-config.spectral.mode = "sbaf"
-config.spectral.sensor = "S2A"              # S2A, S2B or S2C
-
-emulator = MSSEmulator(config)
-mss = emulator(image)
-
-# Reproduce the 0.1.13 behaviour used by the published model
-config_legacy = PipelineConfig.legacy_0_1_13()
+print(mss.shape)    # (4, H // 6, W // 6)
+print(mss.dtype)    # float32, TOA 0-1
 ```
 
-## Behavior changes in 0.2.0
-
-- Radiometry is linear again: the sqrt companding is inverted after 6-bit quantization.
-- Decimation is centred (average pooling after the PSF), matching the label grid.
-- `sampling_gsd` (60 m) and `psf_fwhm_m` (79-82 m) are independent.
-- Labels use the CloudSEN12 encoding (0 clear, 1 thick, 2 thin, 3 shadow) and a
-  conservative contamination rule.
-- `PipelineConfig.legacy_0_1_13()` reproduces the 0.1.13 output bit for bit
-  (same seed and input).
-
-## Label Aggregation
-
-CloudSEN12 labels (10m) are aggregated to the MSS grid. The default rule uses
-the CloudSEN12 Table 3 encoding and priority (thick > shadow > thin > clear):
-a class with >= 50 % of the block wins; if no class reaches 50 %, a block with
->= 50 % contaminated pixels is assigned to the most frequent contaminated
-class; otherwise it is clear.
-
-- **Classes**: 0=clear, 1=thick_cloud, 2=thin_cloud, 3=shadow
-- **Legacy**: `aggregate_cloudsen12(..., legacy=True)` reproduces the 0.1.13 rule.
-
-## Profiles (0.2.0)
-
-```python
-from satharmony import PipelineConfig
-
-v1 = PipelineConfig.from_profile("mss5_esa_gtc_v1")  # 5 CEOS PICS, trained G4
-v2 = PipelineConfig.from_profile("mss5_esa_gtc_v2")  # 29 calibration PICS
-legacy = PipelineConfig.from_profile("legacy_0_1_13")
-```
-
-| Profile | Band scaling (B1-B4) | gamma | Use |
-|---|---|---|---|
-| `mss5_esa_gtc_v1` | 0.956 / 0.933 / 0.867 / 0.933 | 0.112 | frozen, reproduces G4 |
-| `mss5_esa_gtc_v2` | 0.966 / 0.936 / 0.907 / 0.933 | 0.112 | 29 PICS, B4 frozen |
-| `legacy_0_1_13` | old defaults | 0.112 | bit-for-bit 0.1.13 |
-
-`mss5_esa_gtc_v2` is fitted from the 49-site S2/MSS calibration set: 35
-desert/salt sites, 5 of them held out and 14 reserved for validation (forest,
-water, crops). The validation sites never enter the constant. B1-B3 move to the
-29-site medians; B4 stays at v1 because the held-out deserts showed that the
-fitted B4 was slightly worse and the gas term is still a hypothesis. Outside
-the desert domain the scaled RMSE is 13.4-23.6 % and the raw error is 27-60 %,
-so the profile is a desert correction, not a universal one.
-
-The sun elevation distribution is measured on the 178 MSS/TM pairs
-(7.6-62.3 deg, mean 42.8, std 12.25). The CLI default is
-`mss5_esa_gtc_v1`; pass `--profile mss5_esa_gtc_v2` explicitly.
-
-### Validity
-
-`mss5_esa_gtc_v2` is a desert correction. The 14 reserved validation sites
-(forest, water, crops, wetland) give a scaled RMSE of **13.4-23.6 %**, and the
-bootstrap delta against v1 crosses zero: with 5 held-out sites there is **no
-detectable difference** from v1, so v2 is reported as better provenance, not as
-a proven improvement. B3 is the least constrained band (95 % CI -0.018 to
-+0.018). B4 is kept at v1 for that reason. The JSON carries the domain, the
-held-out site names and the measured figures under `validity`.
-
-Two numbers are easy to mix up. The **5.3-6.2 %** desert figure is the SBAF
-calibration error with one in-sample factor per site and band; with v2 and the
-same convention it is 5.7-7.0 %, and without the free factor it is 8.2-14.7 %.
-The **13.4-23.6 %** outside figure also uses one in-sample factor per site;
-without it, the raw error is 27-60 %.
-
-The classifier two-sample test (C2ST) on the 5 held-out deserts gives 0.999
-median for the deterministic emulation and 0.880 for the seeded stochastic one:
-the cubes are still distinguishable. That is expected with 62 500 pixels per
-site and a residual bias; it is reported, not hidden.
-
-One caveat: v1 was fitted on 5 CEOS PICS and one of them (`libya4_ceos`) is in
-the held-out set, so the comparison is conservative against v2.
-
-### Regenerate v2
+Raster files go through the CLI:
 
 ```bash
-python scripts/make_profile_v2.py
-# 29 calibration sites (5 held out)
-# scales 0.9664 0.9365 0.9067 0.933, gamma 0.112
+satharmony emulate scene_s2.tif -o mss.npy --profile mss5_esa_gtc_v2 --seed 42
+satharmony metrics mss.npy reference_mss.npy --c2st --mask valid.npy
 ```
+
+## Example
+
+Libya-2, a calibration site. Left: Sentinel-2 true colour. Middle: emulated MSS. Right: the
+real Landsat 5 scene. The two MSS panels share one stretch, taken from the real scene.
+
+<p align="center"><img src="docs/assets/example.png" width="900" alt="example scene"></p>
+
+<p align="center"><img src="docs/assets/example.gif" width="360" alt="emulated and real, blinking"></p>
+
+The GIF blinks between emulated and real. The emulated panel is the deterministic core; the
+real 1987 scene still carries its own sensor noise.
+
+## Profiles
+
+| Profile | MSS1 | MSS2 | MSS3 | MSS4 | gamma | What it is |
+|---|---:|---:|---:|---:|---:|---|
+| `mss5_esa_gtc_v1` | 0.956 | 0.933 | 0.867 | 0.933 | 0.112 | Five CEOS PICS. Frozen: it trained the G4 cloud model. |
+| `mss5_esa_gtc_v2` | 0.966 | 0.936 | 0.907 | 0.933 | 0.112 | 29 calibration PICS. B4 frozen at v1. |
+| `legacy_0_1_13` | 0.600 | 0.580 | 0.600 | 0.850 | 0.112 | Bit-for-bit reproduction of 0.1.13. |
+
+v2 is fitted on 29 calibration sites: the index has 35, one wet Uyuni scene is
+removed and five deserts are held out. Fourteen forest, water, crop and wetland sites are
+reserved for validation. The 29-site fit gives gamma 0.14 and MSS4 0.942; both stay at the
+v1 values because the gas term is still a hypothesis, and a frozen B4 keeps the comparison
+honest.
+
+## Validation
+
+### Radiometry
+
+RMSE over all pixels, relative to the mean of the reference band. "Scaled" applies one
+multiplicative factor per site and band, fitted in-sample: it is the best case, not what a
+user gets.
+
+| Domain | Sites | Scaled RMSE | Raw RMSE |
+|---|---:|---:|---:|
+| Desert and salt flats | 29 | 5.7-7.0 % | 8.2-14.7 % |
+| Forest, water, crops, wetland | 14 | 13.4-23.6 % | 27.2-60.0 % |
+
+<p align="center"><img src="docs/assets/validation.png" width="980" alt="radiometric validation"></p>
+
+Outside the calibration domain the profile is not a correction. The SBAF cannot absorb
+vegetation, water or atmosphere, and no per-band scale fixes it. That is a limit of the
+method, written in the profile under `validity`.
+
+### Real vs emulated
+
+The classifier two-sample test (C2ST) trains a logistic regression to tell real from
+emulated pixels; 0.5 means indistinguishable. On the five held-out deserts:
+
+| Mode | Median | Range |
+|---|---:|---:|
+| Deterministic | 0.999 | 0.956-1.000 |
+| Stochastic, seed 0 | 0.880 | 0.810-0.920 |
+
+The emulator is still distinguishable. With 62 500 pixels per site and a residual bias near
+0.02, a per-pixel classifier separates the two. The number is reported, not hidden.
+
+### Spatial
+
+The PSF (79-82 m), the 60 m sampling and the 474 m detector period are checked against
+five PICS with radial PSDs and a striping metric.
+
+<p align="center"><img src="docs/assets/psd.png" width="760" alt="radial PSD"></p>
+
+The FWHM of an edge is **not** measured: the PICS are homogeneous and have no slanted
+edges. The PSF is set by specification, not recovered from data.
+
+### What is not validated
+
+- **Clouds on real MSS.** The U-Net baseline is trained on pseudo-MSS from CloudSEN12 and
+  scores 0.518 mIoU on its pseudo-test; OmniCloudMask scores 0.722 with 10 m input. That is a
+  reproducible baseline, not a validated mask on real MSS.
+- **Human labels.** 40 chips are prepared, none annotated. There is no kappa yet.
+- **Independent reproduction.** Nobody outside this machine has rebuilt the profile from the
+  wheel.
+- **Gas in MSS3 and BRDF/SZA.** The O2-A term is computed with 6SV but off by default. The
+  PICS span 13.5 degrees of solar zenith and the scale absorbs it; there is no BRDF
+  correction.
+
+## Limits
+
+- S2A/B/C to MSS on Landsat 5 only. MSS 1-4, TM and ETM+ are out of scope.
+- TOA reflectance only.
+- A desert correction: it does not extrapolate to vegetation, water or clouds.
+- One profile per sensor family, not per scene. Aerosol and water vapour are not measured
+  per acquisition.
 
 ## Command line
 
+```text
+satharmony emulate INPUT -o OUTPUT [--profile NAME] [--seed N]
+satharmony align REFERENCE MOVING [--max-shift PX] [--no-ecc]
+satharmony metrics PREDICTION OBSERVATION [--c2st] [--mask MASK.npy] [--seed N]
+satharmony fit MANIFEST.csv -o PROFILE.json [--name NAME] [--n-boot N]
+satharmony verify MANIFEST.csv [--no-hashes]
+```
+
+`metrics` prints SAM, RMSE and bias; `--c2st` adds the classifier score and `--mask` drops
+pixels outside a boolean mask. `fit` reads `s2_mss` rows from a manifest; `verify` checks
+every file and its SHA-256. The bundled `manifests/manifest_178.csv` pins the 178 MSS/TM
+pairs used for the sun-elevation distribution.
+
+## Input contract
+
+- **S2**: `(13, H, W)`, band order B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B8A,
+  TOA reflectance in [0, 1].
+- **MSS**: `(4, H, W)`, B1-B4, TOA in [0, 1].
+- `emulate_s2` rejects values above 2 or below -0.01: that is almost always DN. The CLI
+  reads GeoTIFF only with the `io` extra.
+- Labels use the CloudSEN12 encoding: 0 clear, 1 thick cloud, 2 thin cloud, 3 shadow.
+
+## Reproduce the numbers
+
+The scripts read the PICS tree at `/data/databases/CLOUD_MSS/MSS_S2/pics`, which is not
+shipped. Their outputs are committed under `docs/validation/`.
+
 ```bash
-satharmony emulate scene.npy -o mss.npy --profile mss5_esa_gtc_v2
-satharmony align reference.npy moving.npy
-satharmony metrics prediction.npy observation.npy
-satharmony metrics prediction.npy observation.npy --c2st --mask valid.npy
-satharmony fit manifest.csv -o profile.json --name my_profile
-satharmony verify manifest.csv
+python scripts/make_profile_v2.py        # rebuild the v2 JSON
+python scripts/c2st_v2.py                # C2ST on the five held-out deserts
+python scripts/desert_v2_error.py        # desert RMSE, scaled and raw
+python scripts/validate_v2_outside.py    # the 14 validation sites
 ```
 
-The manifest is a CSV with `id, kind, input_path, reference_path,
-input_sha256, reference_sha256, cloud_fraction, reason`; `kind` is `s2_mss` or
-`mss_tm`. `satharmony verify` checks that every file exists and its SHA-256
-matches.
-
-## Cloud / shadow baseline (G4, optional)
-
-`satharmony.models` contains the 4-band U-Net used as the cloud-mask baseline
-of the pseudo-MSS fixture (G4). It needs torch, which is **not** a core
-dependency:
-
-```bash
-pip install torch
-```
-
-```python
-import numpy as np
-from satharmony.models import load_model, predict_masks
-
-model, checkpoint = load_model("cloud_unet_mss_pseudo.pt")
-mss = np.load("mss_chip.npy").astype(np.float32) / 10000.0   # (4, 64, 64) TOA
-mask = predict_masks(model, mss, checkpoint.band_mean, checkpoint.band_std)
-# 0 clear, 1 thick cloud, 2 thin cloud, 3 cloud shadow
-```
-
-`import satharmony` never imports torch; only `satharmony.models` does.
-
-## Status and limitations (0.2.0)
-
-- The cloud baseline is trained on pseudo-MSS from CloudSEN12 and evaluated on a
-  scene split of that pseudo-test: mIoU 0.518, versus 0.722 for OmniCloudMask
-  fed with 10 m B04/B03/B8A. It is a reproducible baseline, not a validated
-  cloud mask on real MSS.
-- The 40 human-labelled chips are prepared (60 m chips, empty CSVs, annotation
-  tooling), but they are not annotated: no accuracy and no kappa on real MSS
-  yet.
-- `mss5_esa_gtc_v1()` is frozen at five CEOS PICS because it trained G4.
-  `mss5_esa_gtc_v2()` uses 29 calibration PICS (49 total: 35 calibration, one
-  wet Uyuni scene removed, 5 held out, 14 reserved for validation) with
-  `gamma = 0.112` frozen from v1 (the 29-site fit gives 0.14). The validation
-  sites (forest, water, crops) give a scaled RMSE of 13.4-23.6 % and a raw
-  error of 27-60 %, so the profile is a desert correction and does not
-  extrapolate to those surfaces.
-- The B4 water-vapour coefficient is fitted, not measured with an independent
-  sounder. `gas_mss3_scale` is an optional field for the 6SV O2-A correction,
-  off by default until reserved pairs show that it improves MSS3 without
-  hurting the other bands.
-- `parse_mtl` is tested against three real Landsat 1-3 MTLs (1978, 1982, 1983)
-  and one of them, the Landsat 1 scene, has `"NULL"` for the whole band 4:
-  `parse_mtl` keeps it as `None` and `dn_to_radiance` refuses to convert with a
-  message naming the band.
-- The SBAF is linear and has no atmosphere: the O2-A core at 0.76 um inside MSS
-  band 3 is invisible to it. 6SV quantifies the gap (0.953 of gas scale at
-  1 cm); `gas_mss3_scale` exists but is off by default.
-- The paper figures are not in this release: the numbers in
-  `version_to_paper/` still mix the old test v7 and the QA4EO-2 model.
-
-## Citation
-
-```bibtex
-@software{satharmony2025,
-  author  = {Contreras, Julio},
-  title   = {SatHarmony: Sensor Emulation for Earth Observation},
-  year    = {2025},
-  url     = {https://github.com/JulioContrerasH/satharmony}
-}
-```
+`docs/make_readme_assets.py` rebuilds the figures in this page.
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT.
