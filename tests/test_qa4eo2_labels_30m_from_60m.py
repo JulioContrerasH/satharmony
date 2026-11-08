@@ -17,6 +17,8 @@ import pytest
 import rasterio
 from rasterio.transform import from_origin
 
+pytest.importorskip("torch")
+
 REPO = Path(__file__).resolve().parents[1]
 for extra in (REPO, REPO / "scripts"):
     if str(extra) not in sys.path:

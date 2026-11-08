@@ -14,6 +14,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+pytest.importorskip("torch")
+
 REPO = Path(__file__).resolve().parents[1]
 for extra in (REPO, REPO / "scripts"):
     if str(extra) not in sys.path:
