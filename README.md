@@ -7,7 +7,7 @@
 <p align="center">Sentinel-2 in, Landsat MSS out. Same scene, 1980s sensor.</p>
 
 <p align="center">
-  <a href="https://github.com/JulioContrerasH/satharmony/actions/workflows/tests.yml"><img src="https://github.com/JulioContrerasH/satharmony/actions/workflows/tests.yml/badge.svg?branch=fix-p0" alt="tests"></a>
+  <a href="https://github.com/JulioContrerasH/satharmony/actions/workflows/tests.yml"><img src="https://github.com/JulioContrerasH/satharmony/actions/workflows/tests.yml/badge.svg" alt="tests"></a>
   <img src="https://img.shields.io/badge/python-3.10--3.13-blue" alt="python">
   <img src="https://img.shields.io/badge/version-0.2.0-blue" alt="version">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="license"></a>
