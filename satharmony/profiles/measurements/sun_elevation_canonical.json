@@ -1,0 +1,35 @@
+{
+ "n_canonical": 3027,
+ "n_measured": 2886,
+ "coverage": 0.9534,
+ "source": {
+  "zeros": "/data/databases/CLOUD_MSS/MSS_TM/pairs_4k/zeros_1100/selected.csv",
+  "metadata": "/data/users/julio/Notes/01-Projects/cloud-mss-esa/assets/md/metadata",
+  "missing": "GEE SUN_ELEVATION (LM05 then LM04)"
+ },
+ "inputs_sha256": {
+  "final_cloud_4k.csv": "2b3eda26f1b9d437d9add30a9333211c2400216779ff5cfe070e84419d0a0a95",
+  "zeros_selected.csv": "8a9ebbf41878d4767ee6d03e50d68f8e245fcf8c40338983eaf90b2aa7ff7ac8"
+ },
+ "stats": {
+  "n": 2886,
+  "min": 4.021894,
+  "max": 62.72686338,
+  "mean": 41.81004237885655,
+  "std": 12.814066555186821,
+  "median": 43.32063266
+ },
+ "percentiles": {
+  "0.0": 4.021894,
+  "1.0": 11.910945639,
+  "5.0": 17.881836245000002,
+  "10.0": 23.258625115,
+  "25.0": 32.6623533025,
+  "50.0": 43.32063266,
+  "75.0": 52.08235368,
+  "90.0": 57.789088750000005,
+  "95.0": 60.08395021,
+  "99.0": 61.84934704450001,
+  "100.0": 62.72686338
+ }
+}

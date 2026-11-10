@@ -165,8 +165,10 @@ satharmony verify MANIFEST.csv [--no-hashes]
 
 `metrics` prints SAM, RMSE and bias; `--c2st` adds the classifier score and `--mask` drops
 pixels outside a boolean mask. `fit` reads `s2_mss` rows from a manifest; `verify` checks
-every file and its SHA-256. The bundled `manifests/manifest_178.csv` pins the 178 MSS/TM
-pairs used for the sun-elevation distribution.
+every file and its SHA-256. The bundled `manifests/manifest_178.csv` pins 178 MSS/TM pairs
+with their SHA-256. The shipped profile's sun-elevation distribution comes from
+`profiles/measurements/sun_elevation_canonical.json` (2,886 of the 3,027 aligned
+scenes; 141 have no GEE/MTL metadata).
 
 ## Input contract
 

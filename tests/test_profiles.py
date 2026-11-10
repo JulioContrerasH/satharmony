@@ -103,3 +103,39 @@ def test_v2_declares_the_frozen_gamma_and_the_provenance_of_its_numbers() -> Non
     c2st = validity["c2st_held_out"]
     assert c2st["stochastic_median"] < c2st["deterministic_median"]
     assert 0.5 < c2st["stochastic_range"][0] < c2st["stochastic_range"][1] <= 1.0
+
+
+def test_v2_sun_elevation_matches_the_canonical_measurement() -> None:
+    payload = _v2_payload()
+    measurement = json.loads(
+        (REPO / "satharmony/profiles/measurements/sun_elevation_canonical.json").read_text()
+    )
+    stats = measurement["stats"]
+    declared = payload["config"]["radiometric"]["sun_elevation_deg"]
+    assert declared["min"] == pytest.approx(round(stats["min"], 2))
+    assert declared["max"] == pytest.approx(round(stats["max"], 2))
+    assert declared["mean"] == pytest.approx(round(stats["mean"], 2))
+    assert declared["std"] == pytest.approx(round(stats["std"], 2))
+    validity = payload["validity"]["sun_elevation"]
+    assert validity["n_canonical"] == 3027
+    assert validity["coverage"] > 0.95
+
+
+def test_measurements_are_pinned_in_the_provenance() -> None:
+    import hashlib
+
+    payload = _v2_payload()
+    for entry in payload["provenance"]["measurements"].values():
+        path = REPO / "satharmony" / entry["path"]
+        assert path.exists()
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == entry["sha256"]
+
+
+def test_sensor_physics_measurement_covers_four_bands() -> None:
+    path = REPO / "satharmony/profiles/measurements/sensor_physics_sample.json"
+    payload = json.loads(path.read_text())
+    assert payload["n_scenes"] >= 20
+    assert set(payload["bands"]) == {"B1", "B2", "B3", "B4"}
+    for band in payload["bands"].values():
+        assert band["stripe_amp"]["median"] > 0
+        assert band["noise_rel"]["median"] > 0

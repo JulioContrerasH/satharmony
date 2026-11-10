@@ -17,6 +17,9 @@ if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
 from satharmony.calibration.fit import Pair, fit_profile  # noqa: E402
+from satharmony.emulators.s2_to_mss.config import (  # noqa: E402
+    MEASURED_SUN_ELEVATION_CANONICAL,
+)
 from satharmony.emulators.s2_to_mss.sbaf import S2_BAND_ORDER  # noqa: E402
 
 PICS = Path("/data/databases/CLOUD_MSS/MSS_S2/pics")
@@ -73,6 +76,11 @@ def main() -> None:
     )
     payload = profile.to_dict()
     payload["config"] = profile.to_config().model_dump(mode="json")
+    # The sun-elevation distribution is the canonical one (2,886 of the 3,027
+    # aligned scenes), not the 178 pairs of the legacy bank that v1 used.
+    payload["config"]["radiometric"]["sun_elevation_deg"] = dict(
+        MEASURED_SUN_ELEVATION_CANONICAL
+    )
     payload["gamma_frozen"] = True
     payload["gamma_fitted"] = fitted_gamma
     payload["b4_fitted_scale"] = fitted_b4

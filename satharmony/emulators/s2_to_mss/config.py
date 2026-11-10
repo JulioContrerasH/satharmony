@@ -39,13 +39,25 @@ class Range(BaseModel):
         return float(generator.uniform(self.min, self.max))
 
 
-#: Sun-elevation distribution measured on the 178 MSS/TM calibration pairs.
+#: Sun-elevation distribution measured on the 178 MSS/TM calibration pairs of
+#: the legacy bank. Kept for the v1 profile.
 MEASURED_SUN_ELEVATION = {
     "min": 7.6,
     "max": 62.3,
     "distribution": "truncated_normal",
     "mean": 42.8,
     "std": 12.25,
+}
+
+#: Sun-elevation distribution of the canonical cloud set (2,886 of the 3,027
+#: aligned scenes; 141 have no GEE/MTL metadata). Rebuilt by
+#: ``scripts/measure_sun_elevation_canonical.py``.
+MEASURED_SUN_ELEVATION_CANONICAL = {
+    "min": 4.02,
+    "max": 62.73,
+    "distribution": "truncated_normal",
+    "mean": 41.81,
+    "std": 12.81,
 }
 
 

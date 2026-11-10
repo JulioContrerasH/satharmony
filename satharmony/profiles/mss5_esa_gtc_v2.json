@@ -377,11 +377,11 @@
       "saturation_model": "physical",
       "satellite": "L5_MSS",
       "sun_elevation_deg": {
-        "min": 7.6,
-        "max": 62.3,
+        "min": 4.02,
+        "max": 62.73,
         "distribution": "truncated_normal",
-        "mean": 42.8,
-        "std": 12.25
+        "mean": 41.81,
+        "std": 12.81
       },
       "earth_sun_distance_au": 1.0,
       "saturation_threshold": {
@@ -579,11 +579,32 @@
     },
     "variation_note": "B1-B3 variation is the bootstrap half-width (0.031/0.030/0.030). The build tagged v0.2.0 carried 0.12, inconsistent with the stated 2.7-3.2 % interval.",
     "note": "The 5.3-6.2 % is the SBAF calibration error with an in-sample per-site factor, not the v2 output. With v2 the same convention gives 5.7-7.0 %; without the free factor the desert error is 8.2-14.7 %. Outside the domain the scaled error is 13.4-23.6 % and the raw error 27.2-60.0 %. B4 scaling 0.933 and gamma 0.112 stay frozen at v1: the 29-site fit gives gamma 0.140 and B4 0.942, and the gas term is still a hypothesis.",
-    "v1_note": "v1 was fitted on 5 CEOS PICS, one of which (libya4_ceos) is in the held-out set; the comparison is conservative against v2."
+    "v1_note": "v1 was fitted on 5 CEOS PICS, one of which (libya4_ceos) is in the held-out set; the comparison is conservative against v2.",
+    "sun_elevation": {
+      "n_canonical": 3027,
+      "n_measured": 2886,
+      "coverage": 0.9534,
+      "min": 4.02,
+      "max": 62.73,
+      "mean": 41.81,
+      "std": 12.81,
+      "median": 43.32,
+      "source": "profiles/measurements/sun_elevation_canonical.json"
+    }
   },
   "provenance": {
     "package_sha": "189dfe79451b40b5821a7c98225cc9fafd06705e",
     "source": "MSS_S2/pics/pics_index.json",
-    "source_sha256": "cf1c41197f2168a2a7b8016ef358ee3e5dfe9b16011baaae810bf812f1207aae"
+    "source_sha256": "cf1c41197f2168a2a7b8016ef358ee3e5dfe9b16011baaae810bf812f1207aae",
+    "measurements": {
+      "sun_elevation": {
+        "path": "profiles/measurements/sun_elevation_canonical.json",
+        "sha256": "1a3363fa92c8317b3b915482d7342cb84567c6b4718de75cd811b95f66678658"
+      },
+      "sensor_physics": {
+        "path": "profiles/measurements/sensor_physics_sample.json",
+        "sha256": "3b479e8006a4a056f91e3dd467d310f22b263cc18f9c33ff399b9996574c9dd4"
+      }
+    }
   }
 }
