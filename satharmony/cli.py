@@ -14,6 +14,8 @@ from .calibration.fit import Pair, fit_profile
 from .calibration.metrics import c2st, summarize
 from .emulators.s2_to_mss.config import PipelineConfig
 from .emulators.s2_to_mss.functional import emulate_s2
+from .emulators.s2_to_mss.multisensor import emulate_any
+from .emulators.s2_to_mss.sensors import SensorNotCalibrated
 from .manifests.manifest import load_manifest, verify_manifest
 
 
@@ -40,11 +42,28 @@ def _write_array(array: np.ndarray, path: str | Path) -> None:
 
 
 def _emulate(args: argparse.Namespace) -> int:
-    config = PipelineConfig.from_profile(args.profile)
     image = _read_array(args.input)
-    mss, factor = emulate_s2(image, config=config, seed=args.seed)
+    if args.sensor:
+        try:
+            mss, factor, sensor = emulate_any(image, sensor=args.sensor, seed=args.seed)
+        except SensorNotCalibrated as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
+    else:
+        config = PipelineConfig.from_profile(args.profile)
+        mss, factor = emulate_s2(image, config=config, seed=args.seed)
+        sensor = config.radiometric.satellite
     _write_array(mss, args.output)
-    print(json.dumps({"output": str(args.output), "shape": list(mss.shape), "factor": factor}))
+    print(
+        json.dumps(
+            {
+                "output": str(args.output),
+                "shape": list(mss.shape),
+                "factor": factor,
+                "sensor": sensor,
+            }
+        )
+    )
     return 0
 
 
@@ -143,6 +162,11 @@ def build_parser() -> argparse.ArgumentParser:
     emulate.add_argument("-o", "--output", required=True)
     emulate.add_argument("--profile", default="mss5_esa_gtc_v1")
     emulate.add_argument("--seed", type=int, default=None)
+    emulate.add_argument(
+        "--sensor",
+        default=None,
+        help="MSS sensor key (L1_MSS..L5_MSS) or 'random'; default: the profile sensor",
+    )
     emulate.set_defaults(func=_emulate)
 
     align = sub.add_parser("align", help="subpixel shift between two rasters")

@@ -65,6 +65,30 @@ satharmony emulate scene_s2.tif -o mss.npy --profile mss5_esa_gtc_v2 --seed 42
 satharmony metrics mss.npy reference_mss.npy --c2st --mask valid.npy
 ```
 
+## Sensors
+
+The four MSS bands and the 6-bit quantization are common to Landsat 1-5. The
+spectral response, the IFOV and the radiometric constants are not, so each
+sensor needs its own measured profile.
+
+Today only **L5_MSS** is calibrated. L1-L4 are declared in the registry but
+raise `SensorNotCalibrated` instead of borrowing L5 numbers. The extension is
+specced in `specs/features/001-multi-sensor-mss/`.
+
+```bash
+satharmony emulate scene_s2.tif -o mss.npy --sensor L5_MSS --seed 42
+satharmony emulate scene_s2.tif -o mss.npy --sensor random --seed 42
+```
+
+`random` samples uniformly over the calibrated sensors, so the same seed gives
+the same sensor and the same bytes. For augmentation:
+
+```python
+from satharmony.emulators.s2_to_mss import emulate_any
+
+mss, factor, sensor = emulate_any(s2, sensor="random", seed=42)
+```
+
 ## Example
 
 Libya-2, a calibration site. Left: Sentinel-2 true colour. Middle: emulated MSS. Right: the
