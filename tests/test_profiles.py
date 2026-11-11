@@ -139,3 +139,16 @@ def test_sensor_physics_measurement_covers_four_bands() -> None:
     for band in payload["bands"].values():
         assert band["stripe_amp"]["median"] > 0
         assert band["noise_rel"]["median"] > 0
+
+
+def test_v2_per_pair_drops_the_unusable_b4() -> None:
+    """Death Valley and Sonora have 5 levels in B4: their scale is meaningless."""
+    payload = _v2_payload()
+    rows = {row["pair"]: row for row in payload["per_pair"]}
+    for site in ("death_valley", "sonora"):
+        assert rows[site]["B4"] is None
+        assert "5 levels" in rows[site]["note"]
+    useful = [row["B4"] for row in payload["per_pair"] if row["B4"] is not None]
+    assert len(useful) == 27
+    assert float(np.std(useful, ddof=1)) == pytest.approx(0.072, abs=0.003)
+    assert payload["validity"]["b4_unusable_sites"] == ["death_valley", "sonora"]

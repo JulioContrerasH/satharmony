@@ -75,6 +75,14 @@ def main() -> None:
         intervals=intervals,
     )
     payload = profile.to_dict()
+    # B4 of these two scenes has only 5 levels (the band carries no
+    # information), so its per-pair scale is meaningless. They stay out of the
+    # B4 dispersion (0.072 on the 27 usable sites).
+    b4_unusable = {"death_valley", "sonora"}
+    for row in payload["per_pair"]:
+        if row["pair"] in b4_unusable:
+            row["B4"] = None
+            row["note"] = "B4 unusable: 5 levels in the source MSS scene"
     payload["config"] = profile.to_config().model_dump(mode="json")
     # The sun-elevation distribution is the canonical one (2,886 of the 3,027
     # aligned scenes), not the 178 pairs of the legacy bank that v1 used.
@@ -89,6 +97,7 @@ def main() -> None:
         "calibration_domain": "desert and salt flats",
         "outside_domain": ["forest", "water", "crops", "wetland"],
         "held_out_sites": HELD_OUT,
+        "b4_unusable_sites": sorted(b4_unusable),
         "held_out_disjoint": True,
         # Medians across sites, same convention as the SBAF tables in
         # assets/md/fuentes/srf/pics_49/: "scaled" applies one in-sample

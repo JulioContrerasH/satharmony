@@ -235,8 +235,9 @@
       "B1": 0.9510023753756712,
       "B2": 0.9185932207587958,
       "B3": 0.8939231501187583,
-      "B4": 0.3435972636619194,
-      "gamma": 0.14
+      "B4": null,
+      "gamma": 0.14,
+      "note": "B4 unusable: 5 levels in the source MSS scene"
     },
     {
       "pair": "mojave",
@@ -262,8 +263,9 @@
       "B1": 0.8555724460679927,
       "B2": 0.8285607321890116,
       "B3": 0.7982524021895723,
-      "B4": 0.2951120313662562,
-      "gamma": 0.14
+      "B4": null,
+      "gamma": 0.14,
+      "note": "B4 unusable: 5 levels in the source MSS scene"
     },
     {
       "pair": "atacama_salar",
@@ -590,7 +592,11 @@
       "std": 12.95,
       "median": 43.05,
       "source": "profiles/measurements/sun_elevation_canonical.json"
-    }
+    },
+    "b4_unusable_sites": [
+      "death_valley",
+      "sonora"
+    ]
   },
   "provenance": {
     "package_sha": "189dfe79451b40b5821a7c98225cc9fafd06705e",
