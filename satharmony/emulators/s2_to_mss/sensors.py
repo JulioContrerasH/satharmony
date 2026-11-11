@@ -39,7 +39,7 @@ class SensorSpec:
 #: The five MSS sensors. ``ifov_m`` is the nominal instantaneous field of view
 #: (79 m for Landsat 1-3, 82 m for Landsat 4-5); the exact PSF is 79-82 m.
 MSS_SENSORS: dict[str, SensorSpec] = {
-    "L1_MSS": SensorSpec("L1_MSS", 1, 79.0, 6, 4, None, "pending"),
+    "L1_MSS": SensorSpec("L1_MSS", 1, 79.0, 6, 4, "mss1_esa_gtc_v1", "experimental"),
     "L2_MSS": SensorSpec("L2_MSS", 2, 79.0, 6, 4, None, "pending"),
     "L3_MSS": SensorSpec("L3_MSS", 3, 79.0, 6, 4, None, "pending"),
     "L4_MSS": SensorSpec("L4_MSS", 4, 82.0, 6, 4, "mss4_esa_gtc_v1", "experimental"),

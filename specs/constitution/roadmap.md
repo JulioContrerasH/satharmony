@@ -32,14 +32,15 @@ uncalibrated sensor raises, suite green.
 Gate: profile with `validity` and the L4/L5 comparison written down. Done.
 Next: a dedicated B4 term for L4 before calling it calibrated.
 
-## P3 - Landsat 1-3 calibration
+## P3 - Landsat 1-3 calibration (partial)
 
-- Spectral response curves for L1-L3.
-- MSS scenes at the 49 PICS (no TM on board; the sensor physics cannot use the
-  same-second reference).
-- SBAF shape from the SRF and the spectral library; scale from the PICS.
+- SRFs converted; SBAF fitted for L1, L2 and L3.
+- Coverage is sparse and uses WRS-1: 19 of 49 PICS have any scene.
+- After the stability check: L1 = 5 sites (experimental profile), L2 = 2, L3 = 1
+  (pending; not enough for a profile).
 
-Gate: same numbers as P2, with the missing TM reference declared.
+Gate: L1 profile with `validity` (done). L2 and L3 stay pending until more
+scenes are available; the limitation is the archive.
 
 ## P4 - Cloud model (separate product)
 

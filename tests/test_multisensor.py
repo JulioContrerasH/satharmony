@@ -43,8 +43,9 @@ def test_registry_covers_the_five_mss_sensors() -> None:
 
 def test_only_l5_is_calibrated_and_l4_is_experimental() -> None:
     assert calibrated_sensors() == ("L5_MSS",)
-    assert available_sensors() == ("L4_MSS", "L5_MSS")
+    assert available_sensors() == ("L1_MSS", "L4_MSS", "L5_MSS")
     assert MSS_SENSORS["L4_MSS"].status == "experimental"
+    assert MSS_SENSORS["L1_MSS"].status == "experimental"
 
 
 def test_l5_matches_the_single_sensor_path_bit_for_bit() -> None:
@@ -68,7 +69,7 @@ def test_random_is_deterministic_with_one_calibrated_sensor() -> None:
 
 def test_uncalibrated_sensor_raises_and_lists_the_available_ones() -> None:
     with pytest.raises(SensorNotCalibrated, match="L5_MSS"):
-        emulate_any(_image(), sensor="L1_MSS", seed=0)
+        emulate_any(_image(), sensor="L2_MSS", seed=0)
 
 
 def test_unknown_sensor_raises() -> None:
@@ -88,7 +89,7 @@ def test_choose_sensor_reaches_every_candidate() -> None:
 
 def test_sensor_subset_restricts_the_choice() -> None:
     with pytest.raises(SensorNotCalibrated):
-        emulate_any(_image(), sensor="random", seed=0, sensors=["L1_MSS"])
+        emulate_any(_image(), sensor="random", seed=0, sensors=["L2_MSS"])
 
 
 def test_l4_runs_through_its_own_profile() -> None:
@@ -98,10 +99,17 @@ def test_l4_runs_through_its_own_profile() -> None:
     assert PipelineConfig.from_profile("mss4_esa_gtc_v1").radiometric.satellite == "L4_MSS"
 
 
+def test_l1_runs_through_its_own_profile() -> None:
+    mss, _, key = emulate_any(_image(), sensor="L1_MSS", seed=3)
+    assert key == "L1_MSS"
+    assert mss.shape == (4, 5, 5)
+    assert PipelineConfig.from_profile("mss1_esa_gtc_v1").radiometric.satellite == "L1_MSS"
+
+
 def test_random_over_two_available_sensors_reaches_both() -> None:
     image = _image()
-    picked = {emulate_any(image, sensor="random", seed=seed, sensors=["L4_MSS", "L5_MSS"])[2] for seed in range(40)}
-    assert picked == {"L4_MSS", "L5_MSS"}
+    picked = {emulate_any(image, sensor="random", seed=seed, sensors=["L1_MSS", "L4_MSS", "L5_MSS"])[2] for seed in range(60)}
+    assert picked == {"L1_MSS", "L4_MSS", "L5_MSS"}
 
 
 def test_default_random_stays_on_calibrated_sensors() -> None:

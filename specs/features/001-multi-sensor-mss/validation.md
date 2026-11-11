@@ -61,10 +61,18 @@ Result (2026-11-11):
 - Decision: **per-sensor profiles**, not a generic one. L4 stays experimental
   until its B4 term is refitted; `random` does not pick it by default.
 
-## G8 - L1-L3 calibration (P3)
+## G8 - L1-L3 calibration (P3) - data-limited
 
-Same as G7, plus an explicit note that these sensors had no TM on board, so
-the sensor physics has no same-second reference.
+Result (2026-11-11):
+- SRFs for L1-L3 converted from the existing Excel files; SBAF fitted from
+  each SRF and the spectral library (`sbaf_coefficients_l1..l3.json`).
+- Coverage by geometry (WRS-1): 19 of 49 PICS have some scene.
+- After the 15 % stability check: L1 has 5 stable calibration sites (profile
+  `mss1_esa_gtc_v1`, experimental, 5.3-10.3 %, no held out); L2 has 2 and L3
+  has 1, not enough for a profile.
+- L1-L3 had no TM on board, so the sensor physics has no same-second reference.
+- Status: L1 experimental; L2 and L3 pending. The limitation is the archive,
+  not the code.
 
 ## Evidence to keep
 

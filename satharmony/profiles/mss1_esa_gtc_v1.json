@@ -1,0 +1,378 @@
+{
+  "schema_version": 1,
+  "name": "mss1_esa_gtc_v1",
+  "created": "2026-11-11",
+  "n_pairs": 5,
+  "band_scaling": {
+    "B1": {
+      "mean": 1.1551892616133939,
+      "variation": 0.03276298760485358
+    },
+    "B2": {
+      "mean": 1.1139174566089771,
+      "variation": 0.04289575647248391
+    },
+    "B3": {
+      "mean": 0.9405782449354235,
+      "variation": 0.06126533275815887
+    },
+    "B4": {
+      "mean": 0.9688863463817712,
+      "variation": 0.09079599780475728
+    }
+  },
+  "gamma": 0.3,
+  "intervals": {
+    "B1": {
+      "mean": 1.1551892616133939,
+      "low": 1.10504782377658,
+      "high": 1.169263279482093,
+      "n": 5
+    },
+    "B2": {
+      "mean": 1.1139174566089771,
+      "low": 1.0685824755910291,
+      "high": 1.1526581582770976,
+      "n": 5
+    },
+    "B3": {
+      "mean": 0.9405782449354235,
+      "low": 0.8735867708737491,
+      "high": 0.9936668230797405,
+      "n": 5
+    },
+    "B4": {
+      "mean": 0.9688863463817712,
+      "low": 0.8839603969056429,
+      "high": 1.0619205526029671,
+      "n": 5
+    }
+  },
+  "per_pair": [
+    {
+      "pair": "libya2",
+      "valid_pixels": 62500,
+      "B1": 1.1551892616133939,
+      "B2": 1.1139174566089771,
+      "B3": 0.9405782449354235,
+      "B4": 1.043187975188372,
+      "gamma": 0.3
+    },
+    {
+      "pair": "algeria3",
+      "valid_pixels": 62500,
+      "B1": 1.169263279482093,
+      "B2": 1.0685824755910291,
+      "B3": 0.8735867708737491,
+      "B4": 0.9688863463817712,
+      "gamma": 0.3
+    },
+    {
+      "pair": "niger1",
+      "valid_pixels": 62500,
+      "B1": 1.1308102979851091,
+      "B2": 1.1373998581004403,
+      "B3": 0.9450432663417163,
+      "B4": 0.955677587527466,
+      "gamma": 0.3
+    },
+    {
+      "pair": "niger2",
+      "valid_pixels": 62500,
+      "B1": 1.10504782377658,
+      "B2": 1.1019688571013182,
+      "B3": 0.91837831569846,
+      "B4": 0.8839603969056429,
+      "gamma": 0.3
+    },
+    {
+      "pair": "namib",
+      "valid_pixels": 62500,
+      "B1": 1.1617619658824743,
+      "B2": 1.1526581582770976,
+      "B3": 0.9936668230797405,
+      "B4": 1.0619205526029671,
+      "gamma": 0.3
+    }
+  ],
+  "config": {
+    "spectral": {
+      "enabled": true,
+      "probability": 1.0,
+      "mode": "sbaf",
+      "sensor": "S2A",
+      "s2_bands": [
+        2,
+        3,
+        6,
+        7
+      ],
+      "coefficients": "sbaf_coefficients_l1.json",
+      "srf_adjustment": false,
+      "srf_noise_std": {
+        "min": 0.0,
+        "max": 0.02,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "water_vapor_scale": 2.6785714285714284,
+      "gas_mss3_scale": 1.0
+    },
+    "spatial": {
+      "enabled": true,
+      "probability": 1.0,
+      "input_gsd": 10.0,
+      "sampling_gsd": 60.0,
+      "psf_fwhm_m": {
+        "min": 79.0,
+        "max": 82.0,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "center_decimation": true,
+      "method": "average",
+      "target_gsd": {
+        "min": 60.0,
+        "max": 80.0,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "psf_sigma": {
+        "min": 0.4,
+        "max": 0.6,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      }
+    },
+    "radiometric": {
+      "enabled": true,
+      "probability": 1.0,
+      "quantization_bits": 6,
+      "sqrt_compression": true,
+      "sqrt_bands": [
+        0,
+        1,
+        2
+      ],
+      "decompress_after_quantization": true,
+      "saturation_model": "physical",
+      "satellite": "L1_MSS",
+      "sun_elevation_deg": {
+        "min": 4.02,
+        "max": 62.73,
+        "distribution": "truncated_normal",
+        "mean": 41.51,
+        "std": 12.95
+      },
+      "earth_sun_distance_au": 1.0,
+      "saturation_threshold": {
+        "min": 0.8,
+        "max": 0.95,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "reflectance_boost": {
+        "min": 1.0,
+        "max": 1.3,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "reflectance_boost_prob": 0.0
+    },
+    "striping": {
+      "enabled": true,
+      "probability": 0.8,
+      "num_detectors": 6,
+      "gain_std": {
+        "min": 0.005,
+        "max": 0.02,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "offset_std": {
+        "min": 0.002,
+        "max": 0.008,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "per_band_variation": true,
+      "detector_geometry": "scan_lines",
+      "sampling_gsd": 60.0,
+      "scan_line_period_m": 474.0,
+      "yaw_deg": 9.0
+    },
+    "memory_effect": {
+      "enabled": true,
+      "probability": 0.4,
+      "trigger_threshold": {
+        "min": 0.6,
+        "max": 0.85,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "decay_pixels": {
+        "min": 50,
+        "max": 200
+      },
+      "amplitude": {
+        "min": 0.02,
+        "max": 0.08,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      }
+    },
+    "coherent_noise": {
+      "enabled": true,
+      "probability": 0.3,
+      "frequencies": [
+        0.16666666666666666,
+        0.3333333333333333,
+        0.5
+      ],
+      "amplitude": {
+        "min": 0.005,
+        "max": 0.02,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "random_phase": true
+    },
+    "random_noise": {
+      "enabled": true,
+      "probability": 0.7,
+      "snr_db": {
+        "min": 30.0,
+        "max": 40.0,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "noise_type": "mixed",
+      "poisson_weight": {
+        "min": 0.2,
+        "max": 0.5,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      }
+    },
+    "scan_artifacts": {
+      "enabled": true,
+      "probability": 0.2,
+      "dropout_prob": {
+        "min": 0.001,
+        "max": 0.01,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "max_consecutive_lines": {
+        "min": 1,
+        "max": 3
+      }
+    },
+    "final_scaling": {
+      "enabled": true,
+      "band_scaling": {
+        "green": {
+          "mean": 1.1551892616133939,
+          "variation": 0.03276298760485358
+        },
+        "red": {
+          "mean": 1.1139174566089771,
+          "variation": 0.04289575647248391
+        },
+        "nir1": {
+          "mean": 0.9405782449354235,
+          "variation": 0.06126533275815887
+        },
+        "nir2": {
+          "mean": 0.9688863463817712,
+          "variation": 0.09079599780475728
+        }
+      }
+    },
+    "labels_legacy": false,
+    "seed": null,
+    "output_dtype": "float32",
+    "legacy_rng": false
+  },
+  "sensor": "L1_MSS",
+  "validity": {
+    "sensor": "L1_MSS",
+    "status": "experimental",
+    "calibration_domain": "desert and salt flats",
+    "outside_domain": [
+      "forest",
+      "water",
+      "crops",
+      "wetland"
+    ],
+    "held_out_sites": [],
+    "n_sites": 5,
+    "n_held_out": 0,
+    "rejected_unstable_sites": [
+      "bonneville",
+      "egypt1",
+      "egypt2",
+      "oman1",
+      "sonora"
+    ],
+    "sensor_l5_median_ratio": [
+      1.1420810222625732,
+      1.1591327786445618,
+      1.014830231666565,
+      0.8933786451816559
+    ],
+    "stability_tolerance": 0.15,
+    "desert_in_sample": {
+      "median_rel_rmse": {
+        "B1": 0.05266286605685787,
+        "B2": 0.07495962372699114,
+        "B3": 0.06259739470873585,
+        "B4": 0.10315727414772703
+      },
+      "method": "per-site relative RMSE = RMSE / mean(reference), median across sites"
+    },
+    "held_out": {
+      "median_rel_rmse": {}
+    },
+    "sun_elevation": {
+      "min": 4.02,
+      "max": 62.73,
+      "distribution": "truncated_normal",
+      "mean": 41.51,
+      "std": 12.95
+    },
+    "coverage_note": "Landsat 1-3 used WRS-1 and their archive is sparse; the profile is fitted only on the PICS that have a scene at a comparable sun height."
+  },
+  "provenance": {
+    "package_sha": "a84570b1963a489e1108f3938f0e535b393978bd",
+    "source": "MSS_S2/pics (S2) + MSS_S2/pics_l1 (L1_MSS)",
+    "meta_sha256": "76bd399985a9c22c5821bf032b7c2c45fb79af11d548dbc30b1b331956010a25",
+    "assets": {
+      "libya2": "LANDSAT/LM01/C02/T1/LM01_201041_19751125",
+      "algeria3": "LANDSAT/LM01/C02/T1/LM01_207039_19760106",
+      "niger1": "LANDSAT/LM01/C02/T1/LM01_203045_19761016",
+      "niger2": "LANDSAT/LM01/C02/T1/LM01_203045_19761016",
+      "egypt1": "LANDSAT/LM01/C02/T1/LM01_189042_19760722",
+      "egypt2": "LANDSAT/LM01/C02/T1/LM01_191042_19721112",
+      "oman1": "LANDSAT/LM01/C02/T1/LM01_171046_19730208",
+      "namib": "LANDSAT/LM01/C02/T1/LM01_200043_19751019",
+      "sonora": "LANDSAT/LM01/C02/T1/LM01_039039_19741111",
+      "bonneville": "LANDSAT/LM01/C02/T1/LM01_041032_19760804",
+      "great_salt_lake": "LANDSAT/LM01/C02/T1/LM01_041032_19760804"
+    }
+  }
+}
