@@ -60,7 +60,14 @@ Result (2026-11-11):
 - Early runs forced the B4 gain to equal B1-B3 and the B4 error doubled
   (13.8 % in sample, 34.7 % held out). With the gain free per band it is 6.3 %
   and 9.4 %. The weak band was the constraint, not the sensor.
-- Still experimental: no outside-domain or C2ST run for L4 yet.
+- Outside the domain (8 PICS with an L4 scene): 13.9-22.3 % rescaled, 25.6-35.2 %
+  raw. `pantanal` and `great_salt_lake` carry the tail because the water extent
+  changed; the profile does not target them.
+- C2ST on its two held-out deserts: 0.929 deterministic, 0.921 stochastic. Two
+  sites is weak evidence, so the number is stored with that caveat.
+- Status: still experimental. It has the four measurements L5 has, but the
+  held-out split is two deserts. Promoting it is a judgement call, not a
+  measurement.
 
 ## G8 - L1-L3 calibration (P3) - solved by changing the bank
 

@@ -81,9 +81,13 @@ sensor needs its own measured profile.
 
 Numbers are per-band relative RMSE, median across sites, without any per-site
 rescale. With a free per-site factor (which isolates spectral shape from a
-brightness offset) L5 is 5.7-7.0 %, L1 6.1-8.1 % and L2 7.2-8.0 %. Only L5 has
-the full validation (desert inside and out, C2ST, held-out PICS), so only L5 is
-`calibrated`; the rest are measured but experimental.
+brightness offset) L5 is 5.7-7.0 %, L1 6.1-8.1 % and L2 7.2-8.0 %.
+
+L5 is the only `calibrated` sensor. L4 now carries the same four measurements
+(inside, held out, outside the domain at 13.9-22.3 % and C2ST 0.929) but its
+held-out split is two deserts, so it stays `experimental` until that judgement
+is made. L1-L3 have no outside-domain measurement at all: their bank is desert
+by construction.
 
 The 49 CEOS PICS were chosen for surface stability, not for having an early
 Landsat scene: with a clear window, only 6 have an L1 scene, 3 an L2 and 1 an

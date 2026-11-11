@@ -436,6 +436,42 @@
       "distribution": "truncated_normal",
       "mean": 41.51,
       "std": 12.95
+    },
+    "outside_domain_measured": {
+      "n_sites": 8,
+      "sites": [
+        "sahel",
+        "white_sands",
+        "lake_eyre",
+        "cerrado",
+        "pampa",
+        "pantanal",
+        "titicaca",
+        "great_salt_lake"
+      ],
+      "raw_median": {
+        "B1": 0.275,
+        "B2": 0.351,
+        "B3": 0.256,
+        "B4": 0.352
+      },
+      "rescaled_median": {
+        "B1": 0.139,
+        "B2": 0.223,
+        "B3": 0.191,
+        "B4": 0.22
+      },
+      "note": "pantanal and great_salt_lake dominate the tail (water extent changed); the profile is not aimed at them"
+    },
+    "c2st_held_out": {
+      "deterministic_median": 0.929,
+      "stochastic_median": 0.921,
+      "n_sites": 2,
+      "caveat": "only two held-out deserts (libya4_ceos, oman1), so the number is weak"
+    },
+    "validation_files": {
+      "outside": "assets/md/fuentes/srf/pics_49/validation_l4_outside.json",
+      "c2st": "assets/md/fuentes/srf/pics_49/c2st_l4.json"
     }
   },
   "provenance": {
