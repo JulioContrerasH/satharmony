@@ -90,16 +90,21 @@ def from_gee(missing: list[str]) -> dict[str, float]:
     ee.Initialize(project="ee-contrerasnetk")
     out: dict[str, float] = {}
     for index, site in enumerate(missing, 1):
-        date, path, row = site.split("_")
+        # The canonical id is ``date_row_path``; the GEE asset is
+        # ``<sat>_<path><row>_<date>`` (path first).
+        date, row, path = site.split("_")
         stamp = date.replace("-", "")
         for sat in ("LM05", "LM04"):
-            asset = f"LANDSAT/{sat}/C02/T2/{sat}_{path}{row}_{stamp}"
-            try:
-                value = ee.Image(asset).get("SUN_ELEVATION").getInfo()
-            except Exception:  # any GEE failure means "try next"
-                value = None
-            if value is not None:
-                out[site] = float(value)
+            for collection in ("T2", "T1"):
+                asset = f"LANDSAT/{sat}/C02/{collection}/{sat}_{path}{row}_{stamp}"
+                try:
+                    value = ee.Image(asset).get("SUN_ELEVATION").getInfo()
+                except Exception:  # any GEE failure means "try next"
+                    value = None
+                if value is not None:
+                    out[site] = float(value)
+                    break
+            if site in out:
                 break
         if index % 25 == 0:
             print(f"  GEE {index}/{len(missing)}", flush=True)

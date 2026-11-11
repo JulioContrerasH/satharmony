@@ -380,8 +380,8 @@
         "min": 4.02,
         "max": 62.73,
         "distribution": "truncated_normal",
-        "mean": 41.81,
-        "std": 12.81
+        "mean": 41.51,
+        "std": 12.95
       },
       "earth_sun_distance_au": 1.0,
       "saturation_threshold": {
@@ -570,10 +570,10 @@
     "c2st_held_out": {
       "deterministic_median": 0.999,
       "deterministic_min": 0.956,
-      "stochastic_median": 0.88,
+      "stochastic_median": 0.884,
       "stochastic_range": [
         0.81,
-        0.92
+        0.918
       ],
       "verdict": "distinguishable: a per-pixel classifier separates emulated from real"
     },
@@ -582,13 +582,13 @@
     "v1_note": "v1 was fitted on 5 CEOS PICS, one of which (libya4_ceos) is in the held-out set; the comparison is conservative against v2.",
     "sun_elevation": {
       "n_canonical": 3027,
-      "n_measured": 2886,
-      "coverage": 0.9534,
+      "n_measured": 3027,
+      "coverage": 1.0,
       "min": 4.02,
       "max": 62.73,
-      "mean": 41.81,
-      "std": 12.81,
-      "median": 43.32,
+      "mean": 41.51,
+      "std": 12.95,
+      "median": 43.05,
       "source": "profiles/measurements/sun_elevation_canonical.json"
     }
   },
@@ -599,7 +599,7 @@
     "measurements": {
       "sun_elevation": {
         "path": "profiles/measurements/sun_elevation_canonical.json",
-        "sha256": "1a3363fa92c8317b3b915482d7342cb84567c6b4718de75cd811b95f66678658"
+        "sha256": "917256429304ab70162c0e6e7d3cf7e7a8c2b721db13dff98981fc4091947c3f"
       },
       "sensor_physics": {
         "path": "profiles/measurements/sensor_physics_sample.json",

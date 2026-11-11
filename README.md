@@ -118,7 +118,7 @@ emulated pixels; 0.5 means indistinguishable. On the five held-out deserts:
 | Mode | Median | Range |
 |---|---:|---:|
 | Deterministic | 0.999 | 0.956-1.000 |
-| Stochastic, seed 0 | 0.880 | 0.810-0.920 |
+| Stochastic, seed 0 | 0.884 | 0.810-0.918 |
 
 The emulator is still distinguishable. With 62 500 pixels per site and a residual bias near
 0.02, a per-pixel classifier separates the two. The number is reported, not hidden.
@@ -167,8 +167,7 @@ satharmony verify MANIFEST.csv [--no-hashes]
 pixels outside a boolean mask. `fit` reads `s2_mss` rows from a manifest; `verify` checks
 every file and its SHA-256. The bundled `manifests/manifest_178.csv` pins 178 MSS/TM pairs
 with their SHA-256. The shipped profile's sun-elevation distribution comes from
-`profiles/measurements/sun_elevation_canonical.json` (2,886 of the 3,027 aligned
-scenes; 141 have no GEE/MTL metadata).
+`profiles/measurements/sun_elevation_canonical.json` (all 3,027 aligned scenes).
 
 ## Input contract
 

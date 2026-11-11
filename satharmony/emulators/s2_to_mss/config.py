@@ -56,8 +56,8 @@ MEASURED_SUN_ELEVATION_CANONICAL = {
     "min": 4.02,
     "max": 62.73,
     "distribution": "truncated_normal",
-    "mean": 41.81,
-    "std": 12.81,
+    "mean": 41.51,
+    "std": 12.95,
 }
 
 
