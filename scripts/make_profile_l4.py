@@ -33,6 +33,7 @@ from satharmony.emulators.s2_to_mss.config import (  # noqa: E402
 )
 from satharmony.emulators.s2_to_mss.functional import emulate_s2  # noqa: E402
 from satharmony.emulators.s2_to_mss.sbaf import S2_BAND_ORDER  # noqa: E402
+from scripts.holdout_v2 import deterministic  # noqa: E402
 from scripts.make_profile_v2 import read_band  # noqa: E402
 
 PICS = Path("/data/databases/CLOUD_MSS/MSS_S2/pics")
@@ -87,7 +88,7 @@ def stable_sites(candidates: list[str], tolerance: float = 0.15) -> tuple[list[s
 
 
 def site_error(pair: Pair, config: PipelineConfig) -> dict[str, float]:
-    pred, _ = emulate_s2(pair.s2, config=config)
+    pred, _ = emulate_s2(pair.s2, config=deterministic(config))
     mask = np.isfinite(pair.mss).all(0) & (pair.mss > 0).all(0)
     row: dict[str, float] = {}
     for index, band in enumerate(BANDS):
@@ -122,7 +123,7 @@ def main() -> None:
     base = PipelineConfig.from_profile("mss5_esa_gtc_v2")
     base.radiometric.satellite = "L4_MSS"
     base.spectral.coefficients = "sbaf_coefficients_l4.json"
-    profile = fit_profile((load_pair(site) for site in sites), base=base, name="mss4_esa_gtc_v1", n_boot=1000)
+    profile = fit_profile((load_pair(site) for site in sites), base=base, name="mss4_esa_gtc_v1", n_boot=1000, gamma_rule="off")
     config = profile.to_config(base=base)
     config.radiometric.satellite = "L4_MSS"
     config.radiometric.sun_elevation_deg = type(config.radiometric.sun_elevation_deg)(
@@ -139,6 +140,11 @@ def main() -> None:
     payload["sensor"] = "L4_MSS"
     payload["validity"] = {
         "sensor": "L4_MSS",
+        "status": "experimental",
+        "band_gain": (
+            "free per band, water-vapour term off: with gamma the B4 gain was forced "
+            "up and the error doubled, and gamma is not identifiable on these sites"
+        ),
         "calibration_domain": "desert and salt flats",
         "outside_domain": ["forest", "water", "crops", "wetland"],
         "held_out_sites": held,

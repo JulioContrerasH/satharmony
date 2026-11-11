@@ -1,0 +1,516 @@
+{
+  "schema_version": 1,
+  "name": "mss1_esa_gtc_v2",
+  "created": "2026-11-11",
+  "n_pairs": 15,
+  "band_scaling": {
+    "B1": {
+      "mean": 1.1819749577549352,
+      "variation": 0.03668248698814903
+    },
+    "B2": {
+      "mean": 1.1353465878721585,
+      "variation": 0.04807595212679467
+    },
+    "B3": {
+      "mean": 0.9763812325706077,
+      "variation": 0.03
+    },
+    "B4": {
+      "mean": 0.766557340097827,
+      "variation": 0.0348892001895522
+    }
+  },
+  "gamma": 0.0,
+  "intervals": {
+    "B1": {
+      "mean": 1.1819749577549352,
+      "low": 1.139298287539036,
+      "high": 1.2111959620358081,
+      "n": 15
+    },
+    "B2": {
+      "mean": 1.1353465878721585,
+      "low": 1.0716031261481558,
+      "high": 1.1658319923166733,
+      "n": 15
+    },
+    "B3": {
+      "mean": 0.9763812325706077,
+      "low": 0.9478826908371744,
+      "high": 0.986371637469941,
+      "n": 15
+    },
+    "B4": {
+      "mean": 0.766557340097827,
+      "low": 0.7223127370788552,
+      "high": 0.7906955694503776,
+      "n": 15
+    }
+  },
+  "per_pair": [
+    {
+      "pair": "l1_004.5E_23.0N",
+      "valid_pixels": 62381,
+      "B1": 1.174260863662337,
+      "B2": 1.1353465878721585,
+      "B3": 0.9862496589248755,
+      "B4": 0.7906955694503776,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l1_041.2E_14.5N",
+      "valid_pixels": 62500,
+      "B1": 1.3001198074591418,
+      "B2": 1.194930480232591,
+      "B3": 0.9857800134422442,
+      "B4": 0.7505566214550453,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l1_007.7W_25.9N",
+      "valid_pixels": 61953,
+      "B1": 1.2111959620358081,
+      "B2": 1.159527295911663,
+      "B3": 0.9911288007275039,
+      "B4": 0.7745686654830493,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l1_076.6E_38.8N",
+      "valid_pixels": 62500,
+      "B1": 1.2457818086143855,
+      "B2": 1.166256272532789,
+      "B3": 1.0046506572342053,
+      "B4": 0.8345195253742578,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l1_022.4E_25.8N",
+      "valid_pixels": 62488,
+      "B1": 1.116060021391897,
+      "B2": 1.1285000150944766,
+      "B3": 0.9478826908371744,
+      "B4": 0.7218850110863161,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l1_002.8E_27.4N",
+      "valid_pixels": 61025,
+      "B1": 1.1995737013438497,
+      "B2": 1.2047368527618376,
+      "B3": 1.023002436317053,
+      "B4": 0.7968223985225329,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l1_029.3E_24.5N",
+      "valid_pixels": 62394,
+      "B1": 1.139298287539036,
+      "B2": 1.1471817820188315,
+      "B3": 0.9840262940110297,
+      "B4": 0.766557340097827,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l1_043.9E_20.3N",
+      "valid_pixels": 62484,
+      "B1": 1.1819749577549352,
+      "B2": 1.1381801409526116,
+      "B3": 0.9763812325706077,
+      "B4": 0.7939297485590234,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l1_037.0E_31.7N",
+      "valid_pixels": 57148,
+      "B1": 1.1341681468832587,
+      "B2": 1.088898448194705,
+      "B3": 0.9560327115841787,
+      "B4": 0.7624564148155267,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l1_038.9E_17.4N",
+      "valid_pixels": 60307,
+      "B1": 1.2890140724778185,
+      "B2": 1.1658319923166733,
+      "B3": 0.9633380800523091,
+      "B4": 0.7233033326883429,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l1_000.2W_21.6N",
+      "valid_pixels": 62309,
+      "B1": 1.1207487546311825,
+      "B2": 1.0716031261481558,
+      "B3": 0.9150622922205036,
+      "B4": 0.7223127370788552,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l1_011.1E_31.7N",
+      "valid_pixels": 59148,
+      "B1": 1.033450873492792,
+      "B2": 1.0029222693520792,
+      "B3": 0.8928402396805644,
+      "B4": 0.7056189708786093,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l1_057.2E_21.6N",
+      "valid_pixels": 62500,
+      "B1": 1.144816218452056,
+      "B2": 1.0397789029712934,
+      "B3": 0.8744069447634744,
+      "B4": 0.6983899838551404,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l1_080.4E_37.3N",
+      "valid_pixels": 62479,
+      "B1": 1.2099471904112167,
+      "B2": 1.1117507103726312,
+      "B3": 1.0021695857260666,
+      "B4": 0.8881150372059139,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l1_084.8W_54.3N",
+      "valid_pixels": 62461,
+      "B1": 1.3032657581314455,
+      "B2": 0.996032574688874,
+      "B3": 0.8543890824676559,
+      "B4": 0.7778966786380467,
+      "gamma": 0.0
+    }
+  ],
+  "config": {
+    "spectral": {
+      "enabled": true,
+      "probability": 1.0,
+      "mode": "sbaf",
+      "sensor": "S2A",
+      "s2_bands": [
+        2,
+        3,
+        6,
+        7
+      ],
+      "coefficients": "sbaf_coefficients_l1.json",
+      "srf_adjustment": false,
+      "srf_noise_std": {
+        "min": 0.0,
+        "max": 0.02,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "water_vapor_scale": 0.0,
+      "gas_mss3_scale": 1.0
+    },
+    "spatial": {
+      "enabled": true,
+      "probability": 1.0,
+      "input_gsd": 10.0,
+      "sampling_gsd": 60.0,
+      "psf_fwhm_m": {
+        "min": 79.0,
+        "max": 82.0,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "center_decimation": true,
+      "method": "average",
+      "target_gsd": {
+        "min": 60.0,
+        "max": 80.0,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "psf_sigma": {
+        "min": 0.4,
+        "max": 0.6,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      }
+    },
+    "radiometric": {
+      "enabled": true,
+      "probability": 1.0,
+      "quantization_bits": 6,
+      "sqrt_compression": true,
+      "sqrt_bands": [
+        0,
+        1,
+        2
+      ],
+      "decompress_after_quantization": true,
+      "saturation_model": "physical",
+      "satellite": "L1_MSS",
+      "sun_elevation_deg": {
+        "min": 4.02,
+        "max": 62.73,
+        "distribution": "truncated_normal",
+        "mean": 41.51,
+        "std": 12.95
+      },
+      "earth_sun_distance_au": 1.0,
+      "saturation_threshold": {
+        "min": 0.8,
+        "max": 0.95,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "reflectance_boost": {
+        "min": 1.0,
+        "max": 1.3,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "reflectance_boost_prob": 0.0
+    },
+    "striping": {
+      "enabled": true,
+      "probability": 0.8,
+      "num_detectors": 6,
+      "gain_std": {
+        "min": 0.005,
+        "max": 0.02,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "offset_std": {
+        "min": 0.002,
+        "max": 0.008,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "per_band_variation": true,
+      "detector_geometry": "scan_lines",
+      "sampling_gsd": 60.0,
+      "scan_line_period_m": 474.0,
+      "yaw_deg": 9.0
+    },
+    "memory_effect": {
+      "enabled": true,
+      "probability": 0.4,
+      "trigger_threshold": {
+        "min": 0.6,
+        "max": 0.85,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "decay_pixels": {
+        "min": 50,
+        "max": 200
+      },
+      "amplitude": {
+        "min": 0.02,
+        "max": 0.08,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      }
+    },
+    "coherent_noise": {
+      "enabled": true,
+      "probability": 0.3,
+      "frequencies": [
+        0.16666666666666666,
+        0.3333333333333333,
+        0.5
+      ],
+      "amplitude": {
+        "min": 0.005,
+        "max": 0.02,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "random_phase": true
+    },
+    "random_noise": {
+      "enabled": true,
+      "probability": 0.7,
+      "snr_db": {
+        "min": 30.0,
+        "max": 40.0,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "noise_type": "mixed",
+      "poisson_weight": {
+        "min": 0.2,
+        "max": 0.5,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      }
+    },
+    "scan_artifacts": {
+      "enabled": true,
+      "probability": 0.2,
+      "dropout_prob": {
+        "min": 0.001,
+        "max": 0.01,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "max_consecutive_lines": {
+        "min": 1,
+        "max": 3
+      }
+    },
+    "final_scaling": {
+      "enabled": true,
+      "band_scaling": {
+        "green": {
+          "mean": 1.1819749577549352,
+          "variation": 0.03668248698814903
+        },
+        "red": {
+          "mean": 1.1353465878721585,
+          "variation": 0.04807595212679467
+        },
+        "nir1": {
+          "mean": 0.9763812325706077,
+          "variation": 0.03
+        },
+        "nir2": {
+          "mean": 0.766557340097827,
+          "variation": 0.0348892001895522
+        }
+      }
+    },
+    "labels_legacy": false,
+    "seed": null,
+    "output_dtype": "float32",
+    "legacy_rng": false
+  },
+  "sensor": "L1_MSS",
+  "validity": {
+    "sensor": "L1_MSS",
+    "status": "experimental",
+    "calibration_domain": "desert, steppe and salt flats",
+    "outside_domain": [
+      "forest",
+      "water",
+      "crops",
+      "wetland"
+    ],
+    "site_source": "auxiliary bank selected from the MSS archive itself (one scene per site), not CEOS PICS; each site needs only a clear same-season Sentinel-2 composite.",
+    "n_sites": 15,
+    "n_held_out": 4,
+    "held_out_sites": [
+      "l1_029.0E_28.8N",
+      "l1_093.1W_57.0N",
+      "l1_045.9E_15.8N",
+      "l1_014.5E_23.0N"
+    ],
+    "rejected_unstable_sites": [
+      "l1_095.9W_59.8N",
+      "l1_072.6W_58.5N",
+      "l1_044.7E_23.0N",
+      "l1_034.6E_23.0N",
+      "l1_090.2W_57.0N",
+      "l1_066.4E_43.0N"
+    ],
+    "stability_tolerance": 0.15,
+    "median_scale": {
+      "B1": 1.2193409387161556,
+      "B2": 1.1998467373560688,
+      "B3": 1.0758217588725645,
+      "B4": 0.9502435634059722
+    },
+    "latitude_range": [
+      14.50252,
+      59.80234
+    ],
+    "desert_in_sample": {
+      "median_rel_rmse": {
+        "B1": 0.0845324705230574,
+        "B2": 0.10818985154705935,
+        "B3": 0.09942472985960801,
+        "B4": 0.09209044893220629
+      },
+      "median_rel_rmse_free_scale": {
+        "B1": 0.06107299808390716,
+        "B2": 0.08133649888789629,
+        "B3": 0.08016103231866668,
+        "B4": 0.07832348455627908
+      },
+      "method": "per-site relative RMSE = RMSE / mean(reference), median across sites"
+    },
+    "held_out": {
+      "median_rel_rmse": {
+        "B1": 0.04359875703711549,
+        "B2": 0.0346649213367264,
+        "B3": 0.03865951427803371,
+        "B4": 0.04015452821125522
+      },
+      "median_rel_rmse_free_scale": {
+        "B1": 0.028065405005994446,
+        "B2": 0.03365674115366106,
+        "B3": 0.0367814653233941,
+        "B4": 0.028996377098749998
+      }
+    },
+    "sun_elevation": {
+      "min": 4.02,
+      "max": 62.73,
+      "distribution": "truncated_normal",
+      "mean": 41.51,
+      "std": 12.95
+    },
+    "coverage_note": "The Landsat 1-3 archive is sparse and was enumerated globally: every scene of the platform was listed and only the dry, flat, low-cloud ones were kept. The limit is the archive, not the number of candidate sites.",
+    "status_rule": "calibrated when the worst in-sample band is <= 8 % and the worst held-out band <= 12 %"
+  },
+  "provenance": {
+    "package_sha": "b7b18fc2053ff0805ad14d05564420fdac3ff9b3",
+    "source": "MSS_S2/aux_l1 (S2 L1C + MSS L1_MSS)",
+    "meta_sha256": "a051ca153fe6103ac5a9e1dd62e5d82dea3d67ae9d8f88e7e74608b86497e99a",
+    "assets": {
+      "l1_004.5E_23.0N": "LANDSAT/LM01/C02/T1",
+      "l1_041.2E_14.5N": "LANDSAT/LM01/C02/T1",
+      "l1_007.7W_25.9N": "LANDSAT/LM01/C02/T1",
+      "l1_029.0E_28.8N": "LANDSAT/LM01/C02/T1",
+      "l1_095.9W_59.8N": "LANDSAT/LM01/C02/T1",
+      "l1_076.6E_38.8N": "LANDSAT/LM01/C02/T1",
+      "l1_072.6W_58.5N": "LANDSAT/LM01/C02/T1",
+      "l1_022.4E_25.8N": "LANDSAT/LM01/C02/T1",
+      "l1_002.8E_27.4N": "LANDSAT/LM01/C02/T1",
+      "l1_008.0W_30.1N": "LANDSAT/LM01/C02/T1",
+      "l1_093.1W_57.0N": "LANDSAT/LM01/C02/T1",
+      "l1_007.2E_33.1N": "LANDSAT/LM01/C02/T1",
+      "l1_044.7E_23.0N": "LANDSAT/LM01/C02/T1",
+      "l1_034.6E_23.0N": "LANDSAT/LM01/C02/T1",
+      "l1_029.3E_24.5N": "LANDSAT/LM01/C02/T1",
+      "l1_090.2W_57.0N": "LANDSAT/LM01/C02/T1",
+      "l1_043.9E_20.3N": "LANDSAT/LM01/C02/T1",
+      "l1_037.0E_31.7N": "LANDSAT/LM01/C02/T1",
+      "l1_005.1W_30.2N": "LANDSAT/LM01/C02/T1",
+      "l1_040.4E_23.1N": "LANDSAT/LM01/C02/T1",
+      "l1_045.9E_15.8N": "LANDSAT/LM01/C02/T1",
+      "l1_038.9E_17.4N": "LANDSAT/LM01/C02/T1",
+      "l1_015.7E_27.4N": "LANDSAT/LM01/C02/T1",
+      "l1_000.2W_21.6N": "LANDSAT/LM01/C02/T1",
+      "l1_066.4E_43.0N": "LANDSAT/LM01/C02/T1",
+      "l1_011.1E_31.7N": "LANDSAT/LM01/C02/T1",
+      "l1_014.5E_23.0N": "LANDSAT/LM01/C02/T1",
+      "l1_057.2E_21.6N": "LANDSAT/LM01/C02/T1",
+      "l1_080.4E_37.3N": "LANDSAT/LM01/C02/T1",
+      "l1_084.8W_54.3N": "LANDSAT/LM01/C02/T1"
+    }
+  }
+}

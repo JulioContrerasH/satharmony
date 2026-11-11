@@ -1,0 +1,545 @@
+{
+  "schema_version": 1,
+  "name": "mss2_esa_gtc_v2",
+  "created": "2026-11-11",
+  "n_pairs": 18,
+  "band_scaling": {
+    "B1": {
+      "mean": 1.0290442240210607,
+      "variation": 0.03
+    },
+    "B2": {
+      "mean": 0.9469244150988834,
+      "variation": 0.03958536024920941
+    },
+    "B3": {
+      "mean": 0.9067479575632609,
+      "variation": 0.033289349471740046
+    },
+    "B4": {
+      "mean": 0.7851756075530238,
+      "variation": 0.03
+    }
+  },
+  "gamma": 0.0,
+  "intervals": {
+    "B1": {
+      "mean": 1.0290442240210607,
+      "low": 1.00935577288765,
+      "high": 1.0373788004277018,
+      "n": 18
+    },
+    "B2": {
+      "mean": 0.9469244150988834,
+      "low": 0.8996381184145532,
+      "high": 0.9772254245030036,
+      "n": 18
+    },
+    "B3": {
+      "mean": 0.9067479575632609,
+      "low": 0.86251779574248,
+      "high": 0.9277649207070905,
+      "n": 18
+    },
+    "B4": {
+      "mean": 0.7851756075530238,
+      "low": 0.7599912997002158,
+      "high": 0.810227564738192,
+      "n": 18
+    }
+  },
+  "per_pair": [
+    {
+      "pair": "l2_037.5E_33.2N",
+      "valid_pixels": 61795,
+      "B1": 0.9526709782448435,
+      "B2": 0.8982394224367874,
+      "B3": 0.8411112499607425,
+      "B4": 0.7028924061081049,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l2_038.0E_30.2N",
+      "valid_pixels": 62500,
+      "B1": 1.0292131734338879,
+      "B2": 0.8885596926999001,
+      "B3": 0.8085535969609752,
+      "B4": 0.6688527885831854,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l2_041.8E_33.1N",
+      "valid_pixels": 62107,
+      "B1": 1.0497299528319692,
+      "B2": 0.9905482240081768,
+      "B3": 0.9325196173822877,
+      "B4": 0.7809445749831843,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l2_007.8E_18.7N",
+      "valid_pixels": 62500,
+      "B1": 1.0401315817419161,
+      "B2": 0.9561948420233312,
+      "B3": 0.9013454713421182,
+      "B4": 0.8038455634363062,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l2_106.1E_37.4N",
+      "valid_pixels": 62500,
+      "B1": 1.0288752746082337,
+      "B2": 0.9929441949234522,
+      "B3": 0.9277649207070905,
+      "B4": 0.8163430131332562,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l2_008.8W_31.6N",
+      "valid_pixels": 62499,
+      "B1": 0.9857178711718992,
+      "B2": 0.92893120258381,
+      "B3": 0.8735546715783511,
+      "B4": 0.7502547705925633,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l2_012.3E_30.2N",
+      "valid_pixels": 61704,
+      "B1": 0.9717030599787958,
+      "B2": 0.9036303615806593,
+      "B3": 0.8745233346699702,
+      "B4": 0.829611715362456,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l2_138.9E_31.7S",
+      "valid_pixels": 62500,
+      "B1": 1.025660647848476,
+      "B2": 0.8531140308512076,
+      "B3": 0.8514809199066089,
+      "B4": 0.7599912997002158,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l2_015.2E_20.2N",
+      "valid_pixels": 62396,
+      "B1": 1.012516416980788,
+      "B2": 0.901036814392319,
+      "B3": 0.9363616363922473,
+      "B4": 0.8590784218131472,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l2_004.9W_30.2N",
+      "valid_pixels": 62131,
+      "B1": 1.0324428467425315,
+      "B2": 0.9772254245030036,
+      "B3": 0.924160278009087,
+      "B4": 0.7894066401228635,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l2_079.3E_38.9N",
+      "valid_pixels": 62500,
+      "B1": 1.010887985422795,
+      "B2": 0.9376539881744357,
+      "B3": 0.9116406164998019,
+      "B4": 0.7917636817266748,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l2_002.6W_33.1N",
+      "valid_pixels": 62500,
+      "B1": 0.9176414405676816,
+      "B2": 0.868506589235041,
+      "B3": 0.8362059602334828,
+      "B4": 0.7468078535402383,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l2_110.0W_39.0N",
+      "valid_pixels": 62500,
+      "B1": 1.0373439550946104,
+      "B2": 0.9922508111783629,
+      "B3": 0.9543984643054358,
+      "B4": 0.8720038899495337,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l2_003.2E_23.1N",
+      "valid_pixels": 59918,
+      "B1": 1.045372856551482,
+      "B2": 0.980039160948703,
+      "B3": 0.948476393921738,
+      "B4": 0.8396580783637559,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l2_030.8E_18.7N",
+      "valid_pixels": 60798,
+      "B1": 1.0061951287945121,
+      "B2": 0.973879958266563,
+      "B3": 0.9088587047972918,
+      "B4": 0.7805852026196523,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l2_011.1W_28.7N",
+      "valid_pixels": 62496,
+      "B1": 1.0407982713528798,
+      "B2": 0.961089309731126,
+      "B3": 0.90463721032923,
+      "B4": 0.7745345187608388,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l2_009.6E_25.9N",
+      "valid_pixels": 62500,
+      "B1": 1.0878948875415468,
+      "B2": 0.9908465495692745,
+      "B3": 0.9331081337273708,
+      "B4": 0.8041121163431277,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l2_041.1E_14.4N",
+      "valid_pixels": 62500,
+      "B1": 1.0315601414543414,
+      "B2": 0.8910986921347791,
+      "B3": 0.8502819016280705,
+      "B4": 0.6776810363140268,
+      "gamma": 0.0
+    }
+  ],
+  "config": {
+    "spectral": {
+      "enabled": true,
+      "probability": 1.0,
+      "mode": "sbaf",
+      "sensor": "S2A",
+      "s2_bands": [
+        2,
+        3,
+        6,
+        7
+      ],
+      "coefficients": "sbaf_coefficients_l2.json",
+      "srf_adjustment": false,
+      "srf_noise_std": {
+        "min": 0.0,
+        "max": 0.02,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "water_vapor_scale": 0.0,
+      "gas_mss3_scale": 1.0
+    },
+    "spatial": {
+      "enabled": true,
+      "probability": 1.0,
+      "input_gsd": 10.0,
+      "sampling_gsd": 60.0,
+      "psf_fwhm_m": {
+        "min": 79.0,
+        "max": 82.0,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "center_decimation": true,
+      "method": "average",
+      "target_gsd": {
+        "min": 60.0,
+        "max": 80.0,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "psf_sigma": {
+        "min": 0.4,
+        "max": 0.6,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      }
+    },
+    "radiometric": {
+      "enabled": true,
+      "probability": 1.0,
+      "quantization_bits": 6,
+      "sqrt_compression": true,
+      "sqrt_bands": [
+        0,
+        1,
+        2
+      ],
+      "decompress_after_quantization": true,
+      "saturation_model": "physical",
+      "satellite": "L2_MSS",
+      "sun_elevation_deg": {
+        "min": 4.02,
+        "max": 62.73,
+        "distribution": "truncated_normal",
+        "mean": 41.51,
+        "std": 12.95
+      },
+      "earth_sun_distance_au": 1.0,
+      "saturation_threshold": {
+        "min": 0.8,
+        "max": 0.95,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "reflectance_boost": {
+        "min": 1.0,
+        "max": 1.3,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "reflectance_boost_prob": 0.0
+    },
+    "striping": {
+      "enabled": true,
+      "probability": 0.8,
+      "num_detectors": 6,
+      "gain_std": {
+        "min": 0.005,
+        "max": 0.02,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "offset_std": {
+        "min": 0.002,
+        "max": 0.008,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "per_band_variation": true,
+      "detector_geometry": "scan_lines",
+      "sampling_gsd": 60.0,
+      "scan_line_period_m": 474.0,
+      "yaw_deg": 9.0
+    },
+    "memory_effect": {
+      "enabled": true,
+      "probability": 0.4,
+      "trigger_threshold": {
+        "min": 0.6,
+        "max": 0.85,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "decay_pixels": {
+        "min": 50,
+        "max": 200
+      },
+      "amplitude": {
+        "min": 0.02,
+        "max": 0.08,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      }
+    },
+    "coherent_noise": {
+      "enabled": true,
+      "probability": 0.3,
+      "frequencies": [
+        0.16666666666666666,
+        0.3333333333333333,
+        0.5
+      ],
+      "amplitude": {
+        "min": 0.005,
+        "max": 0.02,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "random_phase": true
+    },
+    "random_noise": {
+      "enabled": true,
+      "probability": 0.7,
+      "snr_db": {
+        "min": 30.0,
+        "max": 40.0,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "noise_type": "mixed",
+      "poisson_weight": {
+        "min": 0.2,
+        "max": 0.5,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      }
+    },
+    "scan_artifacts": {
+      "enabled": true,
+      "probability": 0.2,
+      "dropout_prob": {
+        "min": 0.001,
+        "max": 0.01,
+        "distribution": "uniform",
+        "mean": null,
+        "std": null
+      },
+      "max_consecutive_lines": {
+        "min": 1,
+        "max": 3
+      }
+    },
+    "final_scaling": {
+      "enabled": true,
+      "band_scaling": {
+        "green": {
+          "mean": 1.0290442240210607,
+          "variation": 0.03
+        },
+        "red": {
+          "mean": 0.9469244150988834,
+          "variation": 0.03958536024920941
+        },
+        "nir1": {
+          "mean": 0.9067479575632609,
+          "variation": 0.033289349471740046
+        },
+        "nir2": {
+          "mean": 0.7851756075530238,
+          "variation": 0.03
+        }
+      }
+    },
+    "labels_legacy": false,
+    "seed": null,
+    "output_dtype": "float32",
+    "legacy_rng": false
+  },
+  "sensor": "L2_MSS",
+  "validity": {
+    "sensor": "L2_MSS",
+    "status": "experimental",
+    "calibration_domain": "desert, steppe and salt flats",
+    "outside_domain": [
+      "forest",
+      "water",
+      "crops",
+      "wetland"
+    ],
+    "site_source": "auxiliary bank selected from the MSS archive itself (one scene per site), not CEOS PICS; each site needs only a clear same-season Sentinel-2 composite.",
+    "n_sites": 18,
+    "n_held_out": 6,
+    "held_out_sites": [
+      "l2_033.0E_27.3N",
+      "l2_099.9E_40.3N",
+      "l2_003.2E_28.8N",
+      "l2_018.7E_27.4N",
+      "l2_008.2W_28.8N",
+      "l2_074.1E_47.3N"
+    ],
+    "rejected_unstable_sites": [
+      "l2_072.1W_58.5N",
+      "l2_086.5W_55.7N",
+      "l2_034.7E_23.1N",
+      "l2_077.7E_46.0N",
+      "l2_056.9E_44.5N",
+      "l2_101.1W_59.9N"
+    ],
+    "stability_tolerance": 0.15,
+    "median_scale": {
+      "B1": 1.056004378871612,
+      "B2": 1.0188431197923573,
+      "B3": 0.9922778299556011,
+      "B4": 0.9703181379814341
+    },
+    "latitude_range": [
+      -31.69357,
+      59.94519
+    ],
+    "desert_in_sample": {
+      "median_rel_rmse": {
+        "B1": 0.09847643688244026,
+        "B2": 0.09699347897506919,
+        "B3": 0.10330205456687044,
+        "B4": 0.09272635810669498
+      },
+      "median_rel_rmse_free_scale": {
+        "B1": 0.07191549565777643,
+        "B2": 0.0739142497106367,
+        "B3": 0.07998634272395372,
+        "B4": 0.07217244643532646
+      },
+      "method": "per-site relative RMSE = RMSE / mean(reference), median across sites"
+    },
+    "held_out": {
+      "median_rel_rmse": {
+        "B1": 0.07633554972932866,
+        "B2": 0.08969239439352003,
+        "B3": 0.08480090339115948,
+        "B4": 0.11178152160101401
+      },
+      "median_rel_rmse_free_scale": {
+        "B1": 0.057566777411469566,
+        "B2": 0.08956067655493924,
+        "B3": 0.08129315123906483,
+        "B4": 0.09244384859462867
+      }
+    },
+    "sun_elevation": {
+      "min": 4.02,
+      "max": 62.73,
+      "distribution": "truncated_normal",
+      "mean": 41.51,
+      "std": 12.95
+    },
+    "coverage_note": "The Landsat 1-3 archive is sparse and was enumerated globally: every scene of the platform was listed and only the dry, flat, low-cloud ones were kept. The limit is the archive, not the number of candidate sites.",
+    "status_rule": "calibrated when the worst in-sample band is <= 8 % and the worst held-out band <= 12 %"
+  },
+  "provenance": {
+    "package_sha": "b7b18fc2053ff0805ad14d05564420fdac3ff9b3",
+    "source": "MSS_S2/aux_l2 (S2 L1C + MSS L2_MSS)",
+    "meta_sha256": "fe16cd3c835cf867c801db007ee9254e0c5ab59963da15cb33b7906c6073a488",
+    "assets": {
+      "l2_037.5E_33.2N": "LANDSAT/LM02/C02/T1",
+      "l2_038.0E_30.2N": "LANDSAT/LM02/C02/T1",
+      "l2_072.1W_58.5N": "LANDSAT/LM02/C02/T1",
+      "l2_041.8E_33.1N": "LANDSAT/LM02/C02/T1",
+      "l2_033.0E_27.3N": "LANDSAT/LM02/C02/T1",
+      "l2_007.8E_18.7N": "LANDSAT/LM02/C02/T1",
+      "l2_106.1E_37.4N": "LANDSAT/LM02/C02/T1",
+      "l2_086.5W_55.7N": "LANDSAT/LM02/C02/T1",
+      "l2_008.8W_31.6N": "LANDSAT/LM02/C02/T1",
+      "l2_034.7E_23.1N": "LANDSAT/LM02/C02/T1",
+      "l2_099.9E_40.3N": "LANDSAT/LM02/C02/T1",
+      "l2_012.3E_30.2N": "LANDSAT/LM02/C02/T1",
+      "l2_138.9E_31.7S": "LANDSAT/LM02/C02/T1",
+      "l2_015.2E_20.2N": "LANDSAT/LM02/C02/T1",
+      "l2_003.2E_28.8N": "LANDSAT/LM02/C02/T1",
+      "l2_077.7E_46.0N": "LANDSAT/LM02/C02/T1",
+      "l2_004.9W_30.2N": "LANDSAT/LM02/C02/T1",
+      "l2_056.9E_44.5N": "LANDSAT/LM02/C02/T1",
+      "l2_079.3E_38.9N": "LANDSAT/LM02/C02/T1",
+      "l2_002.6W_33.1N": "LANDSAT/LM02/C02/T1",
+      "l2_018.7E_27.4N": "LANDSAT/LM02/C02/T1",
+      "l2_110.0W_39.0N": "LANDSAT/LM02/C02/T1",
+      "l2_003.2E_23.1N": "LANDSAT/LM02/C02/T1",
+      "l2_030.8E_18.7N": "LANDSAT/LM02/C02/T1",
+      "l2_008.2W_28.8N": "LANDSAT/LM02/C02/T1",
+      "l2_011.1W_28.7N": "LANDSAT/LM02/C02/T1",
+      "l2_009.6E_25.9N": "LANDSAT/LM02/C02/T1",
+      "l2_101.1W_59.9N": "LANDSAT/LM02/C02/T1",
+      "l2_041.1E_14.4N": "LANDSAT/LM02/C02/T1",
+      "l2_074.1E_47.3N": "LANDSAT/LM02/C02/T1"
+    }
+  }
+}

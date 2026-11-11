@@ -23,29 +23,33 @@ uncalibrated sensor raises, suite green.
 
 ## P2 - Landsat 4 calibration (experimental)
 
-- 32 of the 49 PICS have a Landsat 4 scene in GEE; 20 have one at a comparable
-  sun height; 11 survive the L4/L5 surface-stability check (15 %).
+- 32 of the 49 PICS have a Landsat 4 scene in GEE; 20 at a comparable sun
+  height; 11 survive the L4/L5 surface-stability check (15 %).
 - The L4 SBAF was refitted from the L4 SRF and the spectral library.
-- In-sample 9.5-13.3 %, held out 12.8-35 %; L5 is 5.7-7.0 %. B4 is the weak band.
+- In-sample 6.3-11.7 %, held out 9.4-12.5 %.
 - Shipped as `experimental`; `random` does not pick it by default.
 
 Gate: profile with `validity` and the L4/L5 comparison written down. Done.
-Next: a dedicated B4 term for L4 before calling it calibrated.
+Next: outside-domain and C2ST for L4 before calling it calibrated.
 
-## P3 - Landsat 1-3 calibration (partial)
+## P3 - Landsat 1-3 calibration (done through P4)
 
 - SRFs converted; SBAF fitted for L1, L2 and L3.
-- Coverage is sparse and uses WRS-1: 19 of 49 PICS have any scene.
-- After the stability check: L1 = 5 sites (experimental profile), L2 = 2, L3 = 1
-  (pending; not enough for a profile).
+- The CEOS PICS only carry 6 / 3 / 1 usable scenes for L1 / L2 / L3, so the
+  sensor scale is fitted on the archive-inversion bank instead.
+- L1: 15 + 4 sites, 8.5-10.8 %. L2: 18 + 6, 9.3-10.3 %. L3: 6 + 0, 14.8-16.1 %.
+- All three experimental. None carries the full validation that L5 has.
 
-Gate: L1 profile with `validity` (done). L2 and L3 stay pending until more
-scenes are available; the limitation is the archive.
+Gate: profile with `validity` for every sensor. Done; calibration status is a
+separate question and only L5 answers it.
 
-## P4 - Cloud model (separate product)
+## P4 - Site bank from the archive, not from a list
 
-- Out of `satharmony`. Uses the emulator and the MSS/TM bank.
+The wall was never the code: it was hoping that a list of desert sites happens
+to contain early Landsat scenes. Enumerate the archive, keep dry flat low-cloud
+scenes, and download only those. Landsat 2 has 3,050 scenes in its whole
+mission, so this is bounded and cheap to probe.
 
-## Release
+Gate: the four scripts in G9 run end to end and produce a profile.
+Done for L1, L2 and L3; applicable to L4 and TM later.
 
-- PyPI upload only after P1 is merged and the user provides a token.

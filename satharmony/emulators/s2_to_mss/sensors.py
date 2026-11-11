@@ -2,8 +2,10 @@
 
 The four MSS bands and the 6-bit quantization are common to Landsat 1-5.
 What changes per spacecraft is the spectral response, the IFOV and the
-radiometric constants. A sensor is ``calibrated`` only when a profile with
-measured numbers exists; the rest are ``pending`` and the API refuses them.
+radiometric constants. A sensor is ``calibrated`` only when its profile comes
+with the full validation (desert inside and out, C2ST and held-out PICS);
+``experimental`` means a measured profile without that complete evidence;
+``pending`` means no profile, and the API refuses it.
 """
 
 from __future__ import annotations
@@ -39,9 +41,9 @@ class SensorSpec:
 #: The five MSS sensors. ``ifov_m`` is the nominal instantaneous field of view
 #: (79 m for Landsat 1-3, 82 m for Landsat 4-5); the exact PSF is 79-82 m.
 MSS_SENSORS: dict[str, SensorSpec] = {
-    "L1_MSS": SensorSpec("L1_MSS", 1, 79.0, 6, 4, "mss1_esa_gtc_v1", "experimental"),
-    "L2_MSS": SensorSpec("L2_MSS", 2, 79.0, 6, 4, None, "pending"),
-    "L3_MSS": SensorSpec("L3_MSS", 3, 79.0, 6, 4, None, "pending"),
+    "L1_MSS": SensorSpec("L1_MSS", 1, 79.0, 6, 4, "mss1_esa_gtc_v2", "experimental"),
+    "L2_MSS": SensorSpec("L2_MSS", 2, 79.0, 6, 4, "mss2_esa_gtc_v2", "experimental"),
+    "L3_MSS": SensorSpec("L3_MSS", 3, 79.0, 6, 4, "mss3_esa_gtc_v2", "experimental"),
     "L4_MSS": SensorSpec("L4_MSS", 4, 82.0, 6, 4, "mss4_esa_gtc_v1", "experimental"),
     "L5_MSS": SensorSpec("L5_MSS", 5, 82.0, 6, 4, "mss5_esa_gtc_v2", "calibrated"),
 }

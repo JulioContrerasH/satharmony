@@ -555,7 +555,7 @@
       ],
       "v2_raw_rmse": [
         0.082,
-        0.147
+        0.11
       ],
       "n_sites": 29,
       "method": "29 calibration sites, median across sites"
@@ -570,17 +570,18 @@
     ],
     "n_validation_sites": 14,
     "c2st_held_out": {
-      "deterministic_median": 0.999,
-      "deterministic_min": 0.956,
+      "deterministic_median": 0.8985,
+      "deterministic_min": 0.8319,
       "stochastic_median": 0.884,
       "stochastic_range": [
         0.81,
         0.918
       ],
-      "verdict": "distinguishable: a per-pixel classifier separates emulated from real"
+      "verdict": "distinguishable: a per-pixel classifier separates emulated from real",
+      "deterministic_max": 0.9853
     },
     "variation_note": "B1-B3 variation is the bootstrap half-width (0.031/0.030/0.030). The build tagged v0.2.0 carried 0.12, inconsistent with the stated 2.7-3.2 % interval.",
-    "note": "The 5.3-6.2 % is the SBAF calibration error with an in-sample per-site factor, not the v2 output. With v2 the same convention gives 5.7-7.0 %; without the free factor the desert error is 8.2-14.7 %. Outside the domain the scaled error is 13.4-23.6 % and the raw error 27.2-60.0 %. B4 scaling 0.933 and gamma 0.112 stay frozen at v1: the 29-site fit gives gamma 0.140 and B4 0.942, and the gas term is still a hypothesis.",
+    "note": "The 5.7-7.0 % is the v2 error with a free per-site factor, not the v2 output. Without that factor the desert error is 8.2-11.0 %. Outside the domain the scaled error is 13.4-23.6 % and the raw error 27.2-60.0 %. B4 scaling 0.933 and gamma 0.112 stay frozen at v1. B4 used to read 14.7 % and C2ST 0.999 because the evaluation zeroed the water-vapour scale: it measured a model without the B4 correction this profile applies. With the term restored both improve.",
     "v1_note": "v1 was fitted on 5 CEOS PICS, one of which (libya4_ceos) is in the held-out set; the comparison is conservative against v2.",
     "sun_elevation": {
       "n_canonical": 3027,
@@ -596,7 +597,22 @@
     "b4_unusable_sites": [
       "death_valley",
       "sonora"
-    ]
+    ],
+    "held_out": {
+      "median_rel_rmse": {
+        "B1": 0.127,
+        "B2": 0.136,
+        "B3": 0.065,
+        "B4": 0.069
+      },
+      "median_rel_rmse_free_scale": {
+        "B1": 0.056,
+        "B2": 0.063,
+        "B3": 0.062,
+        "B4": 0.069
+      },
+      "note": "5 CEOS deserts. bonneville carries a 76.7 % B4 outlier (salt flat change between dates); without it the raw range is 6.5-13.6 %."
+    }
   },
   "provenance": {
     "package_sha": "189dfe79451b40b5821a7c98225cc9fafd06705e",

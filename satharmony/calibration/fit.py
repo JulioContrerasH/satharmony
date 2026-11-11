@@ -5,6 +5,7 @@ from __future__ import annotations
 import time
 from collections.abc import Iterable
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Literal
 
 import numpy as np
@@ -24,6 +25,22 @@ from ..emulators.s2_to_mss.sbaf import (
 )
 
 BANDS = ("B1", "B2", "B3", "B4")
+
+
+def package_gamma(coefficients: str | None = None) -> float:
+    """Water-vapour weight of the coefficient file the profile actually uses.
+
+    ``to_config`` turns the fitted gamma into a multiplier of that weight, so it
+    must read the same file the spectral stage will load. Reading the shipped
+    Landsat 5 file for a Landsat 2 profile inflated B4 by 15 points.
+    """
+    path = None
+    if coefficients:
+        path = Path(coefficients)
+        if not path.is_absolute():
+            path = Path(__file__).resolve().parents[1] / "emulators" / "s2_to_mss" / path.name
+    payload = load_coefficients(path)
+    return float(payload["water_vapor"]["weights"]["S2A"][3])
 
 
 @dataclass
@@ -54,6 +71,7 @@ class Profile:
     variation: tuple[float, ...] = (0.03, 0.03, 0.03, 0.03)
     per_pair: list[dict[str, Any]] = field(default_factory=list)
     intervals: dict[str, dict[str, float]] = field(default_factory=dict)
+    coefficients: str | None = None
     schema_version: int = 1
     created: str = field(default_factory=lambda: time.strftime("%Y-%m-%d"))
 
@@ -84,11 +102,8 @@ class Profile:
             nir1=CenteredRange(mean=self.band_scaling[2], variation=self.variation[2]),
             nir2=CenteredRange(mean=self.band_scaling[3], variation=self.variation[3]),
         )
-        package_gamma = float(
-            load_coefficients()["water_vapor"]["weights"]["S2A"][3]
-        )
         config.spectral.water_vapor_scale = (
-            self.gamma / package_gamma if package_gamma else 0.0
+            self.gamma / package_gamma(self.coefficients) if package_gamma(self.coefficients) else 0.0
         )
         return config
 
@@ -97,7 +112,6 @@ def _deterministic_config(base: PipelineConfig | None = None) -> PipelineConfig:
     """Base profile with every stochastic stage off."""
     config = (base or PipelineConfig.mss5_esa_gtc_v1()).model_copy(deep=True)
     config.spectral.mode = "sbaf"
-    config.spectral.water_vapor_scale = 0.0
     config.spatial.psf_fwhm_m = Range(min=80.0, max=80.0)
     config.radiometric.enabled = False
     config.striping.enabled = False
@@ -151,6 +165,7 @@ def fit_profile(
     method: Literal["pics", "pairs"] = "pics",
     n_boot: int = 1000,
     gamma_grid: NDArray[np.floating] | None = None,
+    gamma_rule: Literal["match_scale", "min_error", "off"] = "match_scale",
     seed: int = 0,
 ) -> Profile:
     """Fit per-band scale and B4 gamma from aligned pairs.
@@ -167,6 +182,13 @@ def fit_profile(
         method: ``"pics"`` or ``"pairs"`` (same fit; kept for provenance).
         n_boot: Bootstrap replicates for the per-band interval.
         gamma_grid: Candidate gamma values; defaults to 0..0.30 step 0.005.
+        gamma_rule: How gamma is chosen. ``"match_scale"`` (default) forces the
+            B4 gain to equal the B1-B3 gain, which assumes the sensor has one
+            gain for all bands. ``"min_error"`` takes the value that minimises
+            the B4 error with a single global gain. ``"off"`` keeps the gain of
+            every band free and drops the water-vapour term, which is what the
+            auxiliary banks need: their water-vapour feature barely varies, so
+            gamma cannot be identified and fitting it would be fitting noise.
         seed: Seed for the bootstrap.
 
     Returns:
@@ -176,6 +198,8 @@ def fit_profile(
         ValueError: If no pair has enough valid pixels.
     """
     config = _deterministic_config(base)
+    # The fit adds the water-vapour term itself, so the pipeline must not.
+    config.spectral.water_vapor_scale = 0.0
     grid = (
         np.arange(0.0, 0.301, 0.005)
         if gamma_grid is None
@@ -231,8 +255,27 @@ def fit_profile(
             values.append(_band_scale(band4, mss4, mask))
         return values
 
-    medians = np.array([np.median(gamma_scales(gamma)) for gamma in grid])
-    gamma = float(grid[int(np.argmin(np.abs(medians - target)))])
+    def gamma_errors(gamma: float) -> list[float]:
+        """Per-pair B4 error with one global gain, so gamma stays identifiable."""
+        scale = float(np.median(gamma_scales(gamma)))
+        errors = []
+        for pred, wv, mask, mss4 in zip(preds, wv_by_pair, masks, mss4_values, strict=True):
+            band4 = pred[3] - gamma * wv
+            residual = scale * band4[mask] - mss4[mask]
+            errors.append(float(np.sqrt(np.mean(residual**2)) / np.mean(mss4[mask])))
+        return errors
+
+    if gamma_rule == "off":
+        gamma = 0.0
+    elif gamma_rule == "min_error":
+        # The water-vapour term is a correction, so its coefficient is the one
+        # that minimises the B4 error. Forcing the B4 gain to match B1-B3 gave
+        # the wrong gamma on Landsat 2, where B4 really has a different gain.
+        pooled = np.array([np.median(gamma_errors(gamma)) for gamma in grid])
+        gamma = float(grid[int(np.argmin(pooled))])
+    else:
+        medians = np.array([np.median(gamma_scales(gamma)) for gamma in grid])
+        gamma = float(grid[int(np.argmin(np.abs(medians - target)))])
 
     b4_scales = gamma_scales(gamma)
     for row, value in zip(per_pair, b4_scales, strict=True):
@@ -255,4 +298,5 @@ def fit_profile(
         variation=variations,
         per_pair=per_pair,
         intervals={band: summary[band] for band in BANDS},
+        coefficients=config.spectral.coefficients,
     )

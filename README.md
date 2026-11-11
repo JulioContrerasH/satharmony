@@ -71,19 +71,28 @@ The four MSS bands and the 6-bit quantization are common to Landsat 1-5. The
 spectral response, the IFOV and the radiometric constants are not, so each
 sensor needs its own measured profile.
 
-| Sensor | Status | Fit sites | In-sample relative RMSE |
-|---|---|---|---|
-| L5_MSS | calibrated | 29 | 5.7-7.0 % |
-| L4_MSS | experimental | 11 | 9.5-13.3 % |
-| L1_MSS | experimental | 5 | 5.3-10.3 % (no held out) |
-| L2_MSS | pending | 2 stable (not enough) | not fitted |
-| L3_MSS | pending | 1 stable (not enough) | not fitted |
+| Sensor | Status | Bank | Fit / held out | In-sample | Held out |
+|---|---|---|---|---|---|
+| L5_MSS | calibrated | CEOS PICS | 29 / 5 | 8.2-11.0 % | 6.5-13.6 % |
+| L4_MSS | experimental | CEOS PICS | 11 / 2 | 6.3-11.7 % | 9.4-12.5 % |
+| L1_MSS | experimental | archive | 15 / 4 | 8.5-10.8 % | 3.5-4.4 % |
+| L2_MSS | experimental | archive | 18 / 6 | 9.3-10.3 % | 7.6-11.2 % |
+| L3_MSS | experimental | archive | 6 / 0 | 14.8-16.1 % | - |
 
-Each sensor has its own SBAF, fitted from its spectral response and the
-spectral library; the scale is fitted from the PICS. L1-L3 used WRS-1 and their
-archive is sparse, so the fit is limited by data, not by the code. A sensor
-without a profile raises `SensorNotCalibrated` instead of borrowing L5 numbers.
-The extension is specced in `specs/features/001-multi-sensor-mss/`.
+Numbers are per-band relative RMSE, median across sites, without any per-site
+rescale. With a free per-site factor (which isolates spectral shape from a
+brightness offset) L5 is 5.7-7.0 %, L1 6.1-8.1 % and L2 7.2-8.0 %. Only L5 has
+the full validation (desert inside and out, C2ST, held-out PICS), so only L5 is
+`calibrated`; the rest are measured but experimental.
+
+The 49 CEOS PICS were chosen for surface stability, not for having an early
+Landsat scene: with a clear window, only 6 have an L1 scene, 3 an L2 and 1 an
+L3. L1-L3 are therefore fitted on an auxiliary bank built the other way round,
+from the archive: every scene of the platform is listed, and the dry, flat,
+low-cloud ones become sites. Landsat 2 has 3,050 scenes in the whole mission and
+Landsat 3 has 180, so the limit is the archive, not the code. A sensor without a
+profile raises `SensorNotCalibrated` instead of borrowing L5 numbers. The
+extension is specced in `specs/features/001-multi-sensor-mss/`.
 
 ```bash
 satharmony emulate scene_s2.tif -o mss.npy --sensor L5_MSS --seed 42

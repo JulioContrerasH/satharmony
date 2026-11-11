@@ -28,6 +28,9 @@ def _pair(seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray
     rng = np.random.default_rng(seed)
     s2 = rng.uniform(0.03, 0.85, size=(13, 48, 48)).astype(np.float32)
     config = _deterministic_config()
+    # The fit adds the water-vapour term itself, so the synthetic prediction
+    # must be built without it (same contract as fit_profile).
+    config.spectral.water_vapor_scale = 0.0
     pred, _ = emulate_s2(s2, config=config)
     wv = apply_spatial_degradation(water_vapor_feature(s2)[None], config.spatial)[0]
     return s2, pred, wv, config
