@@ -1,9 +1,11 @@
 """Spectral degradation: legacy band selection or SBAF adjustment."""
 
+from pathlib import Path
+
 import numpy as np
 
 from ..config import SpectralConfig
-from ..sbaf import sbaf_transform
+from ..sbaf import load_coefficients, sbaf_transform
 
 
 def apply_spectral_degradation(
@@ -37,8 +39,17 @@ def apply_spectral_degradation(
     generator = rng if rng is not None else np.random.default_rng()
 
     if config.mode == "sbaf":
+        coefficients = None
+        if config.coefficients:
+            coefficients = Path(config.coefficients)
+            if not coefficients.is_absolute():
+                coefficients = Path(__file__).resolve().parents[1] / coefficients
+            coefficients = load_coefficients(coefficients)
         selected = sbaf_transform(
-            image, sensor=config.sensor, water_vapor_scale=config.water_vapor_scale
+            image,
+            sensor=config.sensor,
+            coefficients=coefficients,
+            water_vapor_scale=config.water_vapor_scale,
         )
     elif config.mode == "legacy":
         selected = image[config.s2_bands]

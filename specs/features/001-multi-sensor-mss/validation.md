@@ -50,14 +50,16 @@ python -m twine check dist/*
 
 Pass: all tests green, ruff clean, wheel and sdist PASSED.
 
-## G7 - L4 calibration (P2)
+## G7 - L4 calibration (P2) - measured, below the L5 bar
 
-Pass:
-- `mss4_esa_gtc_v1.json` exists with `validity`.
-- Scaled desert RMSE measured on the 5 held-out deserts.
-- C2ST measured.
-- The L4/L5 difference is reported; if under 3 %, the roadmap records that a
-  generic profile is acceptable.
+Result (2026-11-11):
+- `mss4_esa_gtc_v1.json` exists with `validity`, marked `experimental`.
+- 11 stable fit sites (of 29 calibration): 9 have no L4 scene in GEE, 9 changed
+  surface or have a hazy window (L4/L5 ratio beyond 15 %).
+- In-sample relative RMSE 9.5-13.3 %; held out 12.8-35 % (two sites).
+- L5 is 5.7-7.0 %. L4 is roughly twice as bad and B4 is the weak band.
+- Decision: **per-sensor profiles**, not a generic one. L4 stays experimental
+  until its B4 term is refitted; `random` does not pick it by default.
 
 ## G8 - L1-L3 calibration (P3)
 

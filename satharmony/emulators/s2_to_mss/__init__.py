@@ -10,6 +10,7 @@ from .sensors import (
     MSS_SENSORS,
     SensorNotCalibrated,
     SensorSpec,
+    available_sensors,
     calibrated_sensors,
 )
 
@@ -20,6 +21,7 @@ __all__ = [
     "SensorNotCalibrated",
     "SensorSpec",
     "aggregate_cloudsen12",
+    "available_sensors",
     "calibrated_sensors",
     "emulate_any",
     "emulate_labels",

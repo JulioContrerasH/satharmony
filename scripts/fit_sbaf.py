@@ -322,6 +322,8 @@ def main() -> None:
     parser.add_argument("--library-dir", type=Path, default=DEFAULT_LIBRARY)
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--package-json", type=Path, default=DEFAULT_PACKAGE_JSON)
+    parser.add_argument("--mss-srf", default="l5mss_rsr_long.csv")
+    parser.add_argument("--mss-sensor", default="L5MSS")
     parser.add_argument(
         "--water-vapor-json",
         type=Path,
@@ -361,7 +363,7 @@ def main() -> None:
     }
 
     s2_table = load_srf_table(args.srf_dir / "s2_srf_long.csv")
-    mss_table = load_srf_table(args.srf_dir / "l5mss_rsr_long.csv")
+    mss_table = load_srf_table(args.srf_dir / args.mss_srf)
 
     long = load_library(args.library_dir)
     spectra, ids, sources, classes = interpolate_library(long)
@@ -374,9 +376,9 @@ def main() -> None:
         values = band_integrate(spectra, s2_table, sensor, PREDICTORS)
         for k, band in enumerate(PREDICTORS):
             band_columns[f"{sensor}_{band}"] = values[:, k]
-    mss_values = band_integrate(spectra, mss_table, "L5MSS", MSS_BANDS)
+    mss_values = band_integrate(spectra, mss_table, args.mss_sensor, MSS_BANDS)
     for k, band in enumerate(MSS_BANDS):
-        band_columns[f"L5MSS_{band}"] = mss_values[:, k]
+        band_columns[f"{args.mss_sensor}_{band}"] = mss_values[:, k]
     library_bands = pd.DataFrame({"spectrum_id": ids, "source": sources, "spectrum_class": classes})
     for name, values in band_columns.items():
         library_bands[name] = values

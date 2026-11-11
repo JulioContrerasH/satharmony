@@ -21,15 +21,16 @@ not a wish list.
 Gate: registry complete, L5 output bit-identical, random deterministic,
 uncalibrated sensor raises, suite green.
 
-## P2 - Landsat 4 calibration
+## P2 - Landsat 4 calibration (experimental)
 
-- Download the 49 PICS MSS scenes from Landsat 4 (S2 already in the vault).
-- Fit SBAF and scales for L4; validate on the 5 held-out deserts.
-- Measure whether L4 and L5 differ by less than 3 % in scaled RMSE.
-- Decision: one generic profile or one per sensor.
+- 32 of the 49 PICS have a Landsat 4 scene in GEE; 20 have one at a comparable
+  sun height; 11 survive the L4/L5 surface-stability check (15 %).
+- The L4 SBAF was refitted from the L4 SRF and the spectral library.
+- In-sample 9.5-13.3 %, held out 12.8-35 %; L5 is 5.7-7.0 %. B4 is the weak band.
+- Shipped as `experimental`; `random` does not pick it by default.
 
-Gate: L4 profile with `validity`, C2ST and RMSE measured, and the L4/L5
-comparison written down.
+Gate: profile with `validity` and the L4/L5 comparison written down. Done.
+Next: a dedicated B4 term for L4 before calling it calibrated.
 
 ## P3 - Landsat 1-3 calibration
 

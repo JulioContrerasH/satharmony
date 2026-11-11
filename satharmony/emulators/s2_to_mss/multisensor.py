@@ -29,7 +29,7 @@ def _candidates(sensors: Sequence[str] | None) -> list[SensorSpec] | None:
         spec = MSS_SENSORS.get(name.upper())
         if spec is None:
             raise SensorNotCalibrated(f"unknown sensor {name!r}")
-        if not spec.calibrated:
+        if not spec.available:
             raise SensorNotCalibrated(f"{spec.key} has no calibrated profile yet")
         pool.append(spec)
     return pool

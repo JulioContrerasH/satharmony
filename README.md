@@ -71,9 +71,11 @@ The four MSS bands and the 6-bit quantization are common to Landsat 1-5. The
 spectral response, the IFOV and the radiometric constants are not, so each
 sensor needs its own measured profile.
 
-Today only **L5_MSS** is calibrated. L1-L4 are declared in the registry but
-raise `SensorNotCalibrated` instead of borrowing L5 numbers. The extension is
-specced in `specs/features/001-multi-sensor-mss/`.
+**L5_MSS is calibrated** (desert 5.7-7.0 %). **L4_MSS is experimental**: fitted on
+the 11 PICS where Landsat 4 sees the same surface, it lands at 9.5-13.3 % in
+sample, with B4 as the weak band. L1-L3 are declared but raise
+`SensorNotCalibrated` instead of borrowing L5 numbers. The extension is specced
+in `specs/features/001-multi-sensor-mss/`.
 
 ```bash
 satharmony emulate scene_s2.tif -o mss.npy --sensor L5_MSS --seed 42

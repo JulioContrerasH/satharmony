@@ -113,6 +113,9 @@ class SpectralConfig(BaseModel):
     mode: Literal["legacy", "sbaf"] = "legacy"
     sensor: Literal["S2A", "S2B", "S2C"] = "S2A"
     s2_bands: list[int] = [2, 3, 6, 7]
+    #: Optional SBAF coefficient file (name relative to the s2_to_mss package
+    #: or absolute). ``None`` loads the shipped Landsat 5 library.
+    coefficients: str | None = None
     srf_adjustment: bool = False
     srf_noise_std: Range = Range(min=0.0, max=0.02)
     #: Multiplier on the packaged B4 water-vapour coefficient (1.0 = package).
