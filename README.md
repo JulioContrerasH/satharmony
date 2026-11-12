@@ -18,8 +18,10 @@
 
 ## What it does
 
-satharmony turns a Sentinel-2 TOA scene into what Landsat 5 MSS would have recorded:
-four bands, 60 m pixels, 6-bit radiometry, detector striping and sensor noise.
+satharmony turns a Sentinel-2 TOA scene into what a Landsat MSS would have recorded:
+four bands, 60 m pixels, 6-bit radiometry, detector striping and sensor noise. It
+targets the five MSS sensors (Landsat 1 to 5); `random` samples the calibrated ones,
+today Landsat 4 and 5.
 
 <p align="center"><img src="https://raw.githubusercontent.com/JulioContrerasH/satharmony/main/docs/assets/pipeline.png" width="880" alt="pipeline"></p>
 
@@ -137,14 +139,23 @@ real 1987 scene still carries its own sensor noise.
 | Profile | MSS1 | MSS2 | MSS3 | MSS4 | gamma | What it is |
 |---|---:|---:|---:|---:|---:|---|
 | `mss5_esa_gtc_v1` | 0.956 | 0.933 | 0.867 | 0.933 | 0.112 | Five CEOS PICS. Frozen: it trained the G4 cloud model. |
-| `mss5_esa_gtc_v2` | 0.966 | 0.936 | 0.907 | 0.933 | 0.112 | 29 calibration PICS. B4 frozen at v1. |
+| `mss5_esa_gtc_v2` | 0.966 | 0.936 | 0.907 | 0.933 | 0.112 | 29 calibration PICS. B4 frozen at v1. Calibrated. |
+| `mss4_esa_gtc_v1` | 0.986 | 0.951 | 0.839 | 0.721 | 0 | 11 stable L4 PICS, own SBAF. Calibrated. |
+| `mss1_esa_gtc_v2` | 1.182 | 1.135 | 0.976 | 0.767 | 0 | 15 dry archive sites, own SBAF. Experimental. |
+| `mss2_esa_gtc_v2` | 1.029 | 0.947 | 0.907 | 0.785 | 0 | 18 dry archive sites, own SBAF. Experimental. |
+| `mss3_esa_gtc_v2` | 0.946 | 0.859 | 0.748 | 0.751 | 0 | 6 dry archive sites, own SBAF. Experimental. |
 | `legacy_0_1_13` | 0.600 | 0.580 | 0.600 | 0.850 | 0.112 | Bit-for-bit reproduction of 0.1.13. |
 
-v2 is fitted on 29 calibration sites: the index has 35, one wet Uyuni scene is
-removed and five deserts are held out. Fourteen forest, water, crop and wetland sites are
-reserved for validation. The 29-site fit gives gamma 0.14 and MSS4 0.942; both stay at the
-v1 values because the gas term is still a hypothesis, and a frozen B4 keeps the comparison
-honest.
+The L5 v2 profile is fitted on 29 calibration sites: the index has 35, one wet Uyuni
+scene is removed and five deserts are held out. Fourteen forest, water, crop and wetland
+sites are reserved for validation. The 29-site fit gives gamma 0.14 and MSS4 0.942; both
+stay at the v1 values because the gas term is still a hypothesis, and a frozen B4 keeps
+the comparison honest.
+
+The L1-L4 profiles use a free gain per band and gamma 0. Forcing the B4 gain to match
+B1-B3 is what made B4 look broken: it read 36 % in L2 and 34.7 % in L4, and with a free
+gain it reads 9.3 % and 9.4 %. Gamma is not identifiable in those banks because the water
+vapour barely varies between sites, so a term that does not move the error is not fitted.
 
 ## Validation
 
@@ -202,11 +213,15 @@ edges. The PSF is set by specification, not recovered from data.
 
 ## Limits
 
-- S2A/B/C to MSS on Landsat 5 only. MSS 1-4, TM and ETM+ are out of scope.
+- S2A/B/C to the MSS of Landsat 1 to 5. TM, ETM+ and OLI are out of scope.
 - TOA reflectance only.
-- A desert correction: it does not extrapolate to vegetation, water or clouds.
-- One profile per sensor family, not per scene. Aerosol and water vapour are not measured
-  per acquisition.
+- A desert correction. Outside the domain L4 and L5 land at 13.9-22.3 % and 13.4-23.6 %;
+  for L1-L3 there is no number, because their only wet pairs are 40 years apart (G11).
+  It does not extrapolate to vegetation, water or clouds.
+- L1-L3 are `experimental`: fitted on real scenes, without a defensible outside-domain
+  measurement. They emulate when asked by name and are never picked by `random`.
+- One profile per sensor, not per scene. Aerosol and water vapour are not measured per
+  acquisition.
 
 ## Command line
 
@@ -239,11 +254,25 @@ The scripts read the PICS tree at `/data/databases/CLOUD_MSS/MSS_S2/pics`, which
 shipped. Their outputs are committed under `docs/validation/`.
 
 ```bash
-python scripts/make_profile_v2.py        # rebuild the v2 JSON
+python scripts/make_profile_v2.py        # rebuild the L5 v2 JSON
 python scripts/c2st_v2.py                # C2ST on the five held-out deserts
 python scripts/desert_v2_error.py        # desert RMSE, scaled and raw
 python scripts/validate_v2_outside.py    # the 14 validation sites
+python scripts/probe_archive.py          # how many scenes each platform has at the PICS
+python scripts/enumerate_mss_archive.py  # list the whole Tier 1 / Tier 2 archive
+python scripts/score_archive_sites.py    # keep dry, flat, low-cloud cells
+python scripts/fetch_aux_sites.py        # download the L1-L3 desert bank
+python scripts/make_profile_aux.py       # fit L1-L3 with a stability filter
+python scripts/make_profile_l4.py        # fit L4 from the PICS
+python scripts/validate_l4_outside.py    # L4 outside the domain
+python scripts/c2st_l4.py                # L4 C2ST
+python scripts/check_wet_alignment.py    # wet bank: shift and stability filter
 ```
+
+Every downloaded scene is listed by asset id, date, sun elevation and cloud cover in
+`assets/md/fuentes/srf/pics_49/aux_bank_manifest.csv` (106 rows) and
+`wet_bank_manifest.csv` (29 rows) in the project notes, so the banks can be rebuilt and
+checked scene by scene.
 
 `docs/make_readme_assets.py` rebuilds the figures in this page.
 
