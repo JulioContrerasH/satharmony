@@ -71,13 +71,13 @@ The four MSS bands and the 6-bit quantization are common to Landsat 1-5. The
 spectral response, the IFOV and the radiometric constants are not, so each
 sensor needs its own measured profile.
 
-| Sensor | Status | Bank | Fit / held out | In-sample | Held out |
-|---|---|---|---|---|---|
-| L5_MSS | calibrated | CEOS PICS | 29 / 5 | 8.2-11.0 % | 6.5-13.6 % |
-| L4_MSS | calibrated | CEOS PICS | 11 / 2 | 6.3-11.7 % | 9.4-12.5 % |
-| L1_MSS | experimental | archive | 15 / 4 | 8.5-10.8 % | 3.5-4.4 % |
-| L2_MSS | experimental | archive | 18 / 6 | 9.3-10.3 % | 7.6-11.2 % |
-| L3_MSS | experimental | archive | 6 / 0 | 14.8-16.1 % | - |
+| Sensor | Status | Bank | Fit / held out | In-sample | Held out | Outside domain |
+|---|---|---|---|---|---|---|
+| L5_MSS | calibrated | CEOS PICS | 29 / 5 | 8.2-11.0 % | 6.5-13.6 % | 13.4-23.6 % |
+| L4_MSS | calibrated | CEOS PICS | 11 / 2 | 6.3-11.7 % | 9.4-12.5 % | 13.9-22.3 % |
+| L1_MSS | experimental | archive | 15 / 4 | 8.5-10.8 % | 3.5-4.4 % | not measurable |
+| L2_MSS | experimental | archive | 18 / 6 | 9.3-10.3 % | 7.6-11.2 % | not measurable |
+| L3_MSS | experimental | archive | 6 / 0 | 14.8-16.1 % | - | not measurable |
 
 Numbers are per-band relative RMSE, median across sites, without any per-site
 rescale. With a free per-site factor (which isolates spectral shape from a
@@ -85,8 +85,16 @@ brightness offset) L5 is 5.7-7.0 %, L1 6.1-8.1 % and L2 7.2-8.0 %.
 
 L4 and L5 are `calibrated`: both carry the four measurements (inside, held out,
 outside the domain and C2ST). L4 reaches 13.9-22.3 % outside and 0.929 C2ST,
-with two held-out deserts. L1-L3 are `experimental`: fitted on real scenes, but
-with no outside-domain measurement yet.
+with two held-out deserts.
+
+L1-L3 are `experimental`. Their outside-domain test cannot be measured with the
+current bank: the Landsat 1-3 scene is 1973-1983 and the S2 composite is 2015+,
+over forest, water and wetland, so the surface changed between the two dates.
+Only 1-2 of the 6-9 clear windows pass the 15 % stability filter, and the
+geometry is not the cause (median shift below one pixel). Landsat 1-3 carried no
+TM, so there is no same-second reference to align against. The bank, every scene
+id and the shift measurement are listed in the manifest committed with the
+notes.
 
 The 49 CEOS PICS were chosen for surface stability, not for having an early
 Landsat scene: with a clear window, only 6 have an L1 scene, 3 an L2 and 1 an

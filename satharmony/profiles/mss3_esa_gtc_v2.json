@@ -375,7 +375,42 @@
       "std": 12.95
     },
     "coverage_note": "The Landsat 1-3 archive is sparse and was enumerated globally: every scene of the platform was listed and only the dry, flat, low-cloud ones were kept. The limit is the archive, not the number of candidate sites.",
-    "status_rule": "calibrated when the worst in-sample band is <= 8 % and the worst held-out band <= 12 %"
+    "status_rule": "calibrated when the worst in-sample band is <= 8 % and the worst held-out band <= 12 %",
+    "outside_domain_wet": {
+      "sensor": "L3_MSS",
+      "n_sites": 6,
+      "bank": "wet_l3",
+      "sites": "forest, water and wetland within 12 km, Landsat C02/T2, window at least 90 % clear",
+      "raw_median": {
+        "B1": 0.557,
+        "B2": 0.68,
+        "B3": 0.593,
+        "B4": 0.64
+      },
+      "rescaled_median": {
+        "B1": 0.521,
+        "B2": 0.572,
+        "B3": 0.453,
+        "B4": 0.339
+      },
+      "verdict": "not measurable with this bank",
+      "file": "assets/md/fuentes/srf/pics_49/validation_l3_wet.json",
+      "why": "The MSS scene is 1973-1983 and the S2 composite is 2015+, over forest, water and wetland: the surface changed between the two dates. Only 1 of 6 clear windows pass the 15 % stability filter. Geometry is not the cause: the median shift is below one pixel.",
+      "n_clear_windows": 6,
+      "n_stable": 1,
+      "stable_sites": [
+        "l3_087.0W_43.5N"
+      ],
+      "stable_error": {
+        "B1": 0.135,
+        "B2": 0.163,
+        "B3": 0.238,
+        "B4": 0.554
+      },
+      "max_shift_px": 1.44,
+      "alignment_file": "assets/md/fuentes/srf/pics_49/alignment_wet_mss3.json",
+      "manifest": "assets/md/fuentes/srf/pics_49/wet_bank_manifest.csv"
+    }
   },
   "provenance": {
     "package_sha": "b7b18fc2053ff0805ad14d05564420fdac3ff9b3",
