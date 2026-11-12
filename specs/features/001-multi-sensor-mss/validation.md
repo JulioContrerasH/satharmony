@@ -65,9 +65,9 @@ Result (2026-11-11):
   changed; the profile does not target them.
 - C2ST on its two held-out deserts: 0.929 deterministic, 0.921 stochastic. Two
   sites is weak evidence, so the number is stored with that caveat.
-- Status: still experimental. It has the four measurements L5 has, but the
-  held-out split is two deserts. Promoting it is a judgement call, not a
-  measurement.
+- Status: **calibrated** (2026-11-12). It carries the four measurements L5
+  carries. The held-out split is two deserts and stays written in `validity`
+  as a caveat. Consequence: `random` now samples L4 and L5.
 
 ## G8 - L1-L3 calibration (P3) - solved by changing the bank
 

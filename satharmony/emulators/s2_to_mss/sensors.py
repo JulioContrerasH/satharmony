@@ -44,7 +44,7 @@ MSS_SENSORS: dict[str, SensorSpec] = {
     "L1_MSS": SensorSpec("L1_MSS", 1, 79.0, 6, 4, "mss1_esa_gtc_v2", "experimental"),
     "L2_MSS": SensorSpec("L2_MSS", 2, 79.0, 6, 4, "mss2_esa_gtc_v2", "experimental"),
     "L3_MSS": SensorSpec("L3_MSS", 3, 79.0, 6, 4, "mss3_esa_gtc_v2", "experimental"),
-    "L4_MSS": SensorSpec("L4_MSS", 4, 82.0, 6, 4, "mss4_esa_gtc_v1", "experimental"),
+    "L4_MSS": SensorSpec("L4_MSS", 4, 82.0, 6, 4, "mss4_esa_gtc_v1", "calibrated"),
     "L5_MSS": SensorSpec("L5_MSS", 5, 82.0, 6, 4, "mss5_esa_gtc_v2", "calibrated"),
 }
 

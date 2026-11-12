@@ -74,7 +74,7 @@ sensor needs its own measured profile.
 | Sensor | Status | Bank | Fit / held out | In-sample | Held out |
 |---|---|---|---|---|---|
 | L5_MSS | calibrated | CEOS PICS | 29 / 5 | 8.2-11.0 % | 6.5-13.6 % |
-| L4_MSS | experimental | CEOS PICS | 11 / 2 | 6.3-11.7 % | 9.4-12.5 % |
+| L4_MSS | calibrated | CEOS PICS | 11 / 2 | 6.3-11.7 % | 9.4-12.5 % |
 | L1_MSS | experimental | archive | 15 / 4 | 8.5-10.8 % | 3.5-4.4 % |
 | L2_MSS | experimental | archive | 18 / 6 | 9.3-10.3 % | 7.6-11.2 % |
 | L3_MSS | experimental | archive | 6 / 0 | 14.8-16.1 % | - |
@@ -83,18 +83,18 @@ Numbers are per-band relative RMSE, median across sites, without any per-site
 rescale. With a free per-site factor (which isolates spectral shape from a
 brightness offset) L5 is 5.7-7.0 %, L1 6.1-8.1 % and L2 7.2-8.0 %.
 
-L5 is the only `calibrated` sensor. L4 now carries the same four measurements
-(inside, held out, outside the domain at 13.9-22.3 % and C2ST 0.929) but its
-held-out split is two deserts, so it stays `experimental` until that judgement
-is made. L1-L3 have no outside-domain measurement at all: their bank is desert
-by construction.
+L4 and L5 are `calibrated`: both carry the four measurements (inside, held out,
+outside the domain and C2ST). L4 reaches 13.9-22.3 % outside and 0.929 C2ST,
+with two held-out deserts. L1-L3 are `experimental`: fitted on real scenes, but
+with no outside-domain measurement yet.
 
 The 49 CEOS PICS were chosen for surface stability, not for having an early
 Landsat scene: with a clear window, only 6 have an L1 scene, 3 an L2 and 1 an
 L3. L1-L3 are therefore fitted on an auxiliary bank built the other way round,
 from the archive: every scene of the platform is listed, and the dry, flat,
-low-cloud ones become sites. Landsat 2 has 3,050 scenes in the whole mission and
-Landsat 3 has 180, so the limit is the archive, not the code. A sensor without a
+low-cloud ones become sites. With Tier 2 included the archive holds 173k (L1),
+365k (L2) and 157k (L3) scenes, so the limit was the tier and the site filter,
+not the archive. A sensor without a
 profile raises `SensorNotCalibrated` instead of borrowing L5 numbers. The
 extension is specced in `specs/features/001-multi-sensor-mss/`.
 

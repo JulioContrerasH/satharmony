@@ -41,10 +41,11 @@ def test_registry_covers_the_five_mss_sensors() -> None:
         assert spec.ifov_m in (79.0, 82.0)
 
 
-def test_only_l5_is_calibrated_and_all_five_are_available() -> None:
-    assert calibrated_sensors() == ("L5_MSS",)
+def test_l4_and_l5_are_calibrated_and_all_five_are_available() -> None:
+    assert calibrated_sensors() == ("L4_MSS", "L5_MSS")
     assert available_sensors() == ("L1_MSS", "L2_MSS", "L3_MSS", "L4_MSS", "L5_MSS")
-    for key in ("L1_MSS", "L2_MSS", "L3_MSS", "L4_MSS"):
+    assert MSS_SENSORS["L4_MSS"].status == "calibrated"
+    for key in ("L1_MSS", "L2_MSS", "L3_MSS"):
         assert MSS_SENSORS[key].status == "experimental"
 
 
@@ -59,11 +60,12 @@ def test_l5_matches_the_single_sensor_path_bit_for_bit() -> None:
     np.testing.assert_array_equal(mss, expected)
 
 
-def test_random_is_deterministic_with_one_calibrated_sensor() -> None:
+def test_random_is_deterministic_with_the_calibrated_sensors() -> None:
     image = _image()
     a, _, key_a = emulate_any(image, sensor="random", seed=11)
     b, _, key_b = emulate_any(image, sensor="random", seed=11)
-    assert key_a == key_b == "L5_MSS"
+    assert key_a == key_b
+    assert key_a in {"L4_MSS", "L5_MSS"}
     np.testing.assert_array_equal(a, b)
 
 
@@ -125,8 +127,8 @@ def test_random_over_two_available_sensors_reaches_both() -> None:
 
 
 def test_default_random_stays_on_calibrated_sensors() -> None:
-    keys = {emulate_any(_image(), sensor="random", seed=seed)[2] for seed in range(20)}
-    assert keys == {"L5_MSS"}
+    keys = {emulate_any(_image(), sensor="random", seed=seed)[2] for seed in range(40)}
+    assert keys == {"L4_MSS", "L5_MSS"}
 
 
 def test_profile_targets_the_declared_sensor() -> None:
