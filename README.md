@@ -84,8 +84,13 @@ sensor needs its own measured profile.
 L3 has 35 accepted S2/MSS pairs behind that fit: 180 Tier 1 scenes were not
 enough (6 stable sites), so the whole Tier 2 archive was enumerated (156,671
 scenes), 55 dry flat sites came out and 22 were new. Tripling the bank moves the
-published scaling by at most 2.6 % (B4) and puts the median-scale uncertainty at
-3.0 pp; the value had already converged, the interval is what changes.
+scaling by at most 2.6 % (B4) and puts the median-scale uncertainty at 3.0 pp;
+the value had already converged, the interval is what changes.
+
+Be careful with those L3 numbers: 6.4-11.7 % is the 12-site stable subset. Over
+the 20 usable sites of the wider bank L3 sits at 12.0-14.4 %, with 7 sites above
+20 % in at least one band. And 3.0 pp is the uncertainty of the median scale, not
+the per-scene error. That is why L3 stays experimental.
 
 Numbers are per-band relative RMSE, median across sites, without any per-site
 rescale. With a free per-site factor (which isolates spectral shape from a

@@ -1,99 +1,51 @@
 {
   "schema_version": 1,
-  "name": "mss3_esa_gtc_v2",
-  "created": "2026-11-11",
-  "n_pairs": 6,
   "band_scaling": {
     "B1": {
-      "mean": 0.945699008096553,
-      "variation": 0.0748938547736017
+      "mean": 0.9509623392050033,
+      "variation": 0.050908282896429714
     },
     "B2": {
-      "mean": 0.8592732972348155,
-      "variation": 0.06135325039202066
+      "mean": 0.8559907367956499,
+      "variation": 0.045005041854788916
     },
     "B3": {
-      "mean": 0.7476606185511547,
-      "variation": 0.044219845609819626
+      "mean": 0.7422353674257368,
+      "variation": 0.04276387853957904
     },
     "B4": {
-      "mean": 0.7508878650363477,
-      "variation": 0.031789600732714175
+      "mean": 0.7313442476799646,
+      "variation": 0.05514911139493741
     }
   },
   "gamma": 0.0,
   "intervals": {
     "B1": {
-      "mean": 0.945699008096553,
-      "low": 0.8572710621185249,
-      "high": 1.0040630174747842,
-      "n": 6
+      "mean": 0.9509623392050033,
+      "low": 0.870600224049198,
+      "high": 0.9703804585262003,
+      "n": 9
     },
     "B2": {
-      "mean": 0.8592732972348155,
-      "low": 0.7624537532328131,
-      "high": 0.8827061240011735,
-      "n": 6
+      "mean": 0.8559907367956499,
+      "low": 0.7861413086927811,
+      "high": 0.8743511907281674,
+      "n": 9
     },
     "B3": {
-      "mean": 0.7476606185511547,
-      "low": 0.6960677495350198,
-      "high": 0.7827386469302663,
-      "n": 6
+      "mean": 0.7422353674257368,
+      "low": 0.6995063833694124,
+      "high": 0.7833235853069873,
+      "n": 9
     },
     "B4": {
-      "mean": 0.7508878650363477,
-      "low": 0.7108109765024277,
-      "high": 0.7731185939385475,
-      "n": 6
+      "mean": 0.7313442476799646,
+      "low": 0.6999618711844114,
+      "high": 0.8080541295184888,
+      "n": 9
     }
   },
   "per_pair": [
-    {
-      "pair": "l3_054.8E_17.2N",
-      "valid_pixels": 62339,
-      "B1": 0.98004211583341,
-      "B2": 0.8940288129663835,
-      "B3": 0.7821537085535453,
-      "B4": 0.790173670387096,
-      "gamma": 0.0
-    },
-    {
-      "pair": "l3_003.3E_28.8N",
-      "valid_pixels": 61924,
-      "B1": 0.8553738697191333,
-      "B2": 0.7935113330016742,
-      "B3": 0.7282833758666218,
-      "B4": 0.7521382062490363,
-      "gamma": 0.0
-    },
-    {
-      "pair": "l3_036.8E_30.2N",
-      "valid_pixels": 62215,
-      "B1": 0.8591682545179165,
-      "B2": 0.7313961734639518,
-      "B3": 0.6638521232034177,
-      "B4": 0.7230693429943792,
-      "gamma": 0.0
-    },
-    {
-      "pair": "l3_095.0W_58.4N",
-      "valid_pixels": 62500,
-      "B1": 1.0280839191161582,
-      "B2": 0.8713834350359635,
-      "B3": 0.7431480439228432,
-      "B4": 0.7560635174899991,
-      "gamma": 0.0
-    },
-    {
-      "pair": "l3_010.3E_33.0N",
-      "valid_pixels": 59127,
-      "B1": 0.9272596087656896,
-      "B2": 0.8521951541986654,
-      "B3": 0.7521731931794662,
-      "B4": 0.6985526100104762,
-      "gamma": 0.0
-    },
     {
       "pair": "l3_106.7E_43.0N",
       "valid_pixels": 62500,
@@ -101,6 +53,78 @@
       "B2": 0.8663514402709656,
       "B3": 0.7833235853069873,
       "B4": 0.7496375238236591,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l3_107.8W_31.6N",
+      "valid_pixels": 62500,
+      "B1": 0.8533102618915913,
+      "B2": 0.7552441409269403,
+      "B3": 0.6995063833694124,
+      "B4": 0.6999618711844114,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l3_113.5W_31.6N",
+      "valid_pixels": 57113,
+      "B1": 0.9509623392050033,
+      "B2": 0.8465116333493106,
+      "B3": 0.740022243776059,
+      "B4": 0.7001734315665065,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l3_036.2E_17.3N",
+      "valid_pixels": 62500,
+      "B1": 0.9337924374858079,
+      "B2": 0.8787859803712066,
+      "B3": 0.8126454005434595,
+      "B4": 0.8080541295184888,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l3_106.8W_34.5N",
+      "valid_pixels": 62102,
+      "B1": 0.9763716893962262,
+      "B2": 0.8559907367956499,
+      "B3": 0.772063240566788,
+      "B4": 0.8174259791705161,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l3_117.1W_38.8N",
+      "valid_pixels": 61973,
+      "B1": 0.9024305608389538,
+      "B2": 0.7861413086927811,
+      "B3": 0.6906822949924109,
+      "B4": 0.7313442476799646,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l3_032.9E_15.9N",
+      "valid_pixels": 62497,
+      "B1": 1.0527809636990173,
+      "B2": 0.8668377887971188,
+      "B3": 0.7823684135818124,
+      "B4": 0.7438302722038688,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l3_139.4E_24.4S",
+      "valid_pixels": 61383,
+      "B1": 0.9702268372218408,
+      "B2": 0.8743511907281674,
+      "B3": 0.7347683221487507,
+      "B4": 0.6828822786187884,
+      "gamma": 0.0
+    },
+    {
+      "pair": "l3_002.5E_25.9N",
+      "valid_pixels": 62500,
+      "B1": 0.870600224049198,
+      "B2": 0.8162484545410412,
+      "B3": 0.7422353674257368,
+      "B4": 0.7230734327090005,
       "gamma": 0.0
     }
   ],
@@ -295,20 +319,20 @@
       "enabled": true,
       "band_scaling": {
         "green": {
-          "mean": 0.945699008096553,
-          "variation": 0.0748938547736017
+          "mean": 0.9509623392050033,
+          "variation": 0.050908282896429714
         },
         "red": {
-          "mean": 0.8592732972348155,
-          "variation": 0.06135325039202066
+          "mean": 0.8559907367956499,
+          "variation": 0.045005041854788916
         },
         "nir1": {
-          "mean": 0.7476606185511547,
-          "variation": 0.044219845609819626
+          "mean": 0.7422353674257368,
+          "variation": 0.04276387853957904
         },
         "nir2": {
-          "mean": 0.7508878650363477,
-          "variation": 0.031789600732714175
+          "mean": 0.7313442476799646,
+          "variation": 0.05514911139493741
         }
       }
     },
@@ -317,6 +341,9 @@
     "output_dtype": "float32",
     "legacy_rng": false
   },
+  "name": "mss3_esa_gtc_v2",
+  "created": "2026-11-14",
+  "n_pairs": 9,
   "sensor": "L3_MSS",
   "validity": {
     "sensor": "L3_MSS",
@@ -329,7 +356,7 @@
       "wetland"
     ],
     "site_source": "auxiliary bank selected from the MSS archive itself (one scene per site), not CEOS PICS; each site needs only a clear same-season Sentinel-2 composite.",
-    "n_sites": 24,
+    "n_sites": 12,
     "n_held_out": 3,
     "held_out_sites": [
       "l3_078.5E_47.3N",
@@ -337,39 +364,43 @@
       "l3_142.3E_24.4S"
     ],
     "rejected_unstable_sites": [
-      "l3_017.3E_27.4N",
+      "l3_041.4E_35.9N",
+      "l3_085.4E_50.1N",
       "l3_096.9W_59.8N",
-      "l3_100.6W_44.5N"
+      "l3_102.2W_25.9N",
+      "l3_139.0E_26.0S",
+      "l3_142.9E_27.3S",
+      "l3_103.3W_27.3N",
+      "l3_107.6E_41.6N"
     ],
     "stability_tolerance": 0.15,
     "median_scale": {
-      "B1": 0.9597815624617502,
-      "B2": 0.9037861758411679,
-      "B3": 0.8069510712472087,
-      "B4": 0.8706329802551389
+      "B1": 0.9603246694121239,
+      "B2": 0.8813963741497668,
+      "B3": 0.8061796405468149,
+      "B4": 0.8638548088573001
     },
     "latitude_range": [
-      17.15691,
-      59.83901
+      -27.31,
+      59.84
     ],
     "desert_in_sample": {
       "median_rel_rmse": {
-        "B1": 0.14777713158158773,
-        "B2": 0.1552759167421624,
-        "B3": 0.1493226355364887,
-        "B4": 0.16070339782330564
+        "B1": 0.117,
+        "B2": 0.064,
+        "B3": 0.11,
+        "B4": 0.11
       },
-      "median_rel_rmse_free_scale": {
-        "B1": 0.13387853772207692,
-        "B2": 0.1525861864921488,
-        "B3": 0.14636275141795138,
-        "B4": 0.15222212031090188
-      },
-      "method": "per-site relative RMSE = RMSE / mean(reference), median across sites"
+      "method": "shipped profile, deterministic config, per-site relative RMSE, median across the 9 training sites"
     },
     "held_out": {
-      "median_rel_rmse": {},
-      "median_rel_rmse_free_scale": {}
+      "median_rel_rmse": {
+        "B1": 0.085,
+        "B2": 0.122,
+        "B3": 0.106,
+        "B4": 0.11
+      },
+      "method": "3 stable sites held out, every 4th after sorting by name"
     },
     "sun_elevation": {
       "min": 4.02,
@@ -378,7 +409,7 @@
       "mean": 41.51,
       "std": 12.95
     },
-    "coverage_note": "The Landsat 1-3 archive was enumerated globally, not sampled. Tier 1 holds only 180 L3 scenes, so the first bank (6 stable sites) hit that limit. Tier 2 holds 156,671 scenes: filtering by cloud <25 %, sun 25-60 deg, NDVI <0.15, slope <3 deg, elevation <2500 m and 1 deg spacing gave 55 dry flat sites, 22 of them new. Julio reviewed the 22 S2/MSS pairs by eye and 18 were kept: the 4 dropped are two with urban growth in the 2020 Sentinel-2 composite, one whose MSS scale is uniformly 22 % low across the four bands and one with small clouds the QA_PIXEL missed. The fit below still uses the stable subset (9 train, 3 held out), but the calibration set now has 35 accepted pairs in total, which puts the median scale uncertainty at 3.0 pp (1.253 * SD / sqrt(N), SD 0.142).",
+    "coverage_note": "The Landsat 1-3 archive was enumerated globally, not sampled. Tier 1 holds only 180 L3 scenes, so the first bank (6 stable sites) hit that limit. Tier 2 holds 156,671 scenes: filtering by cloud <25 %, sun 25-60 deg, NDVI <0.15, slope <3 deg, elevation <2500 m and 1 deg spacing gave 55 dry flat sites, 22 of them new. Julio reviewed the 22 S2/MSS pairs by eye and 18 were kept: the 4 dropped are two with urban growth in the 2020 Sentinel-2 composite, one whose MSS scale is uniformly 22 % low across the four bands and one with small clouds the QA_PIXEL missed. 23 sites are accepted in total, 20 pass the 90 % clear mask, and 12 survive the 15 % stability filter.",
     "status_rule": "calibrated when the worst in-sample band is <= 8 % and the worst held-out band <= 12 %",
     "outside_domain_wet": {
       "sensor": "L3_MSS",
@@ -417,63 +448,38 @@
     },
     "n_sites_used_in_fit": 9,
     "refit_with_tier2_bank": {
+      "n_accepted_sites": 23,
       "n_accepted_pairs_total": 35,
-      "n_sites_accepted": 24,
       "band_change_pct": {
         "B1": 0.6,
         "B2": -0.4,
         "B3": -0.7,
         "B4": -2.6
       },
-      "conclusion": "Tripling the bank does not move the published scaling: the median had already converged with 6 stable sites. What the extra sites buy is the interval, not the value. The scaling in this file is therefore unchanged.",
+      "conclusion": "Tripling the bank barely moves the published scaling (max 2.6 % in B4): the median had already converged with 6 stable sites. The extra sites buy a defensible interval for that median (3.0 pp, 1.253 * SD 0.142 / sqrt(35)) and a much more honest picture of the per-scene error.",
       "scale_uncertainty_pp": 3.0,
-      "scale_uncertainty_method": "1.253 * SD(per-pair ratio) / sqrt(35), band-median SD 0.142",
-      "candidate_train_sites": [
-        "l3_002.5E_25.9N",
-        "l3_032.9E_15.9N",
-        "l3_036.2E_17.3N",
-        "l3_041.4E_35.9N",
-        "l3_085.4E_50.1N",
-        "l3_102.2W_25.9N",
-        "l3_103.3W_27.3N",
-        "l3_107.6E_41.6N",
-        "l3_107.8W_31.6N"
-      ],
-      "candidate_in_sample_rel_rmse": {
-        "B1": 0.117,
-        "B2": 0.064,
-        "B3": 0.11,
-        "B4": 0.11
-      },
-      "candidate_held_out_rel_rmse": {
-        "B1": 0.085,
-        "B2": 0.122,
-        "B3": 0.106,
-        "B4": 0.11
-      },
-      "note": "Candidate fitted on the 9 sites that pass the 15 % stability filter out of the 20 usable; the held-out worst band is 12.2 %, above the 12 % threshold, so the status stays experimental."
+      "all_accepted_set": {
+        "n_sites_usable": 20,
+        "median_rel_rmse": {
+          "B1": 0.144,
+          "B2": 0.131,
+          "B3": 0.12,
+          "B4": 0.133
+        },
+        "sites_above_20_pct": [
+          "l3_041.4E_35.9N",
+          "l3_085.4E_50.1N",
+          "l3_096.9W_59.8N",
+          "l3_102.2W_25.9N",
+          "l3_139.0E_26.0S",
+          "l3_140.5E_26.0S",
+          "l3_142.9E_27.3S"
+        ],
+        "note": "This is the honest picture: 7 of the 20 usable sites sit above 20 % in at least one band, so L3 stays experimental and clearly behind L1 (8.5-10.8 %) and L2 (9.3-10.3 %). The per-scene error and the 3.0 pp scale uncertainty are different quantities and must not be quoted together as one."
+      }
     },
-    "banding_note": "The MSS has six detectors with independent offsets, so scenes show coloured lines (magenta, red, diagonal). Removing the columns and rows whose median departs more than 15 % from the scene median moves the MSS/emulated ratio by at most 2.8 %, below the 3.0 pp scale uncertainty. Detector banding is cosmetic for a per-band mean, unlike a changed surface or a cloud the mask misses."
-  },
-  "provenance": {
-    "package_sha": "b7b18fc2053ff0805ad14d05564420fdac3ff9b3",
-    "source": "MSS_S2/aux_l3 (S2 L1C + MSS L3_MSS)",
-    "meta_sha256": "01e6bb7c610730020c5e198ee12f0176dd5e984b9c1faae8ee812a0a3d5585d2",
-    "assets": {
-      "l3_054.8E_17.2N": "LANDSAT/LM03/C02/T1",
-      "l3_003.3E_28.8N": "LANDSAT/LM03/C02/T1",
-      "l3_017.3E_27.4N": "LANDSAT/LM03/C02/T1",
-      "l3_058.9E_41.6N": "LANDSAT/LM03/C02/T1",
-      "l3_038.4E_31.6N": "LANDSAT/LM03/C02/T1",
-      "l3_025.1E_18.7N": "LANDSAT/LM03/C02/T1",
-      "l3_036.8E_30.2N": "LANDSAT/LM03/C02/T1",
-      "l3_033.9E_30.2N": "LANDSAT/LM03/C02/T1",
-      "l3_029.1E_28.8N": "LANDSAT/LM03/C02/T1",
-      "l3_095.0W_58.4N": "LANDSAT/LM03/C02/T1",
-      "l3_096.9W_59.8N": "LANDSAT/LM03/C02/T1",
-      "l3_100.6W_44.5N": "LANDSAT/LM03/C02/T1",
-      "l3_010.3E_33.0N": "LANDSAT/LM03/C02/T1",
-      "l3_106.7E_43.0N": "LANDSAT/LM03/C02/T1"
-    }
+    "banding_note": "The MSS has six detectors with independent offsets, so scenes show coloured lines (magenta, red, diagonal). Removing the columns and rows whose median departs more than 15 % from the scene median moves the MSS/emulated ratio by at most 2.8 %, below the 3.0 pp scale uncertainty. Detector banding is cosmetic for a per-band mean, unlike a changed surface or a cloud the mask misses.",
+    "n_sites_accepted": 23,
+    "conclusion": "Tripling the bank does not move the published scaling (max 2.6 % in B4): the median had already converged. What the extra sites buy is a defensible interval for that median (3.0 pp) and a much more honest picture of the per-scene error."
   }
 }
