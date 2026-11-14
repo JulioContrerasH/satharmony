@@ -79,7 +79,13 @@ sensor needs its own measured profile.
 | L4_MSS | calibrated | CEOS PICS | 11 / 2 | 6.3-11.7 % | 9.4-12.5 % | 13.9-22.3 % |
 | L1_MSS | experimental | archive | 15 / 4 | 8.5-10.8 % | 3.5-4.4 % | not measurable |
 | L2_MSS | experimental | archive | 18 / 6 | 9.3-10.3 % | 7.6-11.2 % | not measurable |
-| L3_MSS | experimental | archive | 6 / 0 | 14.8-16.1 % | - | not measurable |
+| L3_MSS | experimental | archive (Tier 2) | 9 / 3 | 6.4-11.7 % | 8.5-12.2 % | not measurable |
+
+L3 has 35 accepted S2/MSS pairs behind that fit: 180 Tier 1 scenes were not
+enough (6 stable sites), so the whole Tier 2 archive was enumerated (156,671
+scenes), 55 dry flat sites came out and 22 were new. Tripling the bank moves the
+published scaling by at most 2.6 % (B4) and puts the median-scale uncertainty at
+3.0 pp; the value had already converged, the interval is what changes.
 
 Numbers are per-band relative RMSE, median across sites, without any per-site
 rescale. With a free per-site factor (which isolates spectral shape from a

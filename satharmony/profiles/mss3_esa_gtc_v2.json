@@ -329,9 +329,13 @@
       "wetland"
     ],
     "site_source": "auxiliary bank selected from the MSS archive itself (one scene per site), not CEOS PICS; each site needs only a clear same-season Sentinel-2 composite.",
-    "n_sites": 6,
-    "n_held_out": 0,
-    "held_out_sites": [],
+    "n_sites": 24,
+    "n_held_out": 3,
+    "held_out_sites": [
+      "l3_078.5E_47.3N",
+      "l3_140.5E_26.0S",
+      "l3_142.3E_24.4S"
+    ],
     "rejected_unstable_sites": [
       "l3_017.3E_27.4N",
       "l3_096.9W_59.8N",
@@ -374,7 +378,7 @@
       "mean": 41.51,
       "std": 12.95
     },
-    "coverage_note": "The Landsat 1-3 archive is sparse and was enumerated globally: every scene of the platform was listed and only the dry, flat, low-cloud ones were kept. The limit is the archive, not the number of candidate sites.",
+    "coverage_note": "The Landsat 1-3 archive was enumerated globally, not sampled. Tier 1 holds only 180 L3 scenes, so the first bank (6 stable sites) hit that limit. Tier 2 holds 156,671 scenes: filtering by cloud <25 %, sun 25-60 deg, NDVI <0.15, slope <3 deg, elevation <2500 m and 1 deg spacing gave 55 dry flat sites, 22 of them new. Julio reviewed the 22 S2/MSS pairs by eye and 18 were kept: the 4 dropped are two with urban growth in the 2020 Sentinel-2 composite, one whose MSS scale is uniformly 22 % low across the four bands and one with small clouds the QA_PIXEL missed. The fit below still uses the stable subset (9 train, 3 held out), but the calibration set now has 35 accepted pairs in total, which puts the median scale uncertainty at 3.0 pp (1.253 * SD / sqrt(N), SD 0.142).",
     "status_rule": "calibrated when the worst in-sample band is <= 8 % and the worst held-out band <= 12 %",
     "outside_domain_wet": {
       "sensor": "L3_MSS",
@@ -410,7 +414,46 @@
       "max_shift_px": 1.44,
       "alignment_file": "assets/md/fuentes/srf/pics_49/alignment_wet_mss3.json",
       "manifest": "assets/md/fuentes/srf/pics_49/wet_bank_manifest.csv"
-    }
+    },
+    "n_sites_used_in_fit": 9,
+    "refit_with_tier2_bank": {
+      "n_accepted_pairs_total": 35,
+      "n_sites_accepted": 24,
+      "band_change_pct": {
+        "B1": 0.6,
+        "B2": -0.4,
+        "B3": -0.7,
+        "B4": -2.6
+      },
+      "conclusion": "Tripling the bank does not move the published scaling: the median had already converged with 6 stable sites. What the extra sites buy is the interval, not the value. The scaling in this file is therefore unchanged.",
+      "scale_uncertainty_pp": 3.0,
+      "scale_uncertainty_method": "1.253 * SD(per-pair ratio) / sqrt(35), band-median SD 0.142",
+      "candidate_train_sites": [
+        "l3_002.5E_25.9N",
+        "l3_032.9E_15.9N",
+        "l3_036.2E_17.3N",
+        "l3_041.4E_35.9N",
+        "l3_085.4E_50.1N",
+        "l3_102.2W_25.9N",
+        "l3_103.3W_27.3N",
+        "l3_107.6E_41.6N",
+        "l3_107.8W_31.6N"
+      ],
+      "candidate_in_sample_rel_rmse": {
+        "B1": 0.117,
+        "B2": 0.064,
+        "B3": 0.11,
+        "B4": 0.11
+      },
+      "candidate_held_out_rel_rmse": {
+        "B1": 0.085,
+        "B2": 0.122,
+        "B3": 0.106,
+        "B4": 0.11
+      },
+      "note": "Candidate fitted on the 9 sites that pass the 15 % stability filter out of the 20 usable; the held-out worst band is 12.2 %, above the 12 % threshold, so the status stays experimental."
+    },
+    "banding_note": "The MSS has six detectors with independent offsets, so scenes show coloured lines (magenta, red, diagonal). Removing the columns and rows whose median departs more than 15 % from the scene median moves the MSS/emulated ratio by at most 2.8 %, below the 3.0 pp scale uncertainty. Detector banding is cosmetic for a per-band mean, unlike a changed surface or a cloud the mask misses."
   },
   "provenance": {
     "package_sha": "b7b18fc2053ff0805ad14d05564420fdac3ff9b3",
